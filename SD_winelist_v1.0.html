@@ -107,6 +107,18 @@
         text-align: left;
     }
 
+    .brand-titles { text-align: left; }
+    .brand-winelist {
+        font-family: var(--font-heading);
+        font-size: 14px;
+        color: var(--color-shcc-gold);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 600;
+        margin-top: 2px;
+        text-align: right;
+    }
+
     @media (max-width: 480px) {
         .brand-subtitle { font-size: 24px; letter-spacing: 1px; }
         .brand-logo { height: 52px; }
@@ -409,12 +421,19 @@
     #pairingsView { display: none; }
 
     .pairings-intro {
-        font-size: 13px;
-        color: var(--color-text-muted);
+        font-size: 17px;
+        color: var(--color-text-main);
         font-style: italic;
         text-align: center;
-        padding: 16px 0 0;
+        padding: 22px 8px 4px;
         line-height: 1.5;
+        max-width: 620px;
+        margin: 0 auto;
+    }
+    .pairings-intro .ce-purple {
+        color: #6b4e9e;
+        font-style: normal;
+        font-weight: 700;
     }
 
     .dish {
@@ -490,7 +509,10 @@
     <header class="app-header">
         <div class="masthead">
             <img src="https://images.squarespace-cdn.com/content/v1/64499bef98adda64f34bdefc/dc7de386-05fd-40f6-b702-1983be045ace/Spotted+Duck-Final.png?format=1500w" alt="The Spotted Duck" class="brand-logo" onerror="this.style.display='none';">
-            <div class="brand-subtitle">The Spotted Duck</div>
+            <div class="brand-titles">
+                <div class="brand-subtitle">The Spotted Duck</div>
+                <div class="brand-winelist">Wine List</div>
+            </div>
         </div>
 
         <div class="search-wrapper">
@@ -501,17 +523,20 @@
     <nav class="filter-scroll">
         <div class="filter-track" id="categoryFilters">
         <div class="filter-chip active" data-category="all">All</div>
+        <div class="filter-chip" data-category="cocktails">Cocktails</div>
         <div class="filter-chip" data-category="glass">By the Glass</div>
         <div class="filter-chip" data-category="sparkling">Sparkling</div>
         <div class="filter-chip" data-category="white">White</div>
         <div class="filter-chip" data-category="red">Red</div>
         <div class="filter-chip" data-category="half">Half Bottles</div>
-        <div class="filter-chip" data-category="dessert">Dessert Wine</div>
+        <div class="filter-chip" data-category="large">Large Format</div>
         </div>
         <div class="filter-track filter-track--second">
-        <div class="filter-chip" data-category="cocktails">Cocktails</div>
+        <div class="filter-chip" data-category="dessert">Dessert Wine</div>
         <div class="filter-chip" data-category="beer">Beer</div>
         <div class="filter-chip" data-category="water">Water + Soda</div>
+        </div>
+        <div class="filter-track filter-track--second">
         <div class="filter-chip filter-chip--pairings" data-category="pairings">Wine Pairings</div>
         </div>
     </nav>
@@ -559,24 +584,49 @@
             <article class="wine-card"><div class="card-content"><h3 class="wine-name">Livio Felluga Pinot Grigio</h3><div class="wine-meta"><span>Italy | '22</span></div><div class="wine-bin">Bin 2</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$56</span></div></div></article>
             <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Tiefenbrunner Pinot Grigio</h3><div class="wine-meta"><span>Italy | '24</span></div><div class="wine-bin">Bin 17</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$12</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$39</span></div></div></article>
         </div>
-
-        <!-- RED (by the glass) -->
+        <!-- RED -->
         <div class="wine-section" data-group="red">
             <h2 class="section-header">Red</h2>
-            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Les Abeilles Côtes du Rhône</h3><div class="wine-meta"><span>France</span></div><div class="wine-meta"><span>Grenache + Syrah</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$14</span></div></div></article>
-            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Venta Morales Tempranillo</h3><div class="wine-meta"><span>Spain</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$12</span></div></div></article>
-            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">J Vineyards Pinot Noir</h3><div class="wine-meta"><span>Monterey, CA</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$16</span></div></div></article>
-            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Seghesio Family Vineyards Zinfandel</h3><div class="wine-meta"><span>Healdsburg, Sonoma, CA</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$16</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">J Vineyards Pinot Noir</h3><div class="wine-meta"><span>Sonoma, CA | '22</span></div><div class="wine-bin">Bin 23</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$16</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$52</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Sense of Place Pinot Noir</h3><div class="wine-meta"><span>Coastal Cuvée, Monterey, CA | '24</span></div><div class="wine-bin">Bin 14</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$52</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Cotière Pinot Noir</h3><div class="wine-meta"><span>Santa Barbara, CA | '23</span></div><div class="wine-bin">Bin 15</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$62</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Louis Latour Pinot Noir</h3><div class="wine-meta"><span>Burgundy, France | '22</span></div><div class="wine-bin">Bin 15</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$78</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Tornatore Etna Rosso</h3><div class="wine-meta"><span>Sicily, Italy | '22</span></div><div class="wine-meta"><span>Nerello Mascalese + Nerello Cappuccio</span></div><div class="wine-bin">Bin 10</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$56</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Michele Satta Super Tuscan</h3><div class="wine-meta"><span>Tuscany, Italy | '23</span></div><div class="wine-meta"><span>Sangiovese</span></div><div class="wine-bin">Bin 10</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$62</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Seghesio Family Vineyards Zinfandel</h3><div class="wine-meta"><span>Healdsburg, Sonoma, CA | '23</span></div><div class="wine-bin">Bin 14</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$16</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$45</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Les Abeilles Côtes du Rhône</h3><div class="wine-meta"><span>France | '23</span></div><div class="wine-meta"><span>Grenache + Syrah + Mourvèdre</span></div><div class="wine-bin">Bin 18</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$14</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$42</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Cristia Châteauneuf-du-Pape</h3><div class="wine-meta"><span>France | '23</span></div><div class="wine-meta"><span>Grenache + Syrah</span></div><div class="wine-bin">Bin 20</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$75</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Venta Morales Tempranillo</h3><div class="wine-meta"><span>Spain | '23</span></div><div class="wine-bin">Bin 16</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$12</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$38</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Llama Malbec</h3><div class="wine-meta"><span>Argentina | '22</span></div><div class="wine-bin">Bin 12</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$38</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Dow Vale do Bomfim</h3><div class="wine-meta"><span>Portugal | '20</span></div><div class="wine-meta"><span>Touriga Nacional + Tinta Roriz + Touriga Franca</span></div><div class="wine-bin">Bin 18</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$36</span></div></div></article>
             <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Robert Hall Cabernet Sauvignon</h3><div class="wine-meta"><span>Paso Robles, CA</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$17</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Blackboard by Matthews Cabernet</h3><div class="wine-meta"><span>Columbia Valley, WA | '21</span></div><div class="wine-bin">Bin 11</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$46</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Château Rocher-Calon Saint-Émilion</h3><div class="wine-meta"><span>Bordeaux, France | '21</span></div><div class="wine-meta"><span>Merlot</span></div><div class="wine-bin">Bin 12</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$47</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Leviathan Cabernet Blend</h3><div class="wine-meta"><span>California | '22</span></div><div class="wine-bin">Bin 11</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$65</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Jordan Cabernet Sauvignon</h3><div class="wine-meta"><span>Sonoma, CA | '20</span></div><div class="wine-bin">Bin 12</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$78</span></div></div></article>
         </div>
 
-        <!-- HALF BOTTLES -->
+<!-- HALF BOTTLES -->
         <div class="wine-section" data-group="half">
             <h2 class="section-header">Half Bottles</h2>
             <article class="wine-card" data-dupe="true"><div class="card-content"><h3 class="wine-name">Roederer Estate Brut</h3><div class="wine-meta"><span>Anderson Valley, CA</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 8</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$33</span></div></div></article>
             <article class="wine-card" data-dupe="true"><div class="card-content"><h3 class="wine-name">Contadi Castaldi Brut Rosé</h3><div class="wine-meta"><span>Franciacorta, Italy</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 8</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$41</span></div></div></article>
             <article class="wine-card"><div class="card-content"><h3 class="wine-name">Clos du Val Sauvignon Blanc</h3><div class="wine-meta"><span>Napa Valley, CA | '24</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 6</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$34</span></div></div></article>
             <article class="wine-card"><div class="card-content"><h3 class="wine-name">Domaine Vocoret &amp; Fils Chablis</h3><div class="wine-meta"><span>France | '21</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 6</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$41</span></div></div></article>
+        
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Bernardus Pinot Noir</h3><div class="wine-meta"><span>Santa Lucia Highlands, Monterey, CA | '22</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 13</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$41</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">J. Lohr Cabernet</h3><div class="wine-meta"><span>Hilltop Vineyard, Monterey, CA | '22</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 13</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$36</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Château Paveil de Luze Margaux</h3><div class="wine-meta"><span>Bordeaux, France | '18</span></div><div class="wine-meta"><span>Cabernet + Merlot</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 13</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$46</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Felsina Chianti Classico Riserva</h3><div class="wine-meta"><span>Italy | '21</span></div><div class="wine-meta"><span>Sangiovese</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 20</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$44</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Domaine du Vieux Lazaret Châteauneuf-du-Pape</h3><div class="wine-meta"><span>France | '22</span></div><div class="wine-meta"><span>Grenache blend</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 20</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$43</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Markham Merlot</h3><div class="wine-meta"><span>Napa Valley, CA | '20</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 13</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$35</span></div></div></article>
+        </div>
+
+        <!-- LARGE FORMAT -->
+        <div class="wine-section" data-group="large">
+            <h2 class="section-header">Large Format</h2>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Orma Toscana</h3><div class="wine-meta"><span>Italy | '16</span></div><div class="wine-meta"><span>1.5 L Magnum</span></div><div class="wine-bin">Bin 19</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$200</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Bernardus Cabernet Sauvignon</h3><div class="wine-meta"><span>Monterey, CA | '19</span></div><div class="wine-meta"><span>1.5 L Magnum</span></div><div class="wine-bin">Bin 19</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$190</span></div></div></article>
         </div>
 
         <!-- DESSERT WINE / AFTER DINNER -->
@@ -628,7 +678,7 @@
 
         <!-- ============ PAIRINGS VIEW ============ -->
         <div id="pairingsView">
-            <div class="pairings-intro">These pairings were matched to Chef Jerry's menu using CellarEye's Virtual Sommelier.</div>
+            <div class="pairings-intro">These pairings were matched to Chef Jerry's menu using <span class="ce-purple">CellarEye</span>'s Virtual Sommelier.</div>
 
             <div class="pair-section">
                 <h2 class="section-header">Starters</h2>
@@ -693,7 +743,7 @@
                     <div class="dish-head"><span class="dish-name">Charcuterie + Cheese Board</span><span class="dish-price">$29</span></div>
                     <div class="dish-desc">duck salami, prosciutto di Parma, sopressata, Bella Vitano, triple creme brie, goat cheese, almonds, grilled sourdough, fig jam</div>
                     <div class="pair"><div class="pair-wine"><div class="pair-name">Zardetto Prosecco Rosé</div><div class="pair-region">Italy</div><div class="pair-note">Bubbles and red fruit refresh between bites of salami, and the rosé plays into the fig jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$43</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Les Abeilles Côtes du Rhône</div><div class="pair-region">Grenache + Syrah, France</div><div class="pair-note">A savory Rhône red built for cured meats, with enough fruit to meet the sweetness of the fig jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$14</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Dow Vale do Bomfim</div><div class="pair-region">Portugal</div><div class="pair-note">A rustic Portuguese field blend made for cured meats, with fruit to meet the fig jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$36</span></div></div></div>
                     <div class="pair"><div class="pair-wine"><div class="pair-name">Contadi Castaldi Brut Rosé</div><div class="pair-region">Franciacorta, Italy</div><div class="pair-note">Franciacorta's fine bubbles and depth carry the whole board, from triple creme brie to sopressata.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$41</span></div></div></div>
                 </div>
 
@@ -721,8 +771,8 @@
                     <div class="dish-head"><span class="dish-name">Seared Tucker Reserve Duck Breast</span><span class="dish-price">$46</span></div>
                     <div class="dish-desc">creamy white corn polenta, braised rainbow chard, duck jus, green tomato ginger jam</div>
                     <div class="pair"><div class="pair-wine"><div class="pair-name">Squealing Pig Rosé of Pinot Noir</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Berry and a clean bite cut the duck fat, and it stays light enough not to fight the jus.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$11</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$36</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">J Vineyards Pinot Noir</div><div class="pair-region">Monterey, CA</div><div class="pair-note">Duck and Pinot is the classic, the Monterey fruit and silk echoing the jus and the green tomato jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Robert Hall Cabernet Sauvignon</div><div class="pair-region">Paso Robles, CA</div><div class="pair-note">Big enough for the seared crust, with dark fruit that plays off the green tomato ginger jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$17</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">J Vineyards Pinot Noir</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Duck and Pinot is the classic, its Sonoma fruit and silk echoing the jus and the green tomato jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$52</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Louis Latour Pinot Noir</div><div class="pair-region">Burgundy, France</div><div class="pair-note">Old-world Burgundy brings earth and finesse to the duck, a quiet splurge that lets the jus shine.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$78</span></div></div></div>
                 </div>
 
                 <div class="dish">
@@ -736,24 +786,24 @@
                 <div class="dish">
                     <div class="dish-head"><span class="dish-name">Cabernet Braised Lamb Shoulder</span><span class="dish-price">$39</span></div>
                     <div class="dish-desc">potato herb gnocchi, sundried tomatoes, tuscan kale, romano cheese, cabernet rosemary jus</div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Venta Morales Tempranillo</div><div class="pair-region">Spain</div><div class="pair-note">An easy Spanish red whose savory fruit meets the braise without overpowering the gnocchi.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Seghesio Family Vineyards Zinfandel</div><div class="pair-region">Healdsburg, Sonoma, CA</div><div class="pair-note">Bold, brambly fruit stands up to the rich lamb and leans into the sundried tomato and rosemary.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Robert Hall Cabernet Sauvignon</div><div class="pair-region">Paso Robles, CA</div><div class="pair-note">Cabernet in the jus, Cabernet in the glass: dark fruit and tannin built for braised lamb.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$17</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Venta Morales Tempranillo</div><div class="pair-region">Spain</div><div class="pair-note">An easy Spanish red whose savory fruit meets the braise without overpowering the gnocchi.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$38</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Michele Satta Super Tuscan</div><div class="pair-region">Tuscany, Italy</div><div class="pair-region">Sangiovese</div><div class="pair-note">Sangiovese's savory cherry meets the Tuscan kale and romano, an Italian echo of the whole plate.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$62</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Cristia Châteauneuf-du-Pape</div><div class="pair-region">France</div><div class="pair-region">Grenache + Syrah</div><div class="pair-note">Garrigue and dark fruit mirror the rosemary jus, with the heft to carry the braised lamb.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$75</span></div></div></div>
                 </div>
 
                 <div class="dish">
                     <div class="dish-head"><span class="dish-name">Steak + Frites</span><span class="dish-price">$51</span></div>
                     <div class="dish-desc">8 oz grilled Snake River Farms Kobe flank steak, shoestring frites, horseradish aioli, arugula salad</div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Les Abeilles Côtes du Rhône</div><div class="pair-region">Grenache + Syrah, France</div><div class="pair-note">Savory Grenache and Syrah meet the char on the flank without fighting the horseradish bite.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$14</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Seghesio Family Vineyards Zinfandel</div><div class="pair-region">Healdsburg, Sonoma, CA</div><div class="pair-note">Ripe, peppery fruit matches the fatty Kobe and stands its ground against the horseradish aioli.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Robert Hall Cabernet Sauvignon</div><div class="pair-region">Paso Robles, CA</div><div class="pair-note">The steak-and-Cab classic, tannin to cut the fat and dark fruit to meet the grilled crust.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$17</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Les Abeilles Côtes du Rhône</div><div class="pair-region">Grenache + Syrah, France</div><div class="pair-note">Savory Grenache and Syrah meet the char on the flank without fighting the horseradish bite.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$14</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$42</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Leviathan Cabernet Blend</div><div class="pair-region">California</div><div class="pair-note">A plush California Cab blend with the structure to cut the Kobe fat and meet the char.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$65</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Jordan Cabernet Sauvignon</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">The steakhouse Cabernet: polished Sonoma tannin and dark fruit built for grilled flank.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$78</span></div></div></div>
                 </div>
 
                 <div class="dish">
                     <div class="dish-head"><span class="dish-name">Caramelized Sea Scallops</span><span class="dish-price">$46</span></div>
                     <div class="dish-desc">maitakes, snap peas, fingerling potatoes, porcini mushroom blanquette</div>
                     <div class="pair"><div class="pair-wine"><div class="pair-name">De Loach Chardonnay</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Creamy Chardonnay mirrors the porcini blanquette and the sweet sear on the scallops.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$42</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">J Vineyards Pinot Noir</div><div class="pair-region">Monterey, CA</div><div class="pair-note">Light Pinot leans into the maitake and porcini earth without burying the delicate scallops.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Sense of Place Pinot Noir</div><div class="pair-region">Coastal Cuvée, Monterey, CA</div><div class="pair-note">A coastal Monterey Pinot, light enough for scallops and earthy enough for the porcini.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$52</span></div></div></div>
                     <div class="pair"><div class="pair-wine"><div class="pair-name">Flowers Chardonnay</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Refined and silky, it meets the blanquette's cream while its acid keeps the scallops bright.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$74</span></div></div></div>
                 </div>
 
@@ -761,7 +811,7 @@
                     <div class="dish-head"><span class="dish-name">Forest Mushroom Risotto</span><span class="dish-price">$36</span></div>
                     <div class="dish-desc">cauliflower, porcini + black trumpet mushrooms, caramelized onion sauce (vegan optional)</div>
                     <div class="pair"><div class="pair-wine"><div class="pair-name">M. Chapoutier Belleruche Blanc</div><div class="pair-region">Côtes du Rhône, France</div><div class="pair-note">A savory Rhône white that picks up the caramelized onion and keeps the risotto from feeling heavy.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$43</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">J Vineyards Pinot Noir</div><div class="pair-region">Monterey, CA</div><div class="pair-note">Pinot and mushrooms belong together, the earthy fruit echoing the porcini and black trumpet.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Tornatore Etna Rosso</div><div class="pair-region">Sicily, Italy</div><div class="pair-region">Nerello Mascalese + Cappuccio</div><div class="pair-note">Volcanic nerello is all earth and red fruit, a natural with porcini and black trumpet.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$56</span></div></div></div>
                     <div class="pair"><div class="pair-wine"><div class="pair-name">Neyers Chardonnay</div><div class="pair-region">Carneros, Sonoma, CA</div><div class="pair-note">Rich, textured Chardonnay matches the creamy risotto and rounds out the caramelized onion.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$53</span></div></div></div>
                 </div>
 
@@ -769,8 +819,8 @@
                     <div class="dish-head"><span class="dish-name">Pork Belly + Bistro Beef Burger</span><span class="dish-price">$29</span></div>
                     <div class="dish-desc">thick cut pork belly, smoked cheddar, grilled onions, house dill pickle, oven roasted tomato, herb frites</div>
                     <div class="pair"><div class="pair-wine"><div class="pair-name">Squealing Pig Rosé</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Bright fruit and acid cut the fatty pork belly and refresh against the smoked cheddar.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$11</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$36</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Les Abeilles Côtes du Rhône</div><div class="pair-region">Grenache + Syrah, France</div><div class="pair-note">A savory Rhône red with the grip for the beef and enough fruit to meet the smoked cheddar.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$14</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
-                    <div class="pair"><div class="pair-wine"><div class="pair-name">Seghesio Family Vineyards Zinfandel</div><div class="pair-region">Healdsburg, Sonoma, CA</div><div class="pair-note">Bold Zin stands up to the double richness of pork belly and burger, with fruit for the onions.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Llama Malbec</div><div class="pair-region">Argentina</div><div class="pair-note">Juicy Argentine Malbec with the dark fruit and grip for the beef and smoked cheddar.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$38</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Seghesio Family Vineyards Zinfandel</div><div class="pair-region">Healdsburg, Sonoma, CA</div><div class="pair-note">Bold Zin stands up to the double richness of pork belly and burger, with fruit for the onions.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$45</span></div></div></div>
                 </div>
             </div>
         </div>
@@ -877,6 +927,11 @@
                         currentCategory = cat;
                     }
                     applyView();
+
+                    // Always start at the top of the list when switching tabs
+                    const nav = document.querySelector('.filter-scroll');
+                    const top = nav ? nav.getBoundingClientRect().bottom + window.scrollY : 0;
+                    window.scrollTo({ top: Math.max(top - 1, 0), behavior: 'auto' });
                 });
             });
         });
