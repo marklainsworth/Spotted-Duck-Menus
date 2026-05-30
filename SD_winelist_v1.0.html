@@ -439,6 +439,12 @@
         font-style: normal;
         font-weight: 700;
     }
+    .pairings-intro .vina-name {
+        color: #6b4e9e;
+        font-style: normal;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
 
     .dish {
         padding: 22px 0 12px;
@@ -629,7 +635,7 @@
 
     <div class="sticky-bar">
         <div class="search-wrapper">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search the menu..." onkeydown="if(event.key === 'Enter') this.blur();">
+            <input type="text" id="searchInput" class="search-input" placeholder="Ask Vina, CellarEye's virtual somm — try &ldquo;crisp and dry&rdquo;" onkeydown="if(event.key === 'Enter') this.blur();">
         </div>
 
         <nav class="filter-scroll">
@@ -795,7 +801,7 @@
 
         <!-- ============ PAIRINGS VIEW ============ -->
         <div id="pairingsView">
-            <div class="pairings-intro">These pairings were matched to Chef Jerry's menu using <span class="ce-purple">CellarEye</span>'s Virtual Sommelier.</div>
+            <div class="pairings-intro">These pairings were matched to Chef Jerry's menu by <span class="vina-name">Vina</span>, <span class="ce-purple">CellarEye</span>'s Virtual Sommelier.</div>
 
             <div class="pair-section">
                 <h2 class="section-header">Starters</h2>
@@ -946,9 +952,10 @@
         <div id="emptyState" class="empty-state" style="display:none;">No matches. Try another search.</div>
 
         <div class="menu-footer">
-            <div>Corkage $30 &nbsp;|&nbsp; 750 ml $55 &nbsp;|&nbsp; Magnum 5.22</div>
+            <div>Corkage &mdash; 750 ml $30 &nbsp;|&nbsp; Magnum $55</div>
+            <div class="footer-line">542 Lighthouse Ave, Pacific Grove, CA 93950</div>
             <div class="footer-line">Open Thursday &ndash; Monday at 5:00pm &nbsp;&middot;&nbsp; 831-920-2662 &nbsp;&middot;&nbsp; @spottedduckpg</div>
-            <div class="legal">Drinking distilled spirits, beer, wine and other alcoholic beverages may increase cancer risk, and, during pregnancy, can cause birth defects.</div>
+            <div class="legal">Drinking distilled spirits, beer, wine and other alcoholic beverages may increase cancer risk, and, during pregnancy, can cause birth defects. &nbsp;&middot;&nbsp; v5.22</div>
         </div>
 
     </main>
@@ -968,17 +975,34 @@
             let currentCategory = 'all';
             let searchTerm = '';
 
+            // Filler / stop words Vina ignores so attribute words are what count
+            const STOP = new Set(['i','a','an','the','some','any','of','for','with','and','or','to','me','my','we','our','you','your','it','its','is','are','am','be','that','this','those','these','please','like','liked','want','wanted','wanting','looking','look','show','find','get','give','prefer','prefers','enjoy','enjoys','love','loves','need','needs','something','anything','can','could','would','should','do','does','did','have','has','having','really','very','just','quite','bit','little','kind','sort','type','drink','drinking','wine','wines','taste','tasting','today','tonight','maybe','please','one','glass','bottle']);
+
+            function parseQuery(raw){
+                return raw.toLowerCase()
+                    .replace(/[^a-z0-9é\s-]/g,' ')
+                    .split(/\s+/)
+                    .map(w=>w.trim())
+                    .filter(w=>w.length>=2 && !STOP.has(w));
+            }
+
+            // Whole-word match so "red" doesn't hit inside "structured" or "reds"
+            function wordHit(hay, token){
+                const t = token.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+                return new RegExp('(^|[^a-z0-9é])' + t + '([^a-z0-9é]|$)', 'i').test(hay);
+            }
+
             function filterMenu() {
+                const tokens = parseQuery(searchTerm);
                 cards.forEach(card => {
-                    const cardText = card.innerText.toLowerCase();
                     const section = card.closest('.wine-section');
                     const group = section ? section.getAttribute('data-group') : '';
                     const header = section ? section.querySelector('.section-header').innerText.toLowerCase() : '';
                     const isDupe = card.getAttribute('data-dupe') === 'true';
+                    const hay = card.innerText.toLowerCase() + ' ' + header + ' ' + (card.dataset.search || '');
 
-                    // Duplicates (wines shown in two sections) appear while browsing, but are suppressed in search so they don't double up
-                    const matchesSearch = searchTerm === '' ? true
-                        : (!isDupe && (cardText.includes(searchTerm) || header.includes(searchTerm)));
+                    const matchesSearch = tokens.length === 0 ? true
+                        : (!isDupe && tokens.every(t => wordHit(hay, t)));
 
                     let matchesCategory;
                     if (currentCategory === 'all') {
@@ -1003,9 +1027,10 @@
             }
 
             function filterPairings() {
+                const tokens = parseQuery(searchTerm);
                 dishes.forEach(dish => {
                     const text = dish.innerText.toLowerCase();
-                    dish.style.display = (searchTerm === '' || text.includes(searchTerm)) ? 'block' : 'none';
+                    dish.style.display = (tokens.length === 0 || tokens.every(t => wordHit(text, t))) ? 'block' : 'none';
                 });
                 pairSections.forEach(sec => {
                     const hasVisible = Array.from(sec.querySelectorAll('.dish'))
@@ -1198,7 +1223,7 @@
         let overlay;
         function openModal(html){
             overlay.querySelector('.modal-card').innerHTML = html +
-              '<div class="modal-foot">Profile generated by <b>CellarEye</b> Virtual Sommelier</div>';
+              '<div class="modal-foot">Generated by Vina, <b>CellarEye</b>&rsquo;s Virtual Sommelier</div>';
             overlay.classList.add('open');
         }
         function closeModal(){ overlay.classList.remove('open'); }
@@ -1232,11 +1257,31 @@
                     );
                 });
 
-                // Add the + tasting sign right after the wine name
+                // Build the hidden search index: blurb + tasting note + attribute words
+                const prof=tastingProfile(name+' '+sub, group);
+                const note=tastingNote(name+' '+sub, prof);
+                const attrs=[];
+                // Reliable color tag
+                const nameLow=(name+' '+sub).toLowerCase();
+                let color;
+                if(/ros[eé]/.test(nameLow)) color='rose rosé';
+                else if(group==='sparkling') color='sparkling white';
+                else if(prof.isRed||group==='red') color='red';
+                else color='white';
+                attrs.push(color);
+                attrs.push(prof.sweet<=1?'dry':(prof.sweet===2?'off-dry':(prof.sweet>=4?'sweet dessert':'medium')));
+                attrs.push(prof.acid>=4?'crisp bright zesty refreshing':(prof.acid<=2?'soft round smooth':'balanced'));
+                attrs.push(prof.body>=4?'full bodied rich':(prof.body<=2?'light delicate':'medium'));
+                if(prof.isRed){ attrs.push(prof.fourth>=4?'bold tannic structured':(prof.fourth<=2?'smooth supple soft':'tannin')); }
+                else { attrs.push(prof.fourth>=4?'oaky oaked':(prof.fourth<=1?'unoaked':'oaked')); if(group==='sparkling') attrs.push('bubbles'); }
+                // Keep prose (blurb + note) for richer matches, plus the controlled attrs
+                card.dataset.search=[name, sub, blurb||'', note, attrs.join(' ')].join(' ').toLowerCase();
+
+                // Add the + tasting sign inline, right after the wine name
                 const btn=document.createElement('button');
                 btn.className='info-btn'; btn.type='button'; btn.textContent='+';
                 btn.setAttribute('aria-label','Tasting profile');
-                nameEl.insertAdjacentElement('afterend', btn);
+                nameEl.appendChild(btn);
                 {
                     btn.addEventListener('click',(e)=>{
                         e.stopPropagation();
