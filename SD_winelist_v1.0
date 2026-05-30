@@ -1,0 +1,885 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#024258">
+<meta name="description" content="Digital Beverage Menu for The Spotted Duck">
+<title>The Spotted Duck Digital Menu</title>
+<style>
+
+    /* -----------------------------------------------------------
+       0. IMPORTED FONTS (DIN-2014)
+    ----------------------------------------------------------- */
+    @font-face{font-family:din-2014;src:url(https://use.typekit.net/af/36bb7e/000000000000000077587a31/31/l?subset_id=2&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/36bb7e/000000000000000077587a31/31/d?subset_id=2&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/36bb7e/000000000000000077587a31/31/a?subset_id=2&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;font-stretch:normal;font-display:auto;}
+    @font-face{font-family:din-2014;src:url(https://use.typekit.net/af/6646b8/000000000000000077587a32/31/l?subset_id=2&fvd=n6&v=3) format("woff2"),url(https://use.typekit.net/af/6646b8/000000000000000077587a32/31/d?subset_id=2&fvd=n6&v=3) format("woff"),url(https://use.typekit.net/af/6646b8/000000000000000077587a32/31/a?subset_id=2&fvd=n6&v=3) format("opentype");font-weight:600;font-style:normal;font-stretch:normal;font-display:auto;}
+    @font-face{font-family:din-2014;src:url(https://use.typekit.net/af/c01b12/000000000000000077587a35/31/l?subset_id=2&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/c01b12/000000000000000077587a35/31/d?subset_id=2&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/c01b12/000000000000000077587a35/31/a?subset_id=2&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;font-stretch:normal;font-display:auto;}
+    @font-face{font-family:din-2014;src:url(https://use.typekit.net/af/596546/000000000000000077587a30/31/l?subset_id=2&fvd=i4&v=3) format("woff2"),url(https://use.typekit.net/af/596546/000000000000000077587a30/31/d?subset_id=2&fvd=i4&v=3) format("woff"),url(https://use.typekit.net/af/596546/000000000000000077587a30/31/a?subset_id=2&fvd=i4&v=3) format("opentype");font-weight:400;font-style:italic;font-stretch:normal;font-display:auto;}
+    @font-face{font-family:din-2014;src:url(https://use.typekit.net/af/593da1/000000000000000077587a34/31/l?subset_id=2&fvd=i7&v=3) format("woff2"),url(https://use.typekit.net/af/593da1/000000000000000077587a34/31/d?subset_id=2&fvd=i7&v=3) format("woff"),url(https://use.typekit.net/af/593da1/000000000000000077587a34/31/a?subset_id=2&fvd=i7&v=3) format("opentype");font-weight:700;font-style:italic;font-stretch:normal;font-display:auto;}
+
+    /* -----------------------------------------------------------
+       1. CSS VARIABLES & THEME CONFIGURATION
+    ----------------------------------------------------------- */
+    :root {
+        --color-shcc-green: #024258;
+        --color-shcc-gold: #c5a059;
+        --color-shcc-cream: #f9f8f4;
+        --color-cellareye-purple: #2f273e;
+
+        --color-primary: var(--color-shcc-green);
+        --color-accent: var(--color-shcc-gold);
+
+        --color-bg: #ffffff;
+        --color-surface: #f7f7f7;
+        --color-surface-active: #e8f0eb;
+
+        --color-text-main: #2c2c2c;
+        --color-text-muted: #666666;
+        --color-divider: #e0e0e0;
+
+        --font-heading: "din-2014";
+        --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+        --spacing-xs: 4px;
+        --spacing-sm: 8px;
+        --spacing-md: 16px;
+        --spacing-lg: 24px;
+        --border-radius: 4px;
+        --nav-height: 70px;
+    }
+
+    /* -----------------------------------------------------------
+       2. GLOBAL RESET & BASE STYLES
+    ----------------------------------------------------------- */
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+        display: block;
+        width: 100%;
+        margin: 0 auto;
+        background-color: var(--color-bg);
+        color: var(--color-text-main);
+        font-family: var(--font-ui);
+        line-height: 1.5;
+        padding-bottom: calc(var(--nav-height) + 20px);
+    }
+
+    @media (min-width: 768px) {
+        body { width: 70%; max-width: 1000px; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+    }
+
+    /* -----------------------------------------------------------
+       3. APP HEADER COMPONENT (logo left of name)
+    ----------------------------------------------------------- */
+    .app-header {
+        background: #ffffff;
+        padding: var(--spacing-md);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 3px solid var(--color-shcc-gold);
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .masthead {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .brand-logo {
+        height: 64px;
+        width: auto;
+        max-height: 72px;
+        display: block;
+    }
+
+    .brand-subtitle {
+        font-family: var(--font-heading);
+        font-size: 30px;
+        color: var(--color-shcc-green);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin: 0;
+        text-align: left;
+    }
+
+    @media (max-width: 480px) {
+        .brand-subtitle { font-size: 24px; letter-spacing: 1px; }
+        .brand-logo { height: 52px; }
+    }
+
+    /* -----------------------------------------------------------
+       4. SEARCH
+    ----------------------------------------------------------- */
+    .search-wrapper {
+        margin-top: var(--spacing-md);
+        position: relative;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .search-input {
+        width: 100%;
+        background: #ffffff;
+        border: 1px solid var(--color-divider);
+        padding: 12px 20px;
+        border-radius: 30px;
+        color: var(--color-text-main);
+        font-size: 16px;
+        outline: none;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    .search-input:focus {
+        border-color: var(--color-shcc-green);
+        box-shadow: 0 0 0 3px rgba(2, 66, 88, 0.1);
+    }
+
+    /* -----------------------------------------------------------
+       6. CATEGORY FILTERS
+    ----------------------------------------------------------- */
+    .filter-scroll {
+        overflow-x: auto;
+        background: #fff;
+        border-bottom: 1px solid var(--color-divider);
+        scrollbar-width: none;
+        position: sticky;
+        top: 0;
+        z-index: 90;
+        -webkit-overflow-scrolling: touch;
+    }
+    .filter-scroll::-webkit-scrollbar { display: none; }
+
+    /* Inner track: chips wrap, centered. Two tracks = two grouped rows. */
+    .filter-track {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px 6px;
+        padding: 6px 12px;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    .filter-track--second { padding-top: 0; }
+
+    .filter-chip {
+        background: #fff;
+        color: var(--color-text-muted);
+        padding: 6px 12px;
+        border-radius: 2px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        border: 1px solid var(--color-divider);
+        cursor: pointer;
+        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .filter-chip.active {
+        background: var(--color-shcc-green);
+        color: #ffffff;
+        border-color: var(--color-shcc-green);
+    }
+
+    /* -----------------------------------------------------------
+       7. MENU LIST STYLES
+    ----------------------------------------------------------- */
+    .inventory-list {
+        padding: 0 var(--spacing-md);
+        background: #fff;
+        min-height: 600px;
+    }
+
+    .section-header {
+        font-family: var(--font-heading);
+        font-size: 24px;
+        font-weight: 400;
+        color: var(--color-shcc-green);
+        margin: 30px 0 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--color-shcc-gold);
+        display: block;
+        text-align: center;
+    }
+
+    .wine-card {
+        background: #fff;
+        border-bottom: 1px solid var(--color-divider);
+        padding: 20px 0;
+        margin-bottom: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .wine-card:last-child { border-bottom: none; }
+
+    .card-content {
+        flex: 1;
+        padding-right: var(--spacing-md);
+    }
+
+    .wine-name {
+        font-family: var(--font-heading);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--color-text-main);
+        line-height: 1.2;
+        margin-bottom: 6px;
+    }
+
+    .wine-meta {
+        font-size: 14px;
+        color: var(--color-text-muted);
+        font-style: italic;
+    }
+
+    .wine-bin {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+        margin-top: 8px;
+    }
+
+    .card-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-start;
+        gap: 6px;
+        min-width: 96px;
+    }
+
+    /* Single unlabeled price (cocktails, beer, water) */
+    .wine-price {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--color-shcc-green);
+        font-family: var(--font-ui);
+        white-space: nowrap;
+    }
+
+    /* Labeled price rows (Glass / Bottle) */
+    .price-row {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        justify-content: flex-end;
+        width: 100%;
+    }
+
+    .price-label {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--color-text-muted);
+        font-weight: 700;
+    }
+
+    .price-val {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--color-shcc-green);
+        font-family: var(--font-ui);
+        white-space: nowrap;
+        min-width: 42px;
+        text-align: right;
+    }
+
+    /* Non-alcoholic badge */
+    .badge-na {
+        font-size: 9px;
+        background: var(--color-surface-active);
+        color: var(--color-shcc-green);
+        border: 1px solid var(--color-shcc-green);
+        padding: 3px 8px;
+        border-radius: 2px;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 1px;
+        white-space: nowrap;
+    }
+
+    /* Empty search state */
+    .empty-state {
+        text-align: center;
+        color: var(--color-text-muted);
+        padding: 60px 20px;
+        font-style: italic;
+    }
+
+    /* Menu footer */
+    .menu-footer {
+        text-align: center;
+        color: var(--color-text-muted);
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        padding: 30px 16px 10px;
+        border-top: 1px solid var(--color-divider);
+        margin-top: 24px;
+    }
+    .menu-footer .footer-line { margin-top: 10px; }
+    .menu-footer .legal {
+        margin-top: 14px;
+        font-size: 11px;
+        font-style: italic;
+        line-height: 1.4;
+        color: #999;
+    }
+
+    /* -----------------------------------------------------------
+       8. CELLAREYE BRANDING (Bottom Right)
+    ----------------------------------------------------------- */
+    .cellareye-badge {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.60);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        padding: 8px 20px;
+        border-radius: 40px;
+        border: 2px solid var(--color-shcc-gold);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .cellareye-badge:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        border-color: var(--color-shcc-gold);
+        background: #fff;
+    }
+
+    .ce-text-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        line-height: 1;
+    }
+
+    .ce-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+    }
+
+    .ce-brand {
+        font-family: var(--font-ui);
+        font-weight: 700;
+        font-size: 17px;
+        color: var(--color-cellareye-purple);
+    }
+
+    .ce-logo-icon {
+        width: 32px;
+        height: 32px;
+        color: var(--color-cellareye-purple);
+    }
+
+    /* -----------------------------------------------------------
+       9. PAIRINGS VIEW
+    ----------------------------------------------------------- */
+    .filter-chip--pairings {
+        background: var(--color-shcc-gold);
+        color: #fff;
+        border-color: var(--color-shcc-gold);
+    }
+    .filter-chip--pairings.active {
+        background: var(--color-shcc-green);
+        border-color: var(--color-shcc-green);
+    }
+
+    #pairingsView { display: none; }
+
+    .pairings-intro {
+        font-size: 13px;
+        color: var(--color-text-muted);
+        font-style: italic;
+        text-align: center;
+        padding: 16px 0 0;
+        line-height: 1.5;
+    }
+
+    .dish {
+        padding: 22px 0 12px;
+        border-bottom: 2px solid var(--color-divider);
+        margin-bottom: 10px;
+    }
+    .dish-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .dish-name {
+        font-family: var(--font-heading);
+        font-size: 23px;
+        font-weight: 700;
+        color: var(--color-shcc-green);
+        line-height: 1.15;
+        letter-spacing: 0.3px;
+    }
+    .dish-price { font-weight: 700; color: var(--color-shcc-green); font-size: 18px; white-space: nowrap; }
+    .dish-desc { font-size: 13px; color: var(--color-text-muted); font-style: italic; margin: 5px 0 12px; }
+
+    /* Pairings nested under the dish: indented panel with a gold spine */
+    .pair {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 14px;
+        background: var(--color-shcc-cream);
+        border-left: 3px solid var(--color-shcc-gold);
+        border-top: 1px solid #ececec;
+    }
+    .dish-desc + .pair { border-top: none; }
+    .tier { min-width: 66px; flex-shrink: 0; }
+    .tier-name {
+        font-family: var(--font-heading);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--color-text-main);
+        line-height: 1.2;
+    }
+    .tier-dollars { font-size: 12px; font-weight: 700; color: var(--color-shcc-gold); letter-spacing: 1px; }
+
+    .pair-wine { flex: 1; min-width: 0; }
+    .pair-name { font-weight: 600; font-size: 15px; color: var(--color-text-main); line-height: 1.25; }
+    .pair-region { font-size: 12px; color: var(--color-text-muted); font-style: italic; }
+
+    .pair-note {
+        font-size: 13px;
+        color: var(--color-text-muted);
+        line-height: 1.45;
+        margin-top: 5px;
+    }
+
+    .pair-price { text-align: right; white-space: nowrap; min-width: 92px; flex-shrink: 0; }
+    .pp-row { display: flex; justify-content: flex-end; gap: 6px; align-items: baseline; }
+    .pp-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); font-weight: 700; }
+    .pp-val { font-size: 15px; font-weight: 600; color: var(--color-shcc-green); min-width: 38px; text-align: right; }
+    .pp-empty { color: #c4c4c4; }
+
+    /* Larger, higher-contrast secondary text on phones for readability */
+    @media (max-width: 600px) {
+        .wine-meta { font-size: 16px; color: #3f3f3f; font-weight: 600; }
+        .pair-region { font-size: 16px; color: #3f3f3f; font-weight: 600; }
+        .pair-note { font-size: 15px; color: #3f3f3f; font-weight: 500; }
+        .dish-desc { font-size: 15px; color: #3f3f3f; font-weight: 500; }
+        .pp-label { font-size: 11px; color: #3f3f3f; font-weight: 700; }
+        .wine-bin { font-size: 12px; color: #4a4a4a; }
+    }
+
+</style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="masthead">
+            <img src="https://images.squarespace-cdn.com/content/v1/64499bef98adda64f34bdefc/dc7de386-05fd-40f6-b702-1983be045ace/Spotted+Duck-Final.png?format=1500w" alt="The Spotted Duck" class="brand-logo" onerror="this.style.display='none';">
+            <div class="brand-subtitle">The Spotted Duck</div>
+        </div>
+
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search the menu..." onkeydown="if(event.key === 'Enter') this.blur();">
+        </div>
+    </header>
+
+    <nav class="filter-scroll">
+        <div class="filter-track" id="categoryFilters">
+        <div class="filter-chip active" data-category="all">All</div>
+        <div class="filter-chip" data-category="glass">By the Glass</div>
+        <div class="filter-chip" data-category="sparkling">Sparkling</div>
+        <div class="filter-chip" data-category="white">White</div>
+        <div class="filter-chip" data-category="red">Red</div>
+        <div class="filter-chip" data-category="half">Half Bottles</div>
+        <div class="filter-chip" data-category="dessert">Dessert Wine</div>
+        </div>
+        <div class="filter-track filter-track--second">
+        <div class="filter-chip" data-category="cocktails">Cocktails</div>
+        <div class="filter-chip" data-category="beer">Beer</div>
+        <div class="filter-chip" data-category="water">Water + Soda</div>
+        <div class="filter-chip filter-chip--pairings" data-category="pairings">Wine Pairings</div>
+        </div>
+    </nav>
+
+    <a href="https://cellareye.com" target="_blank" class="cellareye-badge" aria-label="Powered by CellarEye">
+        <div class="ce-text-content">
+            <span class="ce-label">Powered by</span>
+            <span class="ce-brand">CellarEye</span>
+        </div>
+        <img src="https://framerusercontent.com/images/cDGGCdKVygsIWUMBx5pTAMJPg2Y.png" alt="CellarEye Icon" class="ce-logo-icon" onerror="this.style.display='none';">
+    </a>
+
+    <main class="inventory-list" id="wineListContainer">
+
+        <!-- SPARKLING -->
+        <div class="wine-section" data-group="sparkling">
+            <h2 class="section-header">Sparkling</h2>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Josep Masachs "Mas Fi" Cava Brut</h3><div class="wine-meta"><span>Spain</span></div><div class="wine-bin">Bin 9</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$10</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$36</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Roederer Estate Brut</h3><div class="wine-meta"><span>Anderson Valley, CA</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 8</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$33</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Zardetto Prosecco Rosé Extra Dry</h3><div class="wine-meta"><span>Italy</span></div><div class="wine-bin">Bin 9</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$13</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$43</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Contadi Castaldi Brut Rosé</h3><div class="wine-meta"><span>Franciacorta, Italy</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 8</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$41</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">La Grande Courtage Blanc de Blancs</h3><div class="wine-meta"><span>France</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$12</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Lyre's Classico</h3><div class="wine-meta"><span>0% Sparkling, Australia</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$11</span></div><span class="badge-na">Non-Alcoholic</span></div></article>
+        </div>
+
+        <!-- WHITE -->
+        <div class="wine-section" data-group="white">
+            <h2 class="section-header">White</h2>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Squealing Pig Rosé</h3><div class="wine-meta"><span>Sonoma, CA | '23</span></div><div class="wine-bin">Bin 5</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$11</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$36</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Pine Ridge Chenin Blanc + Viognier</h3><div class="wine-meta"><span>Napa, CA | '24</span></div><div class="wine-bin">Bin 1</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$43</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">M. Chapoutier Belleruche Blanc</h3><div class="wine-meta"><span>Côtes du Rhône, France | '24</span></div><div class="wine-bin">Bin 22</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$13</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$43</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Bernardus Sauvignon Blanc</h3><div class="wine-meta"><span>Arroyo Seco, CA | '23</span></div><div class="wine-bin">Bin 7</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$43</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Sean Minor Sauvignon Blanc</h3><div class="wine-meta"><span>California | '23</span></div><div class="wine-bin">Bin 23</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$12</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$39</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Rochioli Sauvignon Blanc</h3><div class="wine-meta"><span>Russian River, Sonoma, CA | '25</span></div><div class="wine-bin">Bin 6</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$83</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Seghesio Chardonnay</h3><div class="wine-meta"><span>Monterey, CA | '23</span></div><div class="wine-bin">Bin 3</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$46</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Flowers Chardonnay</h3><div class="wine-meta"><span>Sonoma, CA | '23</span></div><div class="wine-bin">Bin 2</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$74</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">De Loach Chardonnay</h3><div class="wine-meta"><span>Sonoma, CA | '24</span></div><div class="wine-bin">Bin 21</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$13</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$42</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Trefethen Chardonnay</h3><div class="wine-meta"><span>Oak Knoll, Napa, CA | '23</span></div><div class="wine-bin">Bin 3</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$47</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Neyers Chardonnay</h3><div class="wine-meta"><span>Carneros District, Sonoma, CA | '21</span></div><div class="wine-bin">Bin 3</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$53</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Nacina Off-Dry Riesling</h3><div class="wine-meta"><span>Tondre Vineyard, Santa Lucia Highlands, Monterey, CA | '15</span></div><div class="wine-bin">Bin 4</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$42</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Campuget Tradition Blanc</h3><div class="wine-meta"><span>France | '24</span></div><div class="wine-meta"><span>Roussanne + Grenache Blanc + Marsanne</span></div><div class="wine-bin">Bin 22</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$37</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Anjos Vinho Verde</h3><div class="wine-meta"><span>Portugal | '23</span></div><div class="wine-meta"><span>Arinto + Loureiro + Trajadura</span></div><div class="wine-bin">Bin 1</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$11</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$38</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Tornatore Etna Bianco Carricante</h3><div class="wine-meta"><span>Sicily, Italy | '23</span></div><div class="wine-bin">Bin 1</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$56</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Zaca Mesa "Cushion Block" Viognier</h3><div class="wine-meta"><span>Santa Ynez Valley, CA | '21</span></div><div class="wine-bin">Bin 7</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$49</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Livio Felluga Pinot Grigio</h3><div class="wine-meta"><span>Italy | '22</span></div><div class="wine-bin">Bin 2</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$56</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Tiefenbrunner Pinot Grigio</h3><div class="wine-meta"><span>Italy | '24</span></div><div class="wine-bin">Bin 17</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$12</span></div><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$39</span></div></div></article>
+        </div>
+
+        <!-- RED (by the glass) -->
+        <div class="wine-section" data-group="red">
+            <h2 class="section-header">Red</h2>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Les Abeilles Côtes du Rhône</h3><div class="wine-meta"><span>France</span></div><div class="wine-meta"><span>Grenache + Syrah</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$14</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Venta Morales Tempranillo</h3><div class="wine-meta"><span>Spain</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$12</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">J Vineyards Pinot Noir</h3><div class="wine-meta"><span>Monterey, CA</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$16</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Seghesio Family Vineyards Zinfandel</h3><div class="wine-meta"><span>Healdsburg, Sonoma, CA</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$16</span></div></div></article>
+            <article class="wine-card" data-glass="true"><div class="card-content"><h3 class="wine-name">Robert Hall Cabernet Sauvignon</h3><div class="wine-meta"><span>Paso Robles, CA</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$17</span></div></div></article>
+        </div>
+
+        <!-- HALF BOTTLES -->
+        <div class="wine-section" data-group="half">
+            <h2 class="section-header">Half Bottles</h2>
+            <article class="wine-card" data-dupe="true"><div class="card-content"><h3 class="wine-name">Roederer Estate Brut</h3><div class="wine-meta"><span>Anderson Valley, CA</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 8</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$33</span></div></div></article>
+            <article class="wine-card" data-dupe="true"><div class="card-content"><h3 class="wine-name">Contadi Castaldi Brut Rosé</h3><div class="wine-meta"><span>Franciacorta, Italy</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 8</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$41</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Clos du Val Sauvignon Blanc</h3><div class="wine-meta"><span>Napa Valley, CA | '24</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 6</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$34</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Domaine Vocoret &amp; Fils Chablis</h3><div class="wine-meta"><span>France | '21</span></div><div class="wine-meta"><span>375 ml</span></div><div class="wine-bin">Bin 6</div></div><div class="card-actions"><div class="price-row"><span class="price-label">Bottle</span><span class="price-val">$41</span></div></div></article>
+        </div>
+
+        <!-- DESSERT WINE / AFTER DINNER -->
+        <div class="wine-section" data-group="dessert">
+            <h2 class="section-header">Dessert Wine</h2>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Yalumba "Antique" Muscat</h3><div class="wine-meta"><span>Australia</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$12</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Graham's Tawny Port</h3><div class="wine-meta"><span>10 Year</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$12</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Dow's Reserve Tawny Port</h3><div class="wine-meta"><span>Portugal</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$14</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Sandeman Founders Reserve Ruby Port</h3><div class="wine-meta"><span>Portugal</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$10</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Heinz Eifel Beerenauslese</h3><div class="wine-meta"><span>Germany | '18</span></div><div class="wine-meta"><span>Late Harvest Riesling</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$13</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Toro Albalá "Don PX" Sherry</h3><div class="wine-meta"><span>Pedro Ximénez | '99</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$16</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Normandin-Mercier Pineau des Charentes Blanc</h3><div class="wine-meta"><span>France</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$10</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Normandin-Mercier Pineau des Charentes Rouge</h3><div class="wine-meta"><span>France</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$10</span></div></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Blandy's Malmsey Madeira</h3><div class="wine-meta"><span>10 Year Old</span></div></div><div class="card-actions"><div class="price-row"><span class="price-label">Glass</span><span class="price-val">$10</span></div></div></article>
+        </div>
+
+        <!-- SESSION COCKTAILS -->
+        <div class="wine-section" data-group="cocktails">
+            <h2 class="section-header">Session Cocktails</h2>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">The Holman</h3><div class="wine-meta"><span>Pomegranate juice, elderflower syrup, cranberry juice, Seedlip Spice, Aplós Calme</span></div></div><div class="card-actions"><span class="wine-price">$13</span><span class="badge-na">Non-Alcoholic</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Imperial Sour Plum</h3><div class="wine-meta"><span>Berliner Weisse tart cherry sour beer, ume plum sake</span></div></div><div class="card-actions"><span class="wine-price">$13</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Three Dog Spritz</h3><div class="wine-meta"><span>Lyre's Bittersweet Amalfi, Wilderton Lustre botanical</span></div></div><div class="card-actions"><span class="wine-price">$13</span><span class="badge-na">Non-Alcoholic</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Amaro Spritz</h3><div class="wine-meta"><span>La Grande Courtage sparkling, LoFi Amaro</span></div></div><div class="card-actions"><span class="wine-price">$13</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Summer Breeze</h3><div class="wine-meta"><span>Sabe Blanco, Sabe Citron, ginger-spiked peach nectar</span></div></div><div class="card-actions"><span class="wine-price">$13</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">PG Spot</h3><div class="wine-meta"><span>Martini &amp; Rossi Fiero, soju, elderflower syrup, rosemary, cranberry bitters</span></div></div><div class="card-actions"><span class="wine-price">$13</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Yuzu Rose Shandy</h3><div class="wine-meta"><span>Pilsner, yuzu sake, rose lemonade</span></div></div><div class="card-actions"><span class="wine-price">$13</span></div></article>
+        </div>
+
+        <!-- BEER -->
+        <div class="wine-section" data-group="beer">
+            <h2 class="section-header">Beer</h2>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Alvarado Street Monterey Lager</h3><div class="wine-meta"><span>Draft</span></div></div><div class="card-actions"><span class="wine-price">$8</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Alvarado Street Tropical Mai Tai IPA</h3><div class="wine-meta"><span>Draft</span></div></div><div class="card-actions"><span class="wine-price">$9</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Alvarado Street Cold Pressed Hazy IPA</h3><div class="wine-meta"><span>Draft</span></div></div><div class="card-actions"><span class="wine-price">$9</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Brew Dog "Elvis AF" IPA</h3><div class="wine-meta"><span>Alcohol Free</span></div></div><div class="card-actions"><span class="wine-price">$6</span><span class="badge-na">Non-Alcoholic</span></div></article>
+        </div>
+
+        <!-- WATER + SODA -->
+        <div class="wine-section" data-group="water">
+            <h2 class="section-header">Water + Soda</h2>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">San Pellegrino</h3><div class="wine-meta"><span>Seasonal flavor, ask server</span></div></div><div class="card-actions"><span class="wine-price">$5</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Saratoga Still Water</h3><div class="wine-meta"><span>28 oz</span></div></div><div class="card-actions"><span class="wine-price">$8</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Saratoga Sparkling Water</h3><div class="wine-meta"><span>28 oz</span></div></div><div class="card-actions"><span class="wine-price">$8</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Alvarado Street "Froth Water"</h3><div class="wine-meta"><span>16 oz, sparkling hop-flavored water</span></div></div><div class="card-actions"><span class="wine-price">$6</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Fentimans Rose Lemonade</h3><div class="wine-meta"><span></span></div></div><div class="card-actions"><span class="wine-price">$5</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Fentimans Curiosity Cola</h3><div class="wine-meta"><span></span></div></div><div class="card-actions"><span class="wine-price">$5</span></div></article>
+            <article class="wine-card"><div class="card-content"><h3 class="wine-name">Abita Root Beer</h3><div class="wine-meta"><span></span></div></div><div class="card-actions"><span class="wine-price">$5</span></div></article>
+        </div>
+
+        <!-- ============ PAIRINGS VIEW ============ -->
+        <div id="pairingsView">
+            <div class="pairings-intro">These pairings were matched to Chef Jerry's menu using CellarEye's Virtual Sommelier.</div>
+
+            <div class="pair-section">
+                <h2 class="section-header">Starters</h2>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Duck Liver Pâté</span><span class="dish-price">$19</span></div>
+                    <div class="dish-desc">port gelee, pickled mustard seeds, grilled sourdough</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Squealing Pig Rosé</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Berry and a clean bite cut the pâté's richness, and it stays light enough not to fight the port gelee.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$11</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$36</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">M. Chapoutier Belleruche Blanc</div><div class="pair-region">Côtes du Rhône, France</div><div class="pair-note">The Rhône white has the body to match the pâté, with herb notes that lift the pickled mustard seeds.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$43</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Flowers Chardonnay</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Rich and creamy in texture, it wraps around the fatty pâté while its acidity keeps the finish clean.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$74</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Spotted Duck Cheese Fries</span><span class="dish-price">$18</span></div>
+                    <div class="dish-desc">duck confit, mornay sauce</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Josep Masachs "Mas Fi" Cava Brut</div><div class="pair-region">Spain</div><div class="pair-note">Dry bubbles scrub the mornay off your palate so every bite of confit tastes like the first.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$10</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$36</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Tiefenbrunner Pinot Grigio</div><div class="pair-region">Italy</div><div class="pair-note">Crisp and Alpine-cold, it slices through the cheese sauce and resets the richness of the confit.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$39</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Trefethen Chardonnay</div><div class="pair-region">Oak Knoll, Napa, CA</div><div class="pair-note">Oak and weight stand up to the mornay, echoing the dish's richness instead of fighting it.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$47</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Chardonnay Steamed Mussels</span><span class="dish-price">$20</span></div>
+                    <div class="dish-desc">fennel, piquillo peppers, saffron bouillabaisse broth, grilled sourdough</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Anjos Vinho Verde</div><div class="pair-region">Portugal</div><div class="pair-note">Coastal, bone-dry, and faintly spritzy, it mirrors the saffron broth without covering the shellfish.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$11</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$38</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Sean Minor Sauvignon Blanc</div><div class="pair-region">California</div><div class="pair-note">Citrus and herb echo the fennel, and the acidity keeps pace with the briny bouillabaisse broth.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$39</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Tornatore Etna Bianco Carricante</div><div class="pair-region">Sicily, Italy</div><div class="pair-note">Volcanic minerality and salinity meet the saffron broth head-on, a coastal match with real depth.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$56</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Drunken Skillet Seared Octopus</span><span class="dish-price">$23</span></div>
+                    <div class="dish-desc">preserved black-bean honey sauce, jerry's everything seasoning</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Squealing Pig Rosé</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Fruit and acidity balance the sweet black-bean glaze and refresh against the charred octopus.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$11</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$36</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">M. Chapoutier Belleruche Blanc</div><div class="pair-region">Côtes du Rhône, France</div><div class="pair-note">A savory Rhône white meets the umami glaze, with body to carry the smoke off the skillet.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$43</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Zaca Mesa "Cushion Block" Viognier</div><div class="pair-region">Santa Ynez Valley, CA</div><div class="pair-note">Aromatic and full, the Viognier leans into the honey notes while standing up to the char.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$49</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Swank Farms Asparagus &amp; Beet Salad</span><span class="dish-price">$19</span></div>
+                    <div class="dish-desc">arugula, burrata, citrus vinaigrette</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Sean Minor Sauvignon Blanc</div><div class="pair-region">California</div><div class="pair-note">Sauvignon Blanc is asparagus's best friend, and the citrus echoes the vinaigrette over the burrata.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$39</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Tiefenbrunner Pinot Grigio</div><div class="pair-region">Italy</div><div class="pair-note">Clean and bright, it keeps out of the burrata's way while lifting the beets and the arugula.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$39</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Rochioli Sauvignon Blanc</div><div class="pair-region">Russian River, Sonoma, CA</div><div class="pair-note">A serious Sauvignon Blanc with the depth to handle burrata and the zip to match the citrus.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$83</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Swank Farms Asparagus Bisque</span><span class="dish-price">$19</span></div>
+                    <div class="dish-desc">brioche, blackened shrimp</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Tiefenbrunner Pinot Grigio</div><div class="pair-region">Italy</div><div class="pair-note">Light and crisp, it freshens the creamy bisque and keeps the blackened shrimp from turning heavy.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$39</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">De Loach Chardonnay</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Soft Sonoma Chardonnay matches the bisque's cream and rounds out the spice on the shrimp.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$42</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Neyers Chardonnay</div><div class="pair-region">Carneros, Sonoma, CA</div><div class="pair-note">Richer Carneros fruit and texture meet the bisque, with acidity to cut the buttery brioche.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$53</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Chopped Romaine Salad</span><span class="dish-price">$14</span></div>
+                    <div class="dish-desc">12-minute chopped farm egg, anchovy, grana padano, seven grain bread chef-crumbs</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Anjos Vinho Verde</div><div class="pair-region">Portugal</div><div class="pair-note">Bright and bone-dry, it cuts the anchovy salt and the grana padano richness in one swing.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$11</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$38</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Sean Minor Sauvignon Blanc</div><div class="pair-region">California</div><div class="pair-note">Citrus and herb stand up to the anchovy and egg without losing the salad's freshness.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$39</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Bernardus Sauvignon Blanc</div><div class="pair-region">Arroyo Seco, CA</div><div class="pair-note">A structured Arroyo Seco Sauvignon Blanc with the grip to handle the salt and umami here.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$43</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Charcuterie + Cheese Board</span><span class="dish-price">$29</span></div>
+                    <div class="dish-desc">duck salami, prosciutto di Parma, sopressata, Bella Vitano, triple creme brie, goat cheese, almonds, grilled sourdough, fig jam</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Zardetto Prosecco Rosé</div><div class="pair-region">Italy</div><div class="pair-note">Bubbles and red fruit refresh between bites of salami, and the rosé plays into the fig jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$43</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Les Abeilles Côtes du Rhône</div><div class="pair-region">Grenache + Syrah, France</div><div class="pair-note">A savory Rhône red built for cured meats, with enough fruit to meet the sweetness of the fig jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$14</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Contadi Castaldi Brut Rosé</div><div class="pair-region">Franciacorta, Italy</div><div class="pair-note">Franciacorta's fine bubbles and depth carry the whole board, from triple creme brie to sopressata.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$41</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Butter Lettuce Salad</span><span class="dish-price">$13</span></div>
+                    <div class="dish-desc">tarragon-sherry vinaigrette</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Anjos Vinho Verde</div><div class="pair-region">Portugal</div><div class="pair-note">Delicate and crisp, it follows the light greens and brightens the tarragon-sherry vinaigrette.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$11</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$38</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Tiefenbrunner Pinot Grigio</div><div class="pair-region">Italy</div><div class="pair-note">A clean Alpine white that stays out of the way and lets the tarragon do the talking.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$39</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Pine Ridge Chenin Blanc + Viognier</div><div class="pair-region">Napa, CA</div><div class="pair-note">Aromatic Chenin and Viognier pick up the herbs and add a little texture to the delicate greens.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$43</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Warm Mixed Olives</span><span class="dish-price">$11</span></div>
+                    <div class="dish-desc">garlic, lemon zest, bay leaf</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Josep Masachs "Mas Fi" Cava Brut</div><div class="pair-region">Spain</div><div class="pair-note">Dry bubbles and a citrus edge match the lemon zest and cut the brine of the warm olives.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$10</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$36</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Sean Minor Sauvignon Blanc</div><div class="pair-region">California</div><div class="pair-note">Citrus-driven and crisp, it leans into the lemon and keeps pace with the garlic and brine.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$39</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Tornatore Etna Bianco Carricante</div><div class="pair-region">Sicily, Italy</div><div class="pair-note">Saline and mineral, this Sicilian white is practically made for a bowl of Mediterranean olives.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$56</span></div></div></div>
+                </div>
+            </div>
+
+            <div class="pair-section">
+                <h2 class="section-header">Entrées</h2>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Seared Tucker Reserve Duck Breast</span><span class="dish-price">$46</span></div>
+                    <div class="dish-desc">creamy white corn polenta, braised rainbow chard, duck jus, green tomato ginger jam</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Squealing Pig Rosé of Pinot Noir</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Berry and a clean bite cut the duck fat, and it stays light enough not to fight the jus.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$11</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$36</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">J Vineyards Pinot Noir</div><div class="pair-region">Monterey, CA</div><div class="pair-note">Duck and Pinot is the classic, the Monterey fruit and silk echoing the jus and the green tomato jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Robert Hall Cabernet Sauvignon</div><div class="pair-region">Paso Robles, CA</div><div class="pair-note">Big enough for the seared crust, with dark fruit that plays off the green tomato ginger jam.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$17</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Sautéed Rock Cod</span><span class="dish-price">$37</span></div>
+                    <div class="dish-desc">potato puree, artichokes + capers, meyer lemon brown butter sauce</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Tiefenbrunner Pinot Grigio</div><div class="pair-region">Italy</div><div class="pair-note">Crisp and lemony, it tracks the meyer lemon and keeps the brown butter from going heavy.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$39</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">De Loach Chardonnay</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Soft Sonoma Chardonnay meets the brown butter and rounds out the briny capers and artichoke.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$42</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Flowers Chardonnay</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Elegant and creamy with bright acid, it flatters the delicate cod and the lemon-butter sauce.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$74</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Cabernet Braised Lamb Shoulder</span><span class="dish-price">$39</span></div>
+                    <div class="dish-desc">potato herb gnocchi, sundried tomatoes, tuscan kale, romano cheese, cabernet rosemary jus</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Venta Morales Tempranillo</div><div class="pair-region">Spain</div><div class="pair-note">An easy Spanish red whose savory fruit meets the braise without overpowering the gnocchi.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$12</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Seghesio Family Vineyards Zinfandel</div><div class="pair-region">Healdsburg, Sonoma, CA</div><div class="pair-note">Bold, brambly fruit stands up to the rich lamb and leans into the sundried tomato and rosemary.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Robert Hall Cabernet Sauvignon</div><div class="pair-region">Paso Robles, CA</div><div class="pair-note">Cabernet in the jus, Cabernet in the glass: dark fruit and tannin built for braised lamb.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$17</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Steak + Frites</span><span class="dish-price">$51</span></div>
+                    <div class="dish-desc">8 oz grilled Snake River Farms Kobe flank steak, shoestring frites, horseradish aioli, arugula salad</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Les Abeilles Côtes du Rhône</div><div class="pair-region">Grenache + Syrah, France</div><div class="pair-note">Savory Grenache and Syrah meet the char on the flank without fighting the horseradish bite.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$14</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Seghesio Family Vineyards Zinfandel</div><div class="pair-region">Healdsburg, Sonoma, CA</div><div class="pair-note">Ripe, peppery fruit matches the fatty Kobe and stands its ground against the horseradish aioli.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Robert Hall Cabernet Sauvignon</div><div class="pair-region">Paso Robles, CA</div><div class="pair-note">The steak-and-Cab classic, tannin to cut the fat and dark fruit to meet the grilled crust.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$17</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Caramelized Sea Scallops</span><span class="dish-price">$46</span></div>
+                    <div class="dish-desc">maitakes, snap peas, fingerling potatoes, porcini mushroom blanquette</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">De Loach Chardonnay</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Creamy Chardonnay mirrors the porcini blanquette and the sweet sear on the scallops.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$42</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">J Vineyards Pinot Noir</div><div class="pair-region">Monterey, CA</div><div class="pair-note">Light Pinot leans into the maitake and porcini earth without burying the delicate scallops.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Flowers Chardonnay</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Refined and silky, it meets the blanquette's cream while its acid keeps the scallops bright.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$74</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Forest Mushroom Risotto</span><span class="dish-price">$36</span></div>
+                    <div class="dish-desc">cauliflower, porcini + black trumpet mushrooms, caramelized onion sauce (vegan optional)</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">M. Chapoutier Belleruche Blanc</div><div class="pair-region">Côtes du Rhône, France</div><div class="pair-note">A savory Rhône white that picks up the caramelized onion and keeps the risotto from feeling heavy.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$13</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$43</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">J Vineyards Pinot Noir</div><div class="pair-region">Monterey, CA</div><div class="pair-note">Pinot and mushrooms belong together, the earthy fruit echoing the porcini and black trumpet.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Neyers Chardonnay</div><div class="pair-region">Carneros, Sonoma, CA</div><div class="pair-note">Rich, textured Chardonnay matches the creamy risotto and rounds out the caramelized onion.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val pp-empty">&mdash;</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$53</span></div></div></div>
+                </div>
+
+                <div class="dish">
+                    <div class="dish-head"><span class="dish-name">Pork Belly + Bistro Beef Burger</span><span class="dish-price">$29</span></div>
+                    <div class="dish-desc">thick cut pork belly, smoked cheddar, grilled onions, house dill pickle, oven roasted tomato, herb frites</div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Squealing Pig Rosé</div><div class="pair-region">Sonoma, CA</div><div class="pair-note">Bright fruit and acid cut the fatty pork belly and refresh against the smoked cheddar.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$11</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val">$36</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Les Abeilles Côtes du Rhône</div><div class="pair-region">Grenache + Syrah, France</div><div class="pair-note">A savory Rhône red with the grip for the beef and enough fruit to meet the smoked cheddar.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$14</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                    <div class="pair"><div class="pair-wine"><div class="pair-name">Seghesio Family Vineyards Zinfandel</div><div class="pair-region">Healdsburg, Sonoma, CA</div><div class="pair-note">Bold Zin stands up to the double richness of pork belly and burger, with fruit for the onions.</div></div><div class="pair-price"><div class="pp-row"><span class="pp-label">Glass</span><span class="pp-val">$16</span></div><div class="pp-row"><span class="pp-label">Bottle</span><span class="pp-val pp-empty">&mdash;</span></div></div></div>
+                </div>
+            </div>
+        </div>
+        <!-- ============ END PAIRINGS VIEW ============ -->
+
+        <div id="emptyState" class="empty-state" style="display:none;">No matches. Try another search.</div>
+
+        <div class="menu-footer">
+            <div>Corkage $30 &nbsp;|&nbsp; 750 ml $55 &nbsp;|&nbsp; Magnum 5.22</div>
+            <div class="footer-line">Open Thursday &ndash; Monday at 5:00pm &nbsp;&middot;&nbsp; 831-920-2662 &nbsp;&middot;&nbsp; @spottedduckpg</div>
+            <div class="legal">Drinking distilled spirits, beer, wine and other alcoholic beverages may increase cancer risk, and, during pregnancy, can cause birth defects.</div>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const cards = document.querySelectorAll('.wine-card');
+            const chips = document.querySelectorAll('.filter-chip');
+            const sections = document.querySelectorAll('.wine-section');
+            const emptyState = document.getElementById('emptyState');
+            const pairingsView = document.getElementById('pairingsView');
+            const dishes = pairingsView.querySelectorAll('.dish');
+            const pairSections = pairingsView.querySelectorAll('.pair-section');
+
+            let mode = 'menu';
+            let currentCategory = 'all';
+            let searchTerm = '';
+
+            function filterMenu() {
+                cards.forEach(card => {
+                    const cardText = card.innerText.toLowerCase();
+                    const section = card.closest('.wine-section');
+                    const group = section ? section.getAttribute('data-group') : '';
+                    const header = section ? section.querySelector('.section-header').innerText.toLowerCase() : '';
+                    const isDupe = card.getAttribute('data-dupe') === 'true';
+
+                    // Duplicates (wines shown in two sections) appear while browsing, but are suppressed in search so they don't double up
+                    const matchesSearch = searchTerm === '' ? true
+                        : (!isDupe && (cardText.includes(searchTerm) || header.includes(searchTerm)));
+
+                    let matchesCategory;
+                    if (currentCategory === 'all') {
+                        matchesCategory = true;
+                    } else if (currentCategory === 'glass') {
+                        matchesCategory = card.getAttribute('data-glass') === 'true';
+                    } else {
+                        matchesCategory = group.includes(currentCategory);
+                    }
+
+                    card.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
+                });
+
+                sections.forEach(section => {
+                    const hasVisible = Array.from(section.querySelectorAll('.wine-card'))
+                        .some(card => card.style.display !== 'none');
+                    section.style.display = hasVisible ? 'block' : 'none';
+                });
+
+                const anyVisible = Array.from(sections).some(s => s.style.display !== 'none');
+                emptyState.style.display = anyVisible ? 'none' : 'block';
+            }
+
+            function filterPairings() {
+                dishes.forEach(dish => {
+                    const text = dish.innerText.toLowerCase();
+                    dish.style.display = (searchTerm === '' || text.includes(searchTerm)) ? 'block' : 'none';
+                });
+                pairSections.forEach(sec => {
+                    const hasVisible = Array.from(sec.querySelectorAll('.dish'))
+                        .some(d => d.style.display !== 'none');
+                    sec.style.display = hasVisible ? 'block' : 'none';
+                });
+                const anyVisible = Array.from(dishes).some(d => d.style.display !== 'none');
+                emptyState.style.display = anyVisible ? 'none' : 'block';
+            }
+
+            function applyView() {
+                if (mode === 'pairings') {
+                    sections.forEach(s => s.style.display = 'none');
+                    pairingsView.style.display = 'block';
+                    filterPairings();
+                } else {
+                    pairingsView.style.display = 'none';
+                    filterMenu();
+                }
+            }
+
+            searchInput.addEventListener('input', (e) => {
+                searchTerm = e.target.value.toLowerCase().trim();
+                applyView();
+            });
+
+            chips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    chips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    const cat = chip.getAttribute('data-category');
+                    if (cat === 'pairings') {
+                        mode = 'pairings';
+                    } else {
+                        mode = 'menu';
+                        currentCategory = cat;
+                    }
+                    applyView();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
