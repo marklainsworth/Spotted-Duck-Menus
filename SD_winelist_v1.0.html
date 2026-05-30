@@ -72,13 +72,20 @@
     ----------------------------------------------------------- */
     .app-header {
         background: #ffffff;
-        padding: var(--spacing-md);
-        position: sticky;
-        top: 0;
-        z-index: 100;
+        padding: 13px var(--spacing-md);
         border-bottom: 3px solid var(--color-shcc-gold);
         text-align: center;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* Search + nav pinned together; logo scrolls away */
+    .sticky-bar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        padding-top: 5px;
     }
 
     .masthead {
@@ -90,15 +97,15 @@
     }
 
     .brand-logo {
-        height: 64px;
+        height: 54px;
         width: auto;
-        max-height: 72px;
+        max-height: 60px;
         display: block;
     }
 
     .brand-subtitle {
         font-family: var(--font-heading);
-        font-size: 30px;
+        font-size: 26px;
         color: var(--color-shcc-green);
         text-transform: uppercase;
         letter-spacing: 2px;
@@ -128,18 +135,17 @@
        4. SEARCH
     ----------------------------------------------------------- */
     .search-wrapper {
-        margin-top: var(--spacing-md);
         position: relative;
         max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto 6px;
+        padding: 0 var(--spacing-md);
     }
 
     .search-input {
         width: 100%;
         background: #ffffff;
         border: 1px solid var(--color-divider);
-        padding: 12px 20px;
+        padding: 10px 18px;
         border-radius: 30px;
         color: var(--color-text-main);
         font-size: 16px;
@@ -161,9 +167,6 @@
         background: #fff;
         border-bottom: 1px solid var(--color-divider);
         scrollbar-width: none;
-        position: sticky;
-        top: 0;
-        z-index: 90;
         -webkit-overflow-scrolling: touch;
     }
     .filter-scroll::-webkit-scrollbar { display: none; }
@@ -172,8 +175,8 @@
     .filter-track {
         display: flex;
         flex-wrap: wrap;
-        gap: 5px 6px;
-        padding: 6px 12px;
+        gap: 2px 4px;
+        padding: 2px 10px;
         justify-content: center;
         margin: 0 auto;
     }
@@ -182,9 +185,10 @@
     .filter-chip {
         background: #fff;
         color: var(--color-text-muted);
-        padding: 6px 12px;
+        padding: 2px 11px;
         border-radius: 2px;
-        font-size: 12px;
+        font-size: 11.5px;
+        line-height: 1.35;
         font-weight: 600;
         white-space: nowrap;
         border: 1px solid var(--color-divider);
@@ -493,6 +497,113 @@
     .pp-val { font-size: 15px; font-weight: 600; color: var(--color-shcc-green); min-width: 38px; text-align: right; }
     .pp-empty { color: #c4c4c4; }
 
+    /* -----------------------------------------------------------
+       10. INFO POPUPS (winery + tasting grid)
+    ----------------------------------------------------------- */
+    .wine-name.has-winery { cursor: pointer; }
+    .wine-name.has-winery .winery-link {
+        color: var(--color-shcc-green);
+        border-bottom: 1.5px dotted var(--color-shcc-gold);
+    }
+
+    .info-btn {
+        flex-shrink: 0;
+        border: none;
+        background: none;
+        color: var(--color-shcc-gold);
+        font-size: 19px;
+        line-height: 1;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0 0 0 7px;
+        vertical-align: baseline;
+        transition: color 0.15s ease;
+    }
+    .info-btn:hover, .info-btn:active { color: var(--color-shcc-green); }
+
+    .card-actions { position: relative; }
+    .actions-row { display: flex; align-items: flex-start; gap: 10px; }
+
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(30,30,28,0.55);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-card {
+        background: #fff;
+        border-radius: 8px;
+        max-width: 460px;
+        width: 100%;
+        max-height: 85vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        border-top: 4px solid var(--color-shcc-gold);
+    }
+    .modal-head {
+        padding: 20px 22px 12px;
+        position: relative;
+    }
+    .modal-eyebrow {
+        font-family: var(--font-heading);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--color-shcc-gold);
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+    .modal-title {
+        font-family: var(--font-heading);
+        font-size: 21px;
+        font-weight: 700;
+        color: var(--color-shcc-green);
+        line-height: 1.2;
+        padding-right: 28px;
+    }
+    .modal-sub { font-size: 13px; color: var(--color-text-muted); font-style: italic; margin-top: 4px; }
+    .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 30px;
+        height: 30px;
+        border: none;
+        background: var(--color-surface);
+        border-radius: 50%;
+        font-size: 18px;
+        line-height: 1;
+        color: var(--color-text-muted);
+        cursor: pointer;
+    }
+    .modal-body { padding: 4px 22px 16px; font-size: 15px; line-height: 1.55; color: #3a3a3a; }
+
+    /* tasting grid */
+    .grid-axis { margin: 14px 0; }
+    .grid-axis-labels { display: flex; justify-content: space-between; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-muted); font-weight: 700; margin-bottom: 5px; }
+    .grid-track { display: flex; gap: 5px; }
+    .grid-dot { flex: 1; height: 7px; border-radius: 4px; background: #e6e2d8; }
+    .grid-dot.on { background: var(--color-shcc-gold); }
+    .modal-note { margin-top: 16px; font-style: italic; color: var(--color-text-muted); font-size: 14px; line-height: 1.5; }
+    .modal-foot {
+        padding: 12px 22px 18px;
+        border-top: 1px solid var(--color-divider);
+        font-size: 11px;
+        color: var(--color-text-muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .modal-foot b { color: var(--color-cellareye-purple); }
+
     /* Larger, higher-contrast secondary text on phones for readability */
     @media (max-width: 600px) {
         .wine-meta { font-size: 16px; color: #3f3f3f; font-weight: 600; }
@@ -514,13 +625,14 @@
                 <div class="brand-winelist">Wine List</div>
             </div>
         </div>
+    </header>
 
+    <div class="sticky-bar">
         <div class="search-wrapper">
             <input type="text" id="searchInput" class="search-input" placeholder="Search the menu..." onkeydown="if(event.key === 'Enter') this.blur();">
         </div>
-    </header>
 
-    <nav class="filter-scroll">
+        <nav class="filter-scroll">
         <div class="filter-track" id="categoryFilters">
         <div class="filter-chip active" data-category="all">All</div>
         <div class="filter-chip" data-category="cocktails">Cocktails</div>
@@ -539,7 +651,8 @@
         <div class="filter-track filter-track--second">
         <div class="filter-chip filter-chip--pairings" data-category="pairings">Wine Pairings</div>
         </div>
-    </nav>
+        </nav>
+    </div>
 
     <a href="https://cellareye.com" target="_blank" class="cellareye-badge" aria-label="Powered by CellarEye">
         <div class="ce-text-content">
@@ -933,12 +1046,223 @@
                     applyView();
 
                     // Always start at the top of the list when switching tabs
-                    const nav = document.querySelector('.filter-scroll');
-                    const top = nav ? nav.getBoundingClientRect().bottom + window.scrollY : 0;
+                    const bar = document.querySelector('.sticky-bar');
+                    const top = bar ? bar.getBoundingClientRect().bottom + window.scrollY : 0;
                     window.scrollTo({ top: Math.max(top - 1, 0), behavior: 'auto' });
                 });
             });
+
+            // ---------------- Info popups: winery + tasting grid ----------------
+            buildInfoFeatures();
         });
+
+        // Producer descriptions (sample CellarEye Virtual Sommelier output; verify before publishing)
+        const WINERY = {
+            "squealing pig":"A playful, value-driven label sourcing cool-climate fruit from Sonoma and beyond, known for bright, easygoing wines.",
+            "mas fi":"A Catalan cava house in Spain's Penedès, traditional-method sparkling built for crisp, dry refreshment.",
+            "josep masachs":"A Catalan cava house in Spain's Penedès, traditional-method sparkling built for crisp, dry refreshment.",
+            "roederer estate":"The Anderson Valley outpost of Champagne Louis Roederer, making méthode-traditionnelle California sparkling with real pedigree.",
+            "zardetto":"A Veneto family house specializing in Prosecco, fresh and aromatic in the Conegliano tradition.",
+            "contadi castaldi":"A Franciacorta producer crafting Italy's benchmark traditional-method sparkling in Lombardy.",
+            "la grande courtage":"A French sparkling brand built around approachable blanc de blancs in a clean, modern style.",
+            "lyre's":"An award-winning non-alcoholic spirits and sparkling brand from Australia, built to mirror the classics.",
+            "pine ridge":"A respected Napa estate, here in an aromatic Chenin Blanc and Viognier blend that drinks fresh and floral.",
+            "chapoutier":"A storied Rhône Valley house, biodynamic farming and a benchmark for Grenache-based whites and reds.",
+            "belleruche":"M. Chapoutier's Côtes du Rhône line, dependable Rhône character at an everyday price.",
+            "bernardus":"A Carmel Valley, Monterey winery known for crisp Arroyo Seco whites and structured reds.",
+            "sean minor":"A California label focused on honest, well-priced varietal wines from coastal vineyards.",
+            "rochioli":"A revered Russian River Valley family estate, benchmark Sauvignon Blanc and Pinot Noir from old vines.",
+            "seghesio":"A historic Sonoma family winery, famous for Zinfandel from heritage Healdsburg vineyards.",
+            "flowers":"A Sonoma Coast pioneer of cool-climate, restrained Chardonnay and Pinot Noir with a mineral edge.",
+            "de loach":"A Russian River Valley producer making approachable, fruit-forward Sonoma Chardonnay and Pinot.",
+            "trefethen":"A family-owned Oak Knoll, Napa estate known for balanced, age-worthy Chardonnay.",
+            "neyers":"A Napa producer working with Carneros and North Coast fruit in a richer, textural style.",
+            "nacina":"A small-production label offering an off-dry Riesling from Monterey's Santa Lucia Highlands.",
+            "campuget":"A southern French estate in the Costières de Nîmes, Rhône-style whites and rosés.",
+            "anjos":"A Vinho Verde producer from northern Portugal, light, faintly spritzy, and bone-dry.",
+            "tornatore":"A Sicilian estate on the slopes of Mount Etna, volcanic whites and reds of real distinction.",
+            "zaca mesa":"A Santa Ynez Valley pioneer of Rhône varieties, here a full, aromatic Viognier.",
+            "livio felluga":"A landmark Friuli estate in northeast Italy, elegant and precise Pinot Grigio.",
+            "tiefenbrunner":"An Alto Adige producer in the Italian Alps, crisp and cool mountain whites.",
+            "clos du val":"A classic Napa Valley estate with Bordeaux roots, here a half-bottle Sauvignon Blanc.",
+            "vocoret":"A multi-generational Chablis house in Burgundy, flinty, mineral Chardonnay.",
+            "j vineyards":"A Sonoma sparkling and Pinot specialist, polished and food-friendly.",
+            "sense of place":"A coastal Monterey cuvée focused on bright, accessible Pinot Noir.",
+            "cotière":"A Santa Barbara County label crafting cool-climate Pinot Noir.",
+            "cotiere":"A Santa Barbara County label crafting cool-climate Pinot Noir.",
+            "louis latour":"A historic Burgundy négociant and estate, classic old-world Pinot Noir.",
+            "michele satta":"A Bolgheri, Tuscany estate known for Sangiovese and Super Tuscan blends.",
+            "cristia":"A Châteauneuf-du-Pape producer in the southern Rhône, rich Grenache-driven reds.",
+            "venta morales":"A value-driven Spanish label making bright, unoaked Tempranillo from La Mancha.",
+            "llama":"An Argentine Malbec brand offering juicy, high-altitude fruit at a friendly price.",
+            "dow":"A historic Portuguese house, here a dry Douro red field blend beyond its famous Ports.",
+            "robert hall":"A Paso Robles winery known for robust, sun-driven Cabernet and Rhône reds.",
+            "blackboard":"A Matthews project from Washington's Columbia Valley, approachable Cabernet.",
+            "rocher-calon":"A Saint-Émilion property in Bordeaux, Merlot-led and classically structured.",
+            "leviathan":"A California cult-adjacent label from Andy Erickson, a plush, dark Cabernet blend.",
+            "jordan":"A benchmark Alexander Valley, Sonoma estate, elegant and polished Cabernet Sauvignon.",
+            "les abeilles":"A Côtes du Rhône bottling, savory Grenache-Syrah-Mourvèdre in the southern Rhône style.",
+            "j. lohr":"A large, respected California producer, here a Monterey Cabernet in half-bottle.",
+            "j.lohr":"A large, respected California producer, here a Monterey Cabernet in half-bottle.",
+            "paveil de luze":"A Margaux estate in Bordeaux, classic Cabernet-Merlot from the Médoc.",
+            "felsina":"A celebrated Chianti Classico estate in Tuscany, structured Sangiovese.",
+            "vieux lazaret":"A large Châteauneuf-du-Pape domaine in the southern Rhône.",
+            "markham":"A Napa Valley producer with a long history, here a half-bottle Merlot.",
+            "orma":"A Bolgheri Super Tuscan from Tuscany, a polished Bordeaux-style blend.",
+            "yalumba":"One of Australia's oldest family wineries, here a fortified Muscat.",
+            "graham's":"A historic Port house in Portugal's Douro, known for rich tawny styles.",
+            "graham":"A historic Port house in Portugal's Douro, known for rich tawny styles.",
+            "dow's":"A classic Douro Port house, here a reserve tawny.",
+            "sandeman":"An iconic Port and Sherry house, founded in 1790.",
+            "heinz eifel":"A German producer of late-harvest Riesling in a sweet, dessert style.",
+            "toro albalá":"A revered Montilla-Moriles house in Spain, legendary aged Pedro Ximénez.",
+            "toro albala":"A revered Montilla-Moriles house in Spain, legendary aged Pedro Ximénez.",
+            "normandin-mercier":"A small Charentes producer of Pineau des Charentes, a fortified aperitif.",
+            "normandin":"A small Charentes producer of Pineau des Charentes, a fortified aperitif.",
+            "blandy's":"A historic Madeira house on the Portuguese island, here a 10-year Malmsey.",
+            "blandy":"A historic Madeira house on the Portuguese island, here a 10-year Malmsey."
+        };
+
+        // Build a tasting profile (1-5 per axis) from the wine's varietal/style text
+        function tastingProfile(text, group) {
+            const t = text.toLowerCase();
+            // [body, sweetness, acidity, fourth] ; fourth = tannin (red) or oak (white)
+            let p = { body:3, sweet:1, acid:3, fourth:3, isRed:false };
+            const set=(b,s,a,f)=>{p.body=b;p.sweet=s;p.acid=a;p.fourth=f;};
+            if (/sauvignon blanc/.test(t)) set(2,1,5,1);
+            else if (/chardonnay/.test(t)) set(4,1,3,4);
+            else if (/pinot grigio|pinot gris/.test(t)) set(2,1,4,1);
+            else if (/vinho verde|carricante|etna bianco/.test(t)) set(2,1,5,1);
+            else if (/chenin|viognier|roussanne|marsanne|blanc/.test(t)) set(3,2,3,2);
+            else if (/riesling/.test(t)) set(2,3,4,1);
+            else if (/rosé|rose/.test(t)) set(2,1,4,1);
+            else if (/cava|prosecco|brut|sparkling|blanc de blancs|classico/.test(t)) set(2,2,4,1);
+            else if (/pinot noir|nerello|etna rosso/.test(t)) { set(3,1,4,2); p.isRed=true; }
+            else if (/zinfandel/.test(t)) { set(4,1,3,3); p.isRed=true; }
+            else if (/cabernet|bordeaux|saint-émilion|saint-emilion|margaux|leviathan/.test(t)) { set(5,1,3,5); p.isRed=true; }
+            else if (/tempranillo|sangiovese|super tuscan|chianti/.test(t)) { set(4,1,4,4); p.isRed=true; }
+            else if (/malbec/.test(t)) { set(4,1,3,4); p.isRed=true; }
+            else if (/châteauneuf|chateauneuf|grenache|syrah|mourvèdre|côtes du rhône|cotes du rhone|touriga/.test(t)) { set(4,1,3,4); p.isRed=true; }
+            else if (/port|madeira|muscat|pedro ximénez|pedro ximenez|beerenauslese|pineau/.test(t)) { set(4,5,3,3); p.isRed=/ruby|tawny|rouge/.test(t); }
+            if (group==='red') p.isRed=true;
+            if (group==='white'||group==='sparkling') p.isRed=false;
+            return p;
+        }
+
+        // Notes are illustrative CellarEye-style output; verify before publishing
+        function tastingNote(text, p){
+            const t=text.toLowerCase();
+            const NOTES=[
+                [/sauvignon blanc/,"Bright and zesty with citrus, cut grass, and a crisp, mouthwatering finish that stays refreshing."],
+                [/chardonnay/,"Ripe orchard fruit and a creamy, lightly oaked texture balanced by a clean, well-judged acidity."],
+                [/pinot grigio|pinot gris/,"Light and clean with pear and citrus, a dry, crisp pour that keeps things easy and refreshing."],
+                [/vinho verde/,"Bone-dry and faintly spritzy, with green-apple bite and a brisk, coastal, thirst-quenching finish."],
+                [/carricante|etna bianco/,"Volcanic and saline with citrus and white flowers, mineral-driven and notably fresh on the finish."],
+                [/riesling/,"Off-dry with stone fruit and a honeyed lift, its bright acidity keeping the sweetness lively and clean."],
+                [/viognier/,"Aromatic and full, with peach and floral notes carried on a soft, rounded, gently weighted texture."],
+                [/chenin|roussanne|marsanne|blanc/,"Aromatic and textured with orchard fruit and herbs, balanced by a fresh, food-friendly acidity."],
+                [/rosé|rose/,"Dry and bright with red-berry fruit and a clean, crisp finish, easy and versatile at the table."],
+                [/cava|prosecco|brut|sparkling|blanc de blancs|classico/,"Crisp, dry bubbles with citrus and green apple, lively on the palate and refreshing start to finish."],
+                [/pinot noir/,"Silky and light with red cherry and earth, gentle tannins and a bright, savory, food-loving finish."],
+                [/nerello|etna rosso/,"Red-fruited and earthy with volcanic minerality, fine tannins, and a fresh, almost Burgundian lift."],
+                [/zinfandel/,"Bold and brambly with ripe dark berry and pepper, full-bodied with a warm, generous, spicy finish."],
+                [/cabernet|bordeaux|saint-émilion|saint-emilion|margaux|leviathan/,"Full and structured with cassis and dark fruit, firm tannins and a long, polished, age-worthy finish."],
+                [/sangiovese|super tuscan|chianti/,"Savory and bright with cherry and herb, firm acidity and grippy tannins built for food at the table."],
+                [/tempranillo/,"Juicy and unoaked with red fruit and a savory edge, smooth and easygoing with a clean, fresh finish."],
+                [/malbec/,"Plush and dark-fruited with violet notes, full-bodied and smooth with a rounded, generous finish."],
+                [/châteauneuf|chateauneuf|grenache|syrah|mourvèdre|côtes du rhône|cotes du rhone|touriga/,"Savory and warm with dark fruit, garrigue, and spice, full-bodied with a supple, satisfying finish."],
+                [/tawny|ruby|\bport\b/,"Rich and sweet with dried fruit and nuts, fortified and warming, a classic close to the evening."],
+                [/madeira/,"Nutty and caramelized with bright acidity, fortified and complex, lingering long on a savory finish."],
+                [/muscat/,"Sweet and floral with apricot and honey, fortified and lush, a fragrant pour to end the meal on."],
+                [/pedro ximénez|pedro ximenez/,"Intensely sweet with fig, raisin, and molasses, thick and decadent, almost a dessert in the glass."],
+                [/beerenauslese/,"Lusciously sweet late-harvest fruit with honeyed apricot, kept lively by a bright, balancing acidity."],
+                [/pineau/,"Lightly sweet and fortified with ripe fruit and a soft, grapey finish, a gentle aperitif or close."]
+            ];
+            for(const [re,note] of NOTES){ if(re.test(t)) return note; }
+            if(p.isRed) return "Balanced and food-friendly with ripe fruit and supple tannins, finishing clean and savory at the table.";
+            return "Fresh and balanced with bright fruit and a clean, crisp finish, an easy and versatile pour at the table.";
+        }
+
+        function axisHtml(label_lo, label_hi, val){
+            let dots='';
+            for(let i=1;i<=5;i++) dots+=`<span class="grid-dot${i<=val?' on':''}"></span>`;
+            return `<div class="grid-axis"><div class="grid-axis-labels"><span>${label_lo}</span><span>${label_hi}</span></div><div class="grid-track">${dots}</div></div>`;
+        }
+
+        function findWinery(name){
+            const n=name.toLowerCase();
+            for(const key in WINERY){ if(n.includes(key)) return WINERY[key]; }
+            return null;
+        }
+
+        let overlay;
+        function openModal(html){
+            overlay.querySelector('.modal-card').innerHTML = html +
+              '<div class="modal-foot">Profile generated by <b>CellarEye</b> Virtual Sommelier</div>';
+            overlay.classList.add('open');
+        }
+        function closeModal(){ overlay.classList.remove('open'); }
+
+        function buildInfoFeatures(){
+            overlay = document.createElement('div');
+            overlay.className='modal-overlay';
+            overlay.innerHTML='<div class="modal-card"></div>';
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click',(e)=>{ if(e.target===overlay) closeModal(); });
+
+            document.querySelectorAll('.inventory-list .wine-section .wine-card').forEach(card=>{
+                const nameEl=card.querySelector('.wine-name');
+                if(!nameEl) return;
+                const name=nameEl.textContent.trim();
+                const group=(card.closest('.wine-section')||{}).getAttribute ? card.closest('.wine-section').getAttribute('data-group') : '';
+                const regions=[...card.querySelectorAll('.wine-meta span')].map(s=>s.textContent.trim()).filter(Boolean);
+                const sub=regions.join(' · ');
+
+                // Make the name a winery link
+                const blurb=findWinery(name);
+                nameEl.classList.add('has-winery');
+                nameEl.innerHTML='<span class="winery-link">'+nameEl.innerHTML+'</span>';
+                nameEl.addEventListener('click',()=>{
+                    openModal(
+                      '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
+                      '<div class="modal-eyebrow">The Winery</div>'+
+                      '<div class="modal-title">'+name+'</div>'+
+                      (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
+                      '<div class="modal-body">'+(blurb||'A producer profile for this wine is being prepared.')+'</div>'
+                    );
+                });
+
+                // Add the + tasting sign right after the wine name
+                const btn=document.createElement('button');
+                btn.className='info-btn'; btn.type='button'; btn.textContent='+';
+                btn.setAttribute('aria-label','Tasting profile');
+                nameEl.insertAdjacentElement('afterend', btn);
+                {
+                    btn.addEventListener('click',(e)=>{
+                        e.stopPropagation();
+                        const p=tastingProfile(name+' '+sub, group);
+                        const fourth = p.isRed ? axisHtml('Smooth','Bold',p.fourth) : axisHtml('Unoaked','Oaked',p.fourth);
+                        openModal(
+                          '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
+                          '<div class="modal-eyebrow">Tasting Profile</div>'+
+                          '<div class="modal-title">'+name+'</div>'+
+                          (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
+                          '<div class="modal-body">'+
+                            axisHtml('Light','Full',p.body)+
+                            axisHtml('Dry','Sweet',p.sweet)+
+                            axisHtml('Soft','Crisp',p.acid)+
+                            fourth+
+                            '<div class="modal-note">'+tastingNote(name+' '+sub, p)+'</div>'+
+                          '</div>'
+                        );
+                    });
+                }
+            });
+
+            // Close on the X or Escape
+            overlay.addEventListener('click',(e)=>{ if(e.target.closest('.modal-close')) closeModal(); });
+            document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeModal(); });
+        }
     </script>
 </body>
 </html>
