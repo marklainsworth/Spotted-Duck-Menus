@@ -401,6 +401,13 @@
         background: #fff;
     }
 
+    /* On tablet-width kiosks the badge is shown but not tappable (no one navigates off a table kiosk).
+       Link stays active on phones (<=600px) and laptops/desktops (>=1025px). */
+    @media (min-width: 601px) and (max-width: 1024px) {
+        .cellareye-badge { pointer-events: none; cursor: default; }
+        .cellareye-badge:hover { transform: none; box-shadow: 0 4px 15px rgba(0,0,0,0.08); background: rgba(255,255,255,0.60); }
+    }
+
     .ce-text-content {
         display: flex;
         flex-direction: column;
@@ -640,6 +647,12 @@
         .dish-desc { font-size: 15px; color: #3f3f3f; font-weight: 500; }
         .pp-label { font-size: 11px; color: #3f3f3f; font-weight: 700; }
         .wine-bin { font-size: 12px; color: #4a4a4a; }
+    }
+
+    /* Tablet and desktop: nudge wine name and description up for readability */
+    @media (min-width: 601px) {
+        .wine-name { font-size: 20px; }
+        .wine-meta { font-size: 16px; }
     }
 
 </style>
