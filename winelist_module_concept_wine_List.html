@@ -130,8 +130,28 @@
 
   .grid{background:linear-gradient(180deg, rgba(27,19,48,.55), rgba(21,15,38,.55));
     border:1px solid var(--line-strong);border-radius:18px;overflow:hidden;}
-  .grid-head, .row{display:grid;grid-template-columns: minmax(260px,1.3fr) 104px 132px 172px 168px 168px 112px;align-items:center;}
+  .grid-head, .row{display:grid;grid-template-columns: minmax(220px,1.1fr) 150px 90px 116px 146px 86px 150px 150px 100px;align-items:center;}
   .grid-head{padding:15px 26px;border-bottom:1px solid var(--line-strong);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:500;}
+  .hcell{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;transition:.14s;}
+  .hcell:hover{color:var(--cream);}
+  .sar{display:inline-flex;flex-direction:column;line-height:.62;}
+  .sar i{font-style:normal;font-size:8px;color:var(--muted-2);transition:.14s;}
+  .hcell:hover .sar i{color:var(--muted);}
+  .hcell.asc .sar .up{color:var(--gold-bright);}
+  .hcell.desc .sar .dn{color:var(--gold-bright);}
+  /* pairing master switch (action bar) */
+  .pairing-ctl{display:flex;flex-direction:column;justify-content:center;gap:9px;padding:0 18px;margin:0 4px;border-left:1px solid var(--line);border-right:1px solid var(--line);align-self:stretch;}
+  .pairing-ctl .row1{display:flex;align-items:center;gap:11px;}
+  .pairing-ctl .ttl{font-size:13.5px;font-weight:500;color:var(--text);white-space:nowrap;}
+  .pairing-ctl .state{font-size:12px;color:var(--muted-2);white-space:nowrap;}
+  .pairing-ctl.on .state{color:var(--gold-bright);}
+  .switch{position:relative;display:inline-block;width:42px;height:24px;flex:0 0 42px;cursor:pointer;}
+  .switch input{opacity:0;width:0;height:0;position:absolute;margin:0;}
+  .switch .track{position:absolute;inset:0;border-radius:24px;background:rgba(120,108,140,.38);transition:.18s;}
+  .switch .track::before{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#f3ede2;transition:.18s;box-shadow:0 1px 3px rgba(0,0,0,.45);}
+  .switch input:checked + .track{background:linear-gradient(160deg,var(--gold-bright),var(--gold));}
+  .switch input:checked + .track::before{transform:translateX(18px);}
+  .switch input:focus-visible + .track{outline:2px solid var(--gold-line);outline-offset:2px;}
   .row{padding:14px 26px;border-bottom:1px solid var(--line);transition:.18s;}
   .row:last-child{border-bottom:none;}
   .row:hover{background:rgba(255,255,255,.018);}
@@ -150,6 +170,18 @@
   .tpill.dessert{color:#d8a657;background:rgba(216,166,87,.14);box-shadow:inset 0 0 0 1px rgba(216,166,87,.3);}
   .country{font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:8px;}
   .country .flag{font-size:15px;}
+  /* drink window */
+  .dwin{padding-right:14px;}
+  .dwin-bar{position:relative;height:7px;border-radius:5px;overflow:visible;}
+  .dwin-mark{position:absolute;top:50%;width:3px;height:15px;border-radius:2px;background:#f3ede2;
+    box-shadow:0 0 0 2px rgba(19,13,30,.7), 0 1px 4px rgba(0,0,0,.5);transform:translate(-50%,-50%);}
+  .dwin-lab{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+  .dwin-lab .yr{color:var(--text);font-variant-numeric:tabular-nums;}
+  .dwin-lab .st{font-weight:500;}
+  .dwin-lab.now .st{color:#74c79a;}
+  .dwin-lab.hold .st{color:#8fb6e0;}
+  .dwin-lab.past .st{color:#d8a657;}
+  .volume{font-size:13px;color:#cabfd6;font-variant-numeric:tabular-nums;}
   .varietal{font-size:12.8px;color:#bdb3c9;line-height:1.28;padding-right:12px;}
   .pour{display:flex;align-items:center;gap:11px;}
   .tog{appearance:none;-webkit-appearance:none;margin:0;width:22px;height:22px;flex:0 0 22px;border-radius:6px;border:1.5px solid var(--muted-2);background:rgba(20,14,32,.5);cursor:pointer;position:relative;transition:.16s;}
@@ -222,7 +254,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast svg{width:18px;height:18px;}
 
-  @media (max-width:980px){ .main-inner{overflow-x:auto;} .grid{min-width:1120px;} }
+  @media (max-width:980px){ .main-inner{overflow-x:auto;} .grid{min-width:1300px;} }
 
   /* print: clean paper wine list */
   .print-sheet{display:none;}
@@ -271,13 +303,23 @@
         <div class="page-head">
           <div class="eyebrow"><span class="dot"></span> Hospitality Program &middot; Web Only</div>
           <h1>Wine List Pricing</h1>
-          <div class="sub">Your list, copied from the master cellar. Set what you pour and what you charge, and <b>filter by type, country, or varietal to balance the list.</b> Upload your food and beverage menus for pairing, print a paper backup, and publish when ready.</div>
+          <div class="sub">Your list, copied from the master cellar. Set what you pour and what you charge, and <b>filter by readiness, type, country, varietal, or size to balance the list.</b> Upload your food and beverage menus for pairing, print a paper backup, and publish when ready.</div>
         </div>
 
         <div class="action-bar">
           <div class="upl-cluster">
             <div class="clabel">Source Menus</div>
             <div class="upl-grid" id="uplGrid"></div>
+          </div>
+          <div class="pairing-ctl on" id="pairingCtl">
+            <div class="clabel">Food Pairing AI</div>
+            <div class="row1">
+              <label class="switch"><input type="checkbox" id="pairingToggle" checked aria-label="Generate food pairings for wines on the menu"><span class="track"></span></label>
+              <div>
+                <div class="ttl">Generate pairings</div>
+                <div class="state" id="pairingState">On for every wine on the menu</div>
+              </div>
+            </div>
           </div>
           <div class="act-right">
             <div class="clabel">Menu Actions</div>
@@ -300,9 +342,11 @@
 
         <div class="filterbar">
           <span class="flabel">Balance the list</span>
+          <div class="ms" id="msWindow"></div>
           <div class="ms" id="msType"></div>
           <div class="ms" id="msCountry"></div>
           <div class="ms" id="msVarietal"></div>
+          <div class="ms" id="msVolume"></div>
           <div class="spacer"></div>
           <span class="count" id="countText"></span>
           <button class="reset" id="resetBtn">Reset</button>
@@ -310,8 +354,15 @@
 
         <div class="grid" id="grid">
           <div class="grid-head">
-            <div>Wine</div><div>Type</div><div>Country</div><div>Varietal</div>
-            <div>By Bottle</div><div>By Glass</div><div>On Menu</div>
+            <div class="hcell" data-sort="name"><span>Wine</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="window"><span>Drink Window</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="type"><span>Type</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="country"><span>Country</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="varietal"><span>Varietal</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="volume"><span>Volume</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="bottle"><span>By Bottle</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="glass"><span>By Glass</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="onmenu"><span>On Menu</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
           </div>
           <div class="empty" id="emptyState">
             <div class="big">No wines match these filters</div>
@@ -364,17 +415,32 @@
 
 <script>
   const WINES = [
-    {vint:"NV",  name:"Roederer Estate Brut",            prod:"Roederer Estate", type:"Sparkling", country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Chardonnay, Pinot Noir", bOn:true,  bPrice:"52", gOn:true,  gPrice:"14"},
-    {vint:"'23", name:"Tiefenbrunner Pinot Grigio",      prod:"Tiefenbrunner",   type:"White",     country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", varietal:"Pinot Grigio",          bOn:true,  bPrice:"40", gOn:true,  gPrice:"12"},
-    {vint:"'22", name:"Trefethen Chardonnay",            prod:"Trefethen",       type:"White",     country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Chardonnay",            bOn:true,  bPrice:"48", gOn:true,  gPrice:"15"},
-    {vint:"'23", name:"Venta Morales Tempranillo",       prod:"Venta Morales",   type:"Red",       country:"Spain",     flag:"\uD83C\uDDEA\uD83C\uDDF8", varietal:"Tempranillo",           bOn:true,  bPrice:"38", gOn:true,  gPrice:"12"},
-    {vint:"'23", name:"Les Abeilles C\u00f4tes du Rh\u00f4ne", prod:"Les Abeilles", type:"Red",     country:"France",    flag:"\uD83C\uDDEB\uD83C\uDDF7", varietal:"Grenache, Syrah, Mourv\u00e8dre", bOn:true, bPrice:"42", gOn:true, gPrice:"14"},
-    {vint:"'22", name:"J Vineyards Pinot Noir",          prod:"J Vineyards",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Pinot Noir",            bOn:true,  bPrice:"52", gOn:true,  gPrice:"16"},
-    {vint:"",    name:"Robert Hall Cabernet Sauvignon",  prod:"Robert Hall",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Cabernet Sauvignon",    bOn:true,  bPrice:"",   gOn:true,  gPrice:"17"},
-    {vint:"'20", name:"Jordan Cabernet Sauvignon",       prod:"Jordan",          type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Cabernet Sauvignon",    bOn:true,  bPrice:"78", gOn:false, gPrice:""},
-    {vint:"",    name:"Graham's 10 Year Tawny Port",     prod:"Graham's",        type:"Dessert",   country:"Portugal",  flag:"\uD83C\uDDF5\uD83C\uDDF9", varietal:"Port Blend",            bOn:false, bPrice:"", gOn:true,  gPrice:"12"},
-    {vint:"'22", name:"Tornatore Etna Rosso",            prod:"Tornatore",       type:"Red",       country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", varietal:"Nerello Mascalese",     bOn:false, bPrice:"", gOn:false, gPrice:""}
+    {vint:"NV",  name:"Roederer Estate Brut",            prod:"Roederer Estate", type:"Sparkling", country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Chardonnay, Pinot Noir", vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"52", gOn:true,  gPrice:"14"},
+    {vint:"'23", name:"Tiefenbrunner Pinot Grigio",      prod:"Tiefenbrunner",   type:"White",     country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", varietal:"Pinot Grigio",          vol:"750ml", dFrom:2023, dTo:2025, bOn:true,  bPrice:"40", gOn:true,  gPrice:"12"},
+    {vint:"'22", name:"Trefethen Chardonnay",            prod:"Trefethen",       type:"White",     country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Chardonnay",            vol:"750ml", dFrom:2024, dTo:2028, bOn:true,  bPrice:"48", gOn:true,  gPrice:"15"},
+    {vint:"'23", name:"Venta Morales Tempranillo",       prod:"Venta Morales",   type:"Red",       country:"Spain",     flag:"\uD83C\uDDEA\uD83C\uDDF8", varietal:"Tempranillo",           vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"38", gOn:true,  gPrice:"12"},
+    {vint:"'23", name:"Les Abeilles C\u00f4tes du Rh\u00f4ne", prod:"Les Abeilles", type:"Red",     country:"France",    flag:"\uD83C\uDDEB\uD83C\uDDF7", varietal:"Grenache, Syrah, Mourv\u00e8dre", vol:"750ml", dFrom:2025, dTo:2029, bOn:true, bPrice:"42", gOn:true, gPrice:"14"},
+    {vint:"'22", name:"J Vineyards Pinot Noir",          prod:"J Vineyards",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Pinot Noir",            vol:"1.5L",  dFrom:2024, dTo:2029, bOn:true,  bPrice:"98", gOn:true,  gPrice:"16"},
+    {vint:"",    name:"Robert Hall Cabernet Sauvignon",  prod:"Robert Hall",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2026, dTo:2032, bOn:true,  bPrice:"",   gOn:true,  gPrice:"17"},
+    {vint:"'20", name:"Jordan Cabernet Sauvignon",       prod:"Jordan",          type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2027, dTo:2037, bOn:true,  bPrice:"78", gOn:false, gPrice:""},
+    {vint:"",    name:"Graham's 10 Year Tawny Port",     prod:"Graham's",        type:"Dessert",   country:"Portugal",  flag:"\uD83C\uDDF5\uD83C\uDDF9", varietal:"Port Blend",            vol:"375ml", dFrom:2024, dTo:2034, bOn:false, bPrice:"", gOn:true,  gPrice:"12"},
+    {vint:"'22", name:"Tornatore Etna Rosso",            prod:"Tornatore",       type:"Red",       country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", varietal:"Nerello Mascalese",     vol:"750ml", dFrom:2028, dTo:2034, bOn:false, bPrice:"", gOn:false, gPrice:""}
   ];
+  const VOL_ML = {'375ml':375, '750ml':750, '1.5L':1500};
+  const NOW_YEAR = 2026;
+  function windowState(w){ return NOW_YEAR < w.dFrom ? 'Hold' : (NOW_YEAR > w.dTo ? 'Past peak' : 'Drink now'); }
+  const STATE_CLASS = {'Drink now':'now', 'Hold':'hold', 'Past peak':'past'};
+  function drinkBar(w){
+    const lo = w.dFrom - 2, span = (w.dTo + 2) - lo;
+    const redEnd = ((w.dFrom - lo) / span) * 100;
+    const grnEnd = ((w.dTo - lo) / span) * 100;
+    let pos = ((NOW_YEAR - lo) / span) * 100; pos = Math.max(5, Math.min(95, pos));
+    const grad = 'linear-gradient(90deg, #c0706f 0 '+redEnd.toFixed(1)+'%, #66bd8b '+redEnd.toFixed(1)+'% '+grnEnd.toFixed(1)+'%, #d2ad57 '+grnEnd.toFixed(1)+'% 100%)';
+    const st = windowState(w), cls = STATE_CLASS[st];
+    return '<div class="dwin"><div class="dwin-bar" style="background:'+grad+'">'+
+      '<span class="dwin-mark" style="left:'+pos.toFixed(1)+'%"></span></div>'+
+      '<div class="dwin-lab '+cls+'"><span class="yr">'+w.dFrom+'-'+w.dTo+'</span><span class="st">'+st+'</span></div></div>';
+  }
   const bottleSVG = '<svg viewBox="0 0 24 64" fill="none"><path d="M9 2h6v9c0 2 .6 3 1.6 4.4C18 17.5 18.5 19 18.5 21.5V58a3.5 3.5 0 0 1-3.5 3.5H9A3.5 3.5 0 0 1 5.5 58V21.5C5.5 19 6 17.5 7.4 15.4 8.4 14 9 13 9 11V2Z" stroke="#c9a86a" stroke-width="1.2"/><rect x="5.5" y="30" width="13" height="20" rx="1.5" fill="rgba(201,168,106,.12)"/></svg>';
   const TYPE_CLASS = {Red:"red", White:"white", Sparkling:"sparkling", Dessert:"dessert"};
   const grid = document.getElementById('grid');
@@ -384,13 +450,17 @@
     const row = document.createElement('div');
     row.className = 'row'; row.dataset.i = i;
     row.dataset.name=w.name; row.dataset.prod=w.prod; row.dataset.type=w.type; row.dataset.country=w.country; row.dataset.varietal=w.varietal;
+    row.dataset.volume=w.vol; row.dataset.window=windowState(w);
+    row.dataset.volml=VOL_ML[w.vol]||0; row.dataset.dfrom=w.dFrom;
     const vint = w.vint ? '<span class="vint">'+w.vint+'</span>' : '';
     row.innerHTML = `
       <div class="wine"><div class="thumb">${bottleSVG}</div>
-        <div class="wine-txt"><div class="wname">${vint}${w.name}</div><div class="wmeta">${w.prod} &middot; 750ml</div></div></div>
+        <div class="wine-txt"><div class="wname">${vint}${w.name}</div><div class="wmeta">${w.prod}</div></div></div>
+      ${drinkBar(w)}
       <div><span class="tpill ${TYPE_CLASS[w.type]}">${w.type}</span></div>
       <div class="country"><span class="flag">${w.flag}</span> ${w.country}</div>
       <div class="varietal">${w.varietal}</div>
+      <div class="volume">${w.vol}</div>
       <div class="pour" data-pour="bottle">
         <input type="checkbox" class="tog" ${w.bOn?'checked':''} aria-label="Offer ${w.name} by the bottle">
         <div><div class="price ${w.bOn?'':'disabled'}"><span class="cur">$</span><input type="text" inputmode="decimal" class="pinput" value="${w.bPrice}" placeholder="0" ${w.bOn?'':'disabled'} aria-label="Bottle price"></div><div class="needs-hint">Add a bottle price</div></div>
@@ -424,13 +494,14 @@
   }
 
   /* ---------- multi-select filters ---------- */
-  const selected = {type:new Set(), country:new Set(), varietal:new Set()};
-  const NOUN = {type:'types', country:'countries', varietal:'varietals'};
-  const ALL  = {type:'All Types', country:'All Countries', varietal:'All Varietals'};
+  const selected = {window:new Set(), type:new Set(), country:new Set(), varietal:new Set(), volume:new Set()};
+  const NOUN = {window:'windows', type:'types', country:'countries', varietal:'varietals', volume:'sizes'};
+  const ALL  = {window:'Any Window', type:'All Types', country:'All Countries', varietal:'All Varietals', volume:'All Sizes'};
 
-  function buildMS(hostId, key, ordered){
+  function buildMS(hostId, key, ordered, valFn){
     const host = document.getElementById(hostId);
-    const counts = {}; WINES.forEach(w => counts[w[key]] = (counts[w[key]]||0)+1);
+    const val = valFn || (w => w[key]);
+    const counts = {}; WINES.forEach(w => { const v=val(w); counts[v]=(counts[v]||0)+1; });
     let keys = Object.keys(counts);
     if(ordered) keys.sort((a,b)=> ordered.indexOf(a)-ordered.indexOf(b));
     else keys.sort((a,b)=> counts[b]-counts[a] || a.localeCompare(b));
@@ -461,9 +532,11 @@
   function closeAllMS(){ document.querySelectorAll('.ms').forEach(m=>m.classList.remove('open')); }
   document.addEventListener('click', ()=> closeAllMS());
 
+  buildMS('msWindow','window',['Drink now','Hold','Past peak'], w=>windowState(w));
   buildMS('msType','type',['Red','White','Sparkling','Dessert']);
   buildMS('msCountry','country');
   buildMS('msVarietal','varietal');
+  buildMS('msVolume','volume',['375ml','750ml','1.5L'], w=>w.vol);
 
   const listSearch=document.getElementById('listSearch'), countText=document.getElementById('countText'), resetBtn=document.getElementById('resetBtn');
   function applyFilters(){
@@ -471,29 +544,72 @@
     let shown=0;
     document.querySelectorAll('#grid .row').forEach(row => {
       const d=row.dataset;
+      const okW = selected.window.size===0 || selected.window.has(d.window);
       const okT = selected.type.size===0 || selected.type.has(d.type);
       const okC = selected.country.size===0 || selected.country.has(d.country);
       const okV = selected.varietal.size===0 || selected.varietal.has(d.varietal);
-      const hay=(d.name+' '+d.prod+' '+d.type+' '+d.country+' '+d.varietal).toLowerCase();
+      const okZ = selected.volume.size===0 || selected.volume.has(d.volume);
+      const hay=(d.name+' '+d.prod+' '+d.type+' '+d.country+' '+d.varietal+' '+d.volume+' '+d.window).toLowerCase();
       const okQ = q===''||hay.includes(q);
-      const ok = okT&&okC&&okV&&okQ;
+      const ok = okW&&okT&&okC&&okV&&okZ&&okQ;
       row.style.display = ok?'grid':'none'; if(ok) shown++;
     });
     countText.textContent='Showing '+shown+' of '+WINES.length+' wines';
     emptyState.classList.toggle('show',shown===0);
-    const any = selected.type.size||selected.country.size||selected.varietal.size||q!=='';
+    const any = selected.window.size||selected.type.size||selected.country.size||selected.varietal.size||selected.volume.size||q!=='';
     resetBtn.classList.toggle('show',!!any);
   }
   listSearch.addEventListener('input', applyFilters);
   resetBtn.addEventListener('click', ()=>{
     Object.values(selected).forEach(s=>s.clear()); listSearch.value='';
     document.querySelectorAll('.ms-opt.sel').forEach(o=>o.classList.remove('sel'));
-    ['msType','msCountry','msVarietal'].forEach(id=>{ const k=id.replace('ms','').toLowerCase(); updateMSLabel(document.getElementById(id),k); });
+    ['msWindow','msType','msCountry','msVarietal','msVolume'].forEach(id=>{ const k=id.replace('ms','').toLowerCase(); updateMSLabel(document.getElementById(id),k); });
     applyFilters();
   });
   applyFilters();
 
-  /* ---------- uploads ---------- */
+  /* ---------- column sort ---------- */
+  let sortCol=null, sortDir=1;
+  function priceNum(r, which){
+    const pour=r.querySelector('[data-pour="'+which+'"]');
+    if(!pour.querySelector('.tog').checked) return null;
+    const v=pour.querySelector('.pinput').value.trim();
+    if(v==='') return null;
+    const n=parseFloat(v); return isNaN(n)?null:n;
+  }
+  const SORTVAL = {
+    name:    r=>r.dataset.name.toLowerCase(),
+    window:  r=>+r.dataset.dfrom,
+    type:    r=>r.dataset.type.toLowerCase(),
+    country: r=>r.dataset.country.toLowerCase(),
+    varietal:r=>r.dataset.varietal.toLowerCase(),
+    volume:  r=>+r.dataset.volml,
+    bottle:  r=>priceNum(r,'bottle'),
+    glass:   r=>priceNum(r,'glass'),
+    onmenu:  r=>r.classList.contains('off')?0:1
+  };
+  function applySort(col, keepDir){
+    if(!keepDir){ if(sortCol===col){ sortDir*=-1; } else { sortCol=col; sortDir=1; } }
+    const f=SORTVAL[col];
+    const rows=[...grid.querySelectorAll('.row')];
+    rows.sort((a,b)=>{
+      let va=f(a), vb=f(b);
+      if(va===null && vb===null) return 0;
+      if(va===null) return 1;            // missing prices always last
+      if(vb===null) return -1;
+      if(va<vb) return -1*sortDir;
+      if(va>vb) return  1*sortDir;
+      return 0;
+    });
+    rows.forEach(r=>grid.appendChild(r));
+    document.querySelectorAll('.grid-head .hcell').forEach(h=>{
+      h.classList.toggle('asc',  h.dataset.sort===col && sortDir===1);
+      h.classList.toggle('desc', h.dataset.sort===col && sortDir===-1);
+    });
+  }
+  document.querySelectorAll('.grid-head .hcell').forEach(h=>{
+    h.addEventListener('click', ()=> applySort(h.dataset.sort));
+  });
   const MENUS = [
     {key:'Dinner',    file:'dinner_menu_v3.pdf', ts:'Apr 21, 2026 · 12:42 PM'},
     {key:'Lunch',     file:'lunch_spring.pdf',   ts:'Apr 18, 2026 · 9:15 AM'},
@@ -552,6 +668,15 @@
   rbInput.addEventListener('input', ()=>{ rbConfirm.disabled = (rbInput.value !== 'DO IT'); });
   rbConfirm.addEventListener('click', ()=>{ if(rbInput.value!=='DO IT') return; closeOverlay(rbOverlay); showToast('Rolled back to the previous version'); });
 
+  const pairingCtl=document.getElementById('pairingCtl'), pairingToggle=document.getElementById('pairingToggle'), pairingState=document.getElementById('pairingState');
+  pairingToggle.addEventListener('change', ()=>{
+    const on=pairingToggle.checked;
+    pairingCtl.classList.toggle('on',on);
+    pairingState.textContent = on ? 'On for every wine on the menu' : 'Off, no pairings generated';
+    showToast(on ? 'Food pairings on for wines on the menu' : 'Food pairings off');
+    flashSaved();
+  });
+
   let toastTimer;
   function showToast(msg){
     const t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=msg;
@@ -575,8 +700,8 @@
     let html='<div class="ps-head"><div class="ps-title">Spotted Duck</div><div class="ps-sub">Wine List</div><div class="ps-date">'+fmtDateLong(new Date())+'</div></div>';
     order.forEach(t=>{ if(!byType[t]) return;
       html+='<div class="ps-section"><div class="ps-cat">'+(t==='Dessert'?'Dessert &amp; Fortified':t)+'</div>';
-      byType[t].forEach(({w,price})=>{ const v=w.vint?w.vint+' ':'';
-        html+='<div class="ps-wine"><div><span class="ps-w-name">'+v+w.name+'</span><span class="ps-w-meta">'+w.country+' &middot; '+w.varietal+'</span></div><div class="ps-w-price">'+price+'</div></div>';
+      byType[t].forEach(({w,price})=>{ const v=w.vint?w.vint+' ':''; const fmt=(w.vol&&w.vol!=='750ml')?' &middot; '+w.vol:'';
+        html+='<div class="ps-wine"><div><span class="ps-w-name">'+v+w.name+'</span><span class="ps-w-meta">'+w.country+' &middot; '+w.varietal+fmt+'</span></div><div class="ps-w-price">'+price+'</div></div>';
       });
       html+='</div>';
     });
