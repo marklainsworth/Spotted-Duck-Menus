@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CellarEye · Hospitality Pricing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --bg:#130d1e; --bg-2:#0d0914; --panel:#1b1330; --field:#251b3d;
+    --line:rgba(233,224,212,.07); --line-strong:rgba(233,224,212,.12);
+    --gold:#c9a86a; --gold-bright:#dcbd84; --gold-line:#e0c074;
+    --cream:#f3ede2; --text:#e7ded2; --muted:#9387a6; --muted-2:#6f6685;
+    --green:#5bb083; --green-bg:rgba(91,176,131,.14); --green-line:rgba(91,176,131,.4);
+    --amber:#d8a657; --amber-bg:rgba(216,166,87,.12); --red:#cf7d7d; --red-bg:rgba(180,72,72,.16);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 700px at 78% -8%, #241636 0%, rgba(36,22,54,0) 60%),
+      radial-gradient(900px 600px at 0% 100%, #1a1330 0%, rgba(26,19,48,0) 55%),
+      linear-gradient(160deg, var(--bg) 0%, var(--bg-2) 100%);
+    background-attachment:fixed; min-height:100vh;
+    font-family:'Jost', system-ui, sans-serif; color:var(--text); -webkit-font-smoothing:antialiased;
+  }
+  .app{min-height:100vh;}
+
+  .topbar{display:flex;align-items:center;gap:24px;padding:14px 26px;
+    background:linear-gradient(180deg, rgba(31,22,52,.92), rgba(27,19,48,.86));
+    border-bottom:1px solid var(--line-strong);position:sticky;top:0;z-index:20;}
+  .brand{display:flex;align-items:center;gap:12px;min-width:190px;}
+  .brand .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(150deg,#3a2756,#241636);
+    border:1px solid rgba(224,192,116,.35);display:grid;place-items:center;
+    box-shadow:0 2px 10px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);}
+  .brand .mark svg{width:20px;height:20px;}
+  .brand .name{font-weight:500;font-size:21px;letter-spacing:.3px;color:#f6f1e9;}
+  .brand .name b{color:var(--gold-bright);font-weight:600;}
+  .search-top{flex:1;max-width:760px;margin:0 auto;position:relative;}
+  .search-top input{width:100%;height:46px;border-radius:13px;border:1px solid var(--line-strong);
+    background:rgba(20,14,32,.7);color:var(--text);padding:0 18px 0 46px;font-family:inherit;font-size:15px;}
+  .search-top input::placeholder{color:var(--muted-2);}
+  .search-top .ic{position:absolute;left:16px;top:50%;transform:translateY(-50%);opacity:.5;}
+  .user{display:flex;align-items:center;gap:11px;min-width:190px;justify-content:flex-end;}
+  .avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+    background:linear-gradient(150deg,#5a3f7a,#3a2756);color:#f3ede2;font-weight:600;font-size:15px;}
+  .user .who{font-size:15px;color:#efe8dc;}
+  .role{font-size:12px;font-weight:500;letter-spacing:.4px;color:#0f0a17;background:linear-gradient(180deg,#8fd0ff,#56b0f0);padding:4px 12px;border-radius:20px;}
+
+  .shell{display:flex;}
+  .sidebar{width:66px;flex:0 0 66px;padding:22px 0;display:flex;flex-direction:column;align-items:center;gap:10px;
+    border-right:1px solid var(--line);min-height:calc(100vh - 75px);}
+  .nav-ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;color:var(--muted);cursor:pointer;transition:.18s;}
+  .nav-ic:hover{color:var(--cream);background:rgba(255,255,255,.04);}
+  .nav-ic.active{color:var(--gold-bright);background:rgba(224,192,116,.1);box-shadow:inset 0 0 0 1px rgba(224,192,116,.25);}
+  .nav-ic svg{width:21px;height:21px;}
+  .main{flex:1;min-width:0;padding:30px 34px 130px;}
+  .main-inner{max-width:1360px;margin:0 auto;}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--gold);border:1px solid rgba(224,192,116,.28);padding:5px 12px;border-radius:20px;margin-bottom:14px;}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold-bright);}
+  h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:42px;line-height:1.05;margin:0 0 8px;color:#f6f1e9;letter-spacing:.4px;}
+  .sub{color:var(--muted);font-size:15px;max-width:820px;line-height:1.55;font-weight:300;}
+  .sub b{color:var(--text);font-weight:400;}
+
+  /* action bar: uploads + menu actions */
+  .action-bar{display:flex;align-items:flex-start;gap:20px;margin:24px 0 14px;flex-wrap:wrap;
+    padding:16px 18px;border:1px solid var(--line-strong);border-radius:16px;background:linear-gradient(180deg, rgba(27,19,48,.5), rgba(21,15,38,.4));}
+  .clabel{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted-2);margin-bottom:9px;}
+  .upl-grid{display:flex;gap:10px;flex-wrap:wrap;}
+  .upl-item{display:flex;flex-direction:column;gap:5px;width:106px;}
+  .upl-btn{height:42px;border-radius:10px;border:1px solid var(--line-strong);background:rgba(255,255,255,.02);
+    color:var(--text);font-family:inherit;font-size:12.5px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:.16s;}
+  .upl-btn:hover{background:rgba(255,255,255,.05);border-color:var(--gold-line);color:var(--gold-bright);}
+  .upl-btn svg{width:14px;height:14px;opacity:.85;}
+  .upl-cap{font-size:9.5px;line-height:1.32;min-height:26px;}
+  .upl-cap .fn{color:var(--gold-bright);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
+  .upl-cap .ts{color:var(--muted-2);}
+  .upl-cap.empty{color:var(--muted-2);font-style:italic;padding-top:3px;}
+  .act-right{margin-left:auto;}
+  .act-btns{display:flex;align-items:center;gap:10px;}
+  .btn{height:42px;border-radius:10px;border:1px solid var(--line-strong);background:rgba(255,255,255,.02);
+    color:var(--text);font-family:inherit;font-size:13.5px;font-weight:500;padding:0 16px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;transition:.16s;}
+  .btn:hover{background:rgba(255,255,255,.05);}
+  .btn svg{width:16px;height:16px;opacity:.85;}
+  .btn.gold{border-color:var(--gold-line);color:var(--gold-bright);}
+  .btn.gold:hover{background:rgba(224,192,116,.08);}
+  .btn.warn:hover{border-color:var(--red);color:var(--red);}
+
+  /* list toolbar */
+  .toolbar{display:flex;align-items:center;gap:14px;margin:0 0 14px;flex-wrap:wrap;}
+  .search-coll{position:relative;flex:1;min-width:240px;max-width:420px;}
+  .search-coll input{width:100%;height:46px;border-radius:12px;border:1px solid var(--line-strong);
+    background:rgba(20,14,32,.6);color:var(--text);padding:0 16px 0 44px;font-family:inherit;font-size:14.5px;}
+  .search-coll input::placeholder{color:var(--muted-2);}
+  .search-coll .ic{position:absolute;left:15px;top:50%;transform:translateY(-50%);opacity:.5;}
+  .saved-pill{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--green);opacity:0;transition:opacity .25s;}
+  .saved-pill.show{opacity:1;}
+  .saved-pill .ck{width:16px;height:16px;border-radius:50%;background:var(--green-bg);display:grid;place-items:center;}
+  .spacer{flex:1;}
+
+  /* filter bar with multiselects */
+  .filterbar{display:flex;align-items:center;gap:11px;margin:0 0 18px;flex-wrap:wrap;}
+  .flabel{font-size:12.5px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted-2);margin-right:2px;}
+  .ms{position:relative;}
+  .ms-btn{height:42px;border-radius:10px;border:1px solid var(--line-strong);background:rgba(20,14,32,.6);
+    color:var(--text);font-family:inherit;font-size:13.5px;padding:0 14px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;transition:.16s;}
+  .ms-btn:hover{border-color:var(--gold-line);}
+  .ms-btn .chev{opacity:.55;transition:transform .18s;}
+  .ms.open .ms-btn .chev{transform:rotate(180deg);}
+  .ms.active .ms-btn{border-color:var(--gold-line);color:var(--gold-bright);background:rgba(224,192,116,.06);}
+  .ms-panel{position:absolute;top:48px;left:0;z-index:30;min-width:230px;max-height:300px;overflow:auto;
+    background:#1d1535;border:1px solid var(--line-strong);border-radius:12px;padding:6px;
+    box-shadow:0 18px 40px rgba(0,0,0,.5);display:none;}
+  .ms.open .ms-panel{display:block;}
+  .ms-opt{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13.5px;color:var(--text);}
+  .ms-opt:hover{background:rgba(255,255,255,.04);}
+  .ms-opt .cb{width:18px;height:18px;flex:0 0 18px;border-radius:5px;border:1.5px solid var(--muted-2);position:relative;transition:.14s;}
+  .ms-opt.sel .cb{background:linear-gradient(160deg,var(--gold-bright),var(--gold));border-color:var(--gold-bright);}
+  .ms-opt.sel .cb::after{content:"";position:absolute;left:5px;top:1.5px;width:5px;height:9px;border:solid #1a1024;border-width:0 2px 2px 0;transform:rotate(43deg);}
+  .ms-opt .cnt{margin-left:auto;color:var(--muted-2);font-size:12px;}
+  .count{font-size:13px;color:var(--muted);}
+  .reset{font-size:13px;color:var(--gold-bright);cursor:pointer;border:none;background:none;font-family:inherit;padding:4px 6px;display:none;}
+  .reset:hover{text-decoration:underline;}
+  .reset.show{display:inline;}
+
+  .grid{background:linear-gradient(180deg, rgba(27,19,48,.55), rgba(21,15,38,.55));
+    border:1px solid var(--line-strong);border-radius:18px;overflow:hidden;}
+  .grid-head, .row{display:grid;grid-template-columns: minmax(260px,1.3fr) 104px 132px 172px 168px 168px 112px;align-items:center;}
+  .grid-head{padding:15px 26px;border-bottom:1px solid var(--line-strong);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:500;}
+  .row{padding:14px 26px;border-bottom:1px solid var(--line);transition:.18s;}
+  .row:last-child{border-bottom:none;}
+  .row:hover{background:rgba(255,255,255,.018);}
+  .row.off{opacity:.46;}
+  .wine{display:flex;align-items:center;gap:14px;min-width:0;padding-right:14px;}
+  .thumb{width:40px;height:56px;flex:0 0 40px;border-radius:6px;border:1px solid var(--line-strong);background:linear-gradient(155deg,#241a3a,#191227);display:grid;place-items:center;}
+  .thumb svg{width:17px;height:auto;opacity:.62;}
+  .wine-txt{min-width:0;}
+  .wname{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;line-height:1.12;color:#f4eee3;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wname .vint{color:var(--gold-bright);margin-right:6px;}
+  .wmeta{font-size:12px;color:var(--muted);margin-top:3px;font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tpill{display:inline-flex;align-items:center;font-size:11.5px;font-weight:500;padding:5px 10px;border-radius:7px;letter-spacing:.2px;}
+  .tpill.red{color:#dd9a9a;background:rgba(184,72,72,.16);box-shadow:inset 0 0 0 1px rgba(184,72,72,.3);}
+  .tpill.white{color:#dcd29a;background:rgba(190,178,108,.13);box-shadow:inset 0 0 0 1px rgba(190,178,108,.28);}
+  .tpill.sparkling{color:#e6cd86;background:rgba(224,192,116,.15);box-shadow:inset 0 0 0 1px rgba(224,192,116,.32);}
+  .tpill.dessert{color:#d8a657;background:rgba(216,166,87,.14);box-shadow:inset 0 0 0 1px rgba(216,166,87,.3);}
+  .country{font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:8px;}
+  .country .flag{font-size:15px;}
+  .varietal{font-size:12.8px;color:#bdb3c9;line-height:1.28;padding-right:12px;}
+  .pour{display:flex;align-items:center;gap:11px;}
+  .tog{appearance:none;-webkit-appearance:none;margin:0;width:22px;height:22px;flex:0 0 22px;border-radius:6px;border:1.5px solid var(--muted-2);background:rgba(20,14,32,.5);cursor:pointer;position:relative;transition:.16s;}
+  .tog:hover{border-color:var(--gold);}
+  .tog:checked{background:linear-gradient(160deg,var(--gold-bright),var(--gold));border-color:var(--gold-bright);}
+  .tog:checked::after{content:"";position:absolute;left:6.5px;top:3px;width:5px;height:10px;border:solid #1a1024;border-width:0 2.2px 2.2px 0;transform:rotate(43deg);}
+  .tog:focus-visible{outline:2px solid var(--gold-line);outline-offset:2px;}
+  .price{display:flex;align-items:center;height:42px;border-radius:10px;border:1px solid var(--line-strong);background:rgba(20,14,32,.55);padding:0 11px;gap:3px;width:98px;transition:.16s;}
+  .price .cur{color:var(--muted-2);font-size:15px;}
+  .price input{border:none;background:transparent;color:var(--gold-bright);font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;width:100%;outline:none;padding:0;}
+  .price input::placeholder{color:var(--muted-2);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;}
+  .price.disabled{opacity:.4;}
+  .price.disabled input{color:var(--muted);}
+  .price.needs{border-color:var(--amber);background:var(--amber-bg);}
+  .needs-hint{display:none;font-size:10.5px;color:var(--amber);margin-top:5px;letter-spacing:.2px;}
+  .pour.show-hint .needs-hint{display:block;}
+  .status{display:flex;justify-content:flex-start;}
+  .pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;padding:6px 12px;border-radius:8px;letter-spacing:.2px;}
+  .pill .pdot{width:7px;height:7px;border-radius:50%;}
+  .pill.on{color:var(--green);background:var(--green-bg);box-shadow:inset 0 0 0 1px var(--green-line);}
+  .pill.on .pdot{background:var(--green);}
+  .pill.offm{color:var(--muted);background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px var(--line-strong);}
+  .pill.offm .pdot{background:var(--muted-2);}
+  .empty{display:none;padding:46px 26px;text-align:center;}
+  .empty.show{display:block;}
+  .empty .big{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--cream);margin-bottom:6px;}
+  .empty .small{font-size:13.5px;color:var(--muted);}
+  .foot{margin-top:18px;font-size:12.5px;color:var(--muted-2);display:flex;gap:22px;flex-wrap:wrap;}
+  .foot span{display:inline-flex;align-items:center;gap:7px;}
+  .foot .k{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--muted-2);}
+  .foot .k.on{background:linear-gradient(160deg,var(--gold-bright),var(--gold));border-color:var(--gold-bright);}
+  .foot .k.amber{border-color:var(--amber);background:var(--amber-bg);}
+
+  .dl-wrap{position:fixed;right:26px;bottom:24px;z-index:40;}
+  .dl-btn{height:50px;border-radius:13px;border:1px solid var(--gold-line);background:linear-gradient(180deg, rgba(224,192,116,.16), rgba(224,192,116,.06));
+    color:var(--gold-bright);font-family:'Jost',sans-serif;font-size:15px;font-weight:500;padding:0 22px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.18s;}
+  .dl-btn:hover{background:linear-gradient(180deg, rgba(224,192,116,.26), rgba(224,192,116,.1));}
+  .dl-btn svg{width:18px;height:18px;}
+  body.capturing .dl-wrap{display:none;}
+  body.capturing .row:hover{background:transparent;}
+
+  /* modals */
+  .overlay{position:fixed;inset:0;background:rgba(10,7,17,.72);z-index:60;display:none;align-items:center;justify-content:center;padding:24px;}
+  .overlay.show{display:flex;}
+  .modal{width:440px;max-width:100%;background:linear-gradient(180deg,#221839,#1a1330);border:1px solid var(--line-strong);
+    border-radius:16px;padding:26px;box-shadow:0 24px 60px rgba(0,0,0,.55);}
+  .modal .m-ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px;}
+  .modal .m-ic.gold{background:rgba(224,192,116,.14);box-shadow:inset 0 0 0 1px rgba(224,192,116,.3);}
+  .modal .m-ic.warn{background:var(--red-bg);box-shadow:inset 0 0 0 1px rgba(180,72,72,.35);}
+  .modal h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:#f4eee3;margin:0 0 8px;}
+  .modal p{font-size:14px;color:var(--muted);line-height:1.55;margin:0 0 18px;font-weight:300;}
+  .modal p b{color:var(--text);font-weight:400;}
+  .modal .confirm-input{width:100%;height:46px;border-radius:10px;border:1px solid var(--line-strong);background:rgba(20,14,32,.6);
+    color:var(--gold-bright);font-family:'Jost',sans-serif;font-size:16px;letter-spacing:2px;font-weight:600;text-align:center;padding:0 14px;margin-bottom:18px;text-transform:uppercase;}
+  .modal .confirm-input:focus{outline:none;border-color:var(--gold-line);}
+  .modal .confirm-input::placeholder{color:var(--muted-2);letter-spacing:1px;font-weight:300;text-transform:none;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;}
+  .m-btn{height:44px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:500;padding:0 20px;cursor:pointer;border:1px solid var(--line-strong);background:transparent;color:var(--text);transition:.16s;}
+  .m-btn:hover{background:rgba(255,255,255,.05);}
+  .m-btn.primary{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#1a1024;border-color:var(--gold-bright);font-weight:600;}
+  .m-btn.primary:hover{filter:brightness(1.06);}
+  .m-btn.danger{background:linear-gradient(180deg,#c46b6b,#a85151);color:#1a0e0e;border-color:#c46b6b;font-weight:600;}
+  .m-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  /* toast */
+  .toast{position:fixed;top:78px;left:50%;transform:translateX(-50%) translateY(-12px);z-index:80;
+    background:linear-gradient(180deg,#23391f,#1c2e1a);border:1px solid var(--green-line);color:#bfe6cf;
+    padding:12px 20px;border-radius:12px;font-size:14px;display:flex;align-items:center;gap:10px;
+    box-shadow:0 14px 36px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.3s;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast svg{width:18px;height:18px;}
+
+  @media (max-width:980px){ .main-inner{overflow-x:auto;} .grid{min-width:1120px;} }
+
+  /* print: clean paper wine list */
+  .print-sheet{display:none;}
+  @media print{
+    body{background:#fff;}
+    .app,.dl-wrap,.overlay,.toast{display:none !important;}
+    .print-sheet{display:block;color:#1b1b1b;font-family:'Cormorant Garamond',Georgia,serif;padding:6px 10px;}
+    .ps-head{text-align:center;border-bottom:2px solid #b8a98c;padding-bottom:14px;margin-bottom:18px;}
+    .ps-title{font-size:36px;font-weight:700;letter-spacing:1px;}
+    .ps-sub{font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#7a6f52;font-family:'Jost',sans-serif;margin-top:6px;}
+    .ps-date{font-size:11px;color:#999;font-family:'Jost',sans-serif;margin-top:6px;}
+    .ps-section{break-inside:avoid;margin-bottom:14px;}
+    .ps-cat{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-family:'Jost',sans-serif;color:#8a6d3b;border-bottom:1px solid #e0d8c8;padding-bottom:5px;margin:14px 0 9px;}
+    .ps-wine{display:flex;justify-content:space-between;align-items:baseline;gap:18px;margin:6px 0;}
+    .ps-w-name{font-size:18px;font-weight:600;}
+    .ps-w-meta{font-size:11px;color:#888;font-family:'Jost',sans-serif;margin-left:9px;font-weight:400;}
+    .ps-w-price{font-size:14px;font-weight:600;white-space:nowrap;font-family:'Jost',sans-serif;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M9 2h6v4.2c0 1 .5 1.6 1.2 2.5C17.4 10.3 18 11.6 18 13.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-6.6c0-1.8.6-3.1 1.8-4.7C8.5 7.8 9 7.2 9 6.2V2Z" stroke="#e0c074" stroke-width="1.4"/><circle cx="12" cy="15.5" r="2.1" fill="#e0c074"/></svg></div>
+      <div class="name">Cellar<b>Eye</b></div>
+    </div>
+    <div class="search-top">
+      <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9387a6" stroke-width="1.6"/><path d="m20 20-3-3" stroke="#9387a6" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+      <input placeholder="Search for wine..." />
+    </div>
+    <div class="user"><div class="avatar">D</div><div class="who">Demo</div><div class="role">Manager</div></div>
+  </div>
+
+  <div class="shell">
+    <div class="sidebar">
+      <div class="nav-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10.5 12 4l9 6.5M5 9.5V20h14V9.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+      <div class="nav-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 9v9a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 18V9" stroke="currentColor" stroke-width="1.5"/><path d="M10 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div class="nav-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 20h18M5 20V9m14 11V9M4 9l8-5 8 5M9 20v-6h6v6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+      <div class="nav-ic active" title="Menus"><svg viewBox="0 0 24 24" fill="none"><path d="M8 3v18M6 3v5a2 2 0 0 0 4 0V3M16.5 3C15 3 14 5.2 14 8c0 2.2 1 3.4 2.5 3.6V21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="nav-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 20h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+
+    <div class="main">
+      <div class="main-inner">
+        <div class="page-head">
+          <div class="eyebrow"><span class="dot"></span> Hospitality Program &middot; Web Only</div>
+          <h1>Wine List Pricing</h1>
+          <div class="sub">Your list, copied from the master cellar. Set what you pour and what you charge, and <b>filter by type, country, or varietal to balance the list.</b> Upload your food and beverage menus for pairing, print a paper backup, and publish when ready.</div>
+        </div>
+
+        <div class="action-bar">
+          <div class="upl-cluster">
+            <div class="clabel">Source Menus</div>
+            <div class="upl-grid" id="uplGrid"></div>
+          </div>
+          <div class="act-right">
+            <div class="clabel">Menu Actions</div>
+            <div class="act-btns">
+              <button class="btn warn" id="rollbackBtn"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Roll Back</button>
+              <button class="btn" id="printBtn"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v6H8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Print Wine List</button>
+              <button class="btn gold" id="publishBtn"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-6 16-3-6-7-2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Publish Menu</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-coll">
+            <span class="ic"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9387a6" stroke-width="1.6"/><path d="m20 20-3-3" stroke="#9387a6" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+            <input id="listSearch" placeholder="Search your list..." />
+          </div>
+          <div class="spacer"></div>
+          <div class="saved-pill" id="savedPill"><span class="ck"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="m5 13 4 4L19 7" stroke="#5bb083" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> All changes saved</div>
+        </div>
+
+        <div class="filterbar">
+          <span class="flabel">Balance the list</span>
+          <div class="ms" id="msType"></div>
+          <div class="ms" id="msCountry"></div>
+          <div class="ms" id="msVarietal"></div>
+          <div class="spacer"></div>
+          <span class="count" id="countText"></span>
+          <button class="reset" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="grid" id="grid">
+          <div class="grid-head">
+            <div>Wine</div><div>Type</div><div>Country</div><div>Varietal</div>
+            <div>By Bottle</div><div>By Glass</div><div>On Menu</div>
+          </div>
+          <div class="empty" id="emptyState">
+            <div class="big">No wines match these filters</div>
+            <div class="small">On your list, that is a gap worth filling.</div>
+          </div>
+        </div>
+
+        <div class="foot">
+          <span><span class="k on"></span> Toggle on = poured &amp; listed</span>
+          <span><span class="k"></span> Toggle off = price kept, not poured</span>
+          <span><span class="k amber"></span> On with no price = needs a price before it lists</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dl-wrap"><button class="dl-btn" onclick="downloadPNG()"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> Download PNG</button></div>
+
+<!-- publish modal -->
+<div class="overlay" id="publishOverlay">
+  <div class="modal">
+    <div class="m-ic gold"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-6 16-3-6-7-2Z" stroke="#dcbd84" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+    <h3>Publish menu to guests?</h3>
+    <p>This replaces the <b>live menu</b> guests see right now with your current list and pricing. Anything toggled off will not appear.</p>
+    <div class="modal-actions">
+      <button class="m-btn" data-close>Cancel</button>
+      <button class="m-btn primary" id="publishConfirm">Publish Menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- rollback modal -->
+<div class="overlay" id="rollbackOverlay">
+  <div class="modal">
+    <div class="m-ic warn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4" stroke="#cf7d7d" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h3>Roll back to the previous version?</h3>
+    <p>This <b>overwrites your current list and pricing</b> with the last published version. This cannot be undone. Type <b>DO IT</b> to proceed.</p>
+    <input class="confirm-input" id="rollbackInput" placeholder="Type DO IT to confirm" autocomplete="off">
+    <div class="modal-actions">
+      <button class="m-btn" data-close>Cancel</button>
+      <button class="m-btn danger" id="rollbackConfirm" disabled>Roll Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none"><path d="m5 13 4 4L19 7" stroke="#7fd6a0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="toastMsg"></span></div>
+
+<div class="print-sheet" id="printSheet"></div>
+
+<script>
+  const WINES = [
+    {vint:"NV",  name:"Roederer Estate Brut",            prod:"Roederer Estate", type:"Sparkling", country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Chardonnay, Pinot Noir", bOn:true,  bPrice:"52", gOn:true,  gPrice:"14"},
+    {vint:"'23", name:"Tiefenbrunner Pinot Grigio",      prod:"Tiefenbrunner",   type:"White",     country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", varietal:"Pinot Grigio",          bOn:true,  bPrice:"40", gOn:true,  gPrice:"12"},
+    {vint:"'22", name:"Trefethen Chardonnay",            prod:"Trefethen",       type:"White",     country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Chardonnay",            bOn:true,  bPrice:"48", gOn:true,  gPrice:"15"},
+    {vint:"'23", name:"Venta Morales Tempranillo",       prod:"Venta Morales",   type:"Red",       country:"Spain",     flag:"\uD83C\uDDEA\uD83C\uDDF8", varietal:"Tempranillo",           bOn:true,  bPrice:"38", gOn:true,  gPrice:"12"},
+    {vint:"'23", name:"Les Abeilles C\u00f4tes du Rh\u00f4ne", prod:"Les Abeilles", type:"Red",     country:"France",    flag:"\uD83C\uDDEB\uD83C\uDDF7", varietal:"Grenache, Syrah, Mourv\u00e8dre", bOn:true, bPrice:"42", gOn:true, gPrice:"14"},
+    {vint:"'22", name:"J Vineyards Pinot Noir",          prod:"J Vineyards",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Pinot Noir",            bOn:true,  bPrice:"52", gOn:true,  gPrice:"16"},
+    {vint:"",    name:"Robert Hall Cabernet Sauvignon",  prod:"Robert Hall",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Cabernet Sauvignon",    bOn:true,  bPrice:"",   gOn:true,  gPrice:"17"},
+    {vint:"'20", name:"Jordan Cabernet Sauvignon",       prod:"Jordan",          type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Cabernet Sauvignon",    bOn:true,  bPrice:"78", gOn:false, gPrice:""},
+    {vint:"",    name:"Graham's 10 Year Tawny Port",     prod:"Graham's",        type:"Dessert",   country:"Portugal",  flag:"\uD83C\uDDF5\uD83C\uDDF9", varietal:"Port Blend",            bOn:false, bPrice:"", gOn:true,  gPrice:"12"},
+    {vint:"'22", name:"Tornatore Etna Rosso",            prod:"Tornatore",       type:"Red",       country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", varietal:"Nerello Mascalese",     bOn:false, bPrice:"", gOn:false, gPrice:""}
+  ];
+  const bottleSVG = '<svg viewBox="0 0 24 64" fill="none"><path d="M9 2h6v9c0 2 .6 3 1.6 4.4C18 17.5 18.5 19 18.5 21.5V58a3.5 3.5 0 0 1-3.5 3.5H9A3.5 3.5 0 0 1 5.5 58V21.5C5.5 19 6 17.5 7.4 15.4 8.4 14 9 13 9 11V2Z" stroke="#c9a86a" stroke-width="1.2"/><rect x="5.5" y="30" width="13" height="20" rx="1.5" fill="rgba(201,168,106,.12)"/></svg>';
+  const TYPE_CLASS = {Red:"red", White:"white", Sparkling:"sparkling", Dessert:"dessert"};
+  const grid = document.getElementById('grid');
+  const emptyState = document.getElementById('emptyState');
+
+  WINES.forEach((w, i) => {
+    const row = document.createElement('div');
+    row.className = 'row'; row.dataset.i = i;
+    row.dataset.name=w.name; row.dataset.prod=w.prod; row.dataset.type=w.type; row.dataset.country=w.country; row.dataset.varietal=w.varietal;
+    const vint = w.vint ? '<span class="vint">'+w.vint+'</span>' : '';
+    row.innerHTML = `
+      <div class="wine"><div class="thumb">${bottleSVG}</div>
+        <div class="wine-txt"><div class="wname">${vint}${w.name}</div><div class="wmeta">${w.prod} &middot; 750ml</div></div></div>
+      <div><span class="tpill ${TYPE_CLASS[w.type]}">${w.type}</span></div>
+      <div class="country"><span class="flag">${w.flag}</span> ${w.country}</div>
+      <div class="varietal">${w.varietal}</div>
+      <div class="pour" data-pour="bottle">
+        <input type="checkbox" class="tog" ${w.bOn?'checked':''} aria-label="Offer ${w.name} by the bottle">
+        <div><div class="price ${w.bOn?'':'disabled'}"><span class="cur">$</span><input type="text" inputmode="decimal" class="pinput" value="${w.bPrice}" placeholder="0" ${w.bOn?'':'disabled'} aria-label="Bottle price"></div><div class="needs-hint">Add a bottle price</div></div>
+      </div>
+      <div class="pour" data-pour="glass">
+        <input type="checkbox" class="tog" ${w.gOn?'checked':''} aria-label="Offer ${w.name} by the glass">
+        <div><div class="price ${w.gOn?'':'disabled'}"><span class="cur">$</span><input type="text" inputmode="decimal" class="pinput" value="${w.gPrice}" placeholder="0" ${w.gOn?'':'disabled'} aria-label="Glass price"></div><div class="needs-hint">Add a glass price</div></div>
+      </div>
+      <div class="status"></div>`;
+    grid.appendChild(row); wireRow(row); refreshRow(row);
+  });
+
+  function wireRow(row){
+    row.querySelectorAll('.pour').forEach(pour => {
+      const tog=pour.querySelector('.tog'), price=pour.querySelector('.price'), input=pour.querySelector('.pinput');
+      tog.addEventListener('change', () => { input.disabled=!tog.checked; price.classList.toggle('disabled',!tog.checked); if(tog.checked) setTimeout(()=>input.focus(),0); refreshRow(row); flashSaved(); });
+      input.addEventListener('blur', () => { refreshRow(row); flashSaved(); });
+      input.addEventListener('input', () => { refreshRow(row); });
+    });
+  }
+  function refreshRow(row){
+    let anyOn=false;
+    row.querySelectorAll('.pour').forEach(pour => {
+      const on=pour.querySelector('.tog').checked, val=pour.querySelector('.pinput').value.trim(), price=pour.querySelector('.price');
+      const needs=on&&val===''; price.classList.toggle('needs',needs); pour.classList.toggle('show-hint',needs); if(on) anyOn=true;
+    });
+    row.classList.toggle('off',!anyOn);
+    row.querySelector('.status').innerHTML = anyOn
+      ? '<span class="pill on"><span class="pdot"></span> On menu</span>'
+      : '<span class="pill offm"><span class="pdot"></span> Off</span>';
+  }
+
+  /* ---------- multi-select filters ---------- */
+  const selected = {type:new Set(), country:new Set(), varietal:new Set()};
+  const NOUN = {type:'types', country:'countries', varietal:'varietals'};
+  const ALL  = {type:'All Types', country:'All Countries', varietal:'All Varietals'};
+
+  function buildMS(hostId, key, ordered){
+    const host = document.getElementById(hostId);
+    const counts = {}; WINES.forEach(w => counts[w[key]] = (counts[w[key]]||0)+1);
+    let keys = Object.keys(counts);
+    if(ordered) keys.sort((a,b)=> ordered.indexOf(a)-ordered.indexOf(b));
+    else keys.sort((a,b)=> counts[b]-counts[a] || a.localeCompare(b));
+    host.innerHTML =
+      '<button class="ms-btn"><span class="ms-label">'+ALL[key]+'</span>'+
+      '<span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="#9387a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>'+
+      '<div class="ms-panel">'+ keys.map(k =>
+        '<div class="ms-opt" data-val="'+k.replace(/"/g,'&quot;')+'"><span class="cb"></span><span>'+k+'</span><span class="cnt">'+counts[k]+'</span></div>'
+      ).join('') +'</div>';
+    const btn = host.querySelector('.ms-btn');
+    btn.addEventListener('click', (e)=>{ e.stopPropagation(); const open=host.classList.contains('open'); closeAllMS(); host.classList.toggle('open',!open); });
+    host.querySelectorAll('.ms-opt').forEach(opt => {
+      opt.addEventListener('click', (e)=>{ e.stopPropagation();
+        const v=opt.dataset.val;
+        if(selected[key].has(v)){ selected[key].delete(v); opt.classList.remove('sel'); }
+        else { selected[key].add(v); opt.classList.add('sel'); }
+        updateMSLabel(host,key); applyFilters();
+      });
+    });
+  }
+  function updateMSLabel(host,key){
+    const set=selected[key], lbl=host.querySelector('.ms-label');
+    if(set.size===0) lbl.textContent=ALL[key];
+    else if(set.size===1) lbl.textContent=[...set][0];
+    else lbl.textContent=set.size+' '+NOUN[key];
+    host.classList.toggle('active', set.size>0);
+  }
+  function closeAllMS(){ document.querySelectorAll('.ms').forEach(m=>m.classList.remove('open')); }
+  document.addEventListener('click', ()=> closeAllMS());
+
+  buildMS('msType','type',['Red','White','Sparkling','Dessert']);
+  buildMS('msCountry','country');
+  buildMS('msVarietal','varietal');
+
+  const listSearch=document.getElementById('listSearch'), countText=document.getElementById('countText'), resetBtn=document.getElementById('resetBtn');
+  function applyFilters(){
+    const q=(listSearch.value||'').toLowerCase().trim();
+    let shown=0;
+    document.querySelectorAll('#grid .row').forEach(row => {
+      const d=row.dataset;
+      const okT = selected.type.size===0 || selected.type.has(d.type);
+      const okC = selected.country.size===0 || selected.country.has(d.country);
+      const okV = selected.varietal.size===0 || selected.varietal.has(d.varietal);
+      const hay=(d.name+' '+d.prod+' '+d.type+' '+d.country+' '+d.varietal).toLowerCase();
+      const okQ = q===''||hay.includes(q);
+      const ok = okT&&okC&&okV&&okQ;
+      row.style.display = ok?'grid':'none'; if(ok) shown++;
+    });
+    countText.textContent='Showing '+shown+' of '+WINES.length+' wines';
+    emptyState.classList.toggle('show',shown===0);
+    const any = selected.type.size||selected.country.size||selected.varietal.size||q!=='';
+    resetBtn.classList.toggle('show',!!any);
+  }
+  listSearch.addEventListener('input', applyFilters);
+  resetBtn.addEventListener('click', ()=>{
+    Object.values(selected).forEach(s=>s.clear()); listSearch.value='';
+    document.querySelectorAll('.ms-opt.sel').forEach(o=>o.classList.remove('sel'));
+    ['msType','msCountry','msVarietal'].forEach(id=>{ const k=id.replace('ms','').toLowerCase(); updateMSLabel(document.getElementById(id),k); });
+    applyFilters();
+  });
+  applyFilters();
+
+  /* ---------- uploads ---------- */
+  const MENUS = [
+    {key:'Dinner',    file:'dinner_menu_v3.pdf', ts:'Apr 21, 2026 · 12:42 PM'},
+    {key:'Lunch',     file:'lunch_spring.pdf',   ts:'Apr 18, 2026 · 9:15 AM'},
+    {key:'Dessert',   file:'dessert_menu.pdf',   ts:'Mar 30, 2026 · 4:20 PM'},
+    {key:'Cocktail',  file:'',                   ts:''},
+    {key:'Beverages', file:'na_beverages.pdf',   ts:'Apr 02, 2026 · 11:05 AM'}
+  ];
+  const uplIcon='<svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0L8 8m4-4 4 4M5 20h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const uplGrid=document.getElementById('uplGrid');
+  MENUS.forEach((m,idx)=>{
+    const item=document.createElement('div'); item.className='upl-item';
+    item.innerHTML =
+      '<button class="upl-btn">'+uplIcon+' '+m.key+'</button>'+
+      '<input type="file" accept=".pdf,.png,.jpg,.jpeg" hidden>'+
+      '<div class="upl-cap"></div>';
+    uplGrid.appendChild(item);
+    const btn=item.querySelector('.upl-btn'), input=item.querySelector('input'), cap=item.querySelector('.upl-cap');
+    function paint(){
+      if(m.file){ cap.className='upl-cap'; cap.innerHTML='<span class="fn">'+m.file+'</span><span class="ts">'+m.ts+'</span>'; }
+      else { cap.className='upl-cap empty'; cap.textContent='Not uploaded yet'; }
+    }
+    paint();
+    btn.addEventListener('click', ()=> input.click());
+    input.addEventListener('change', ()=>{
+      if(input.files && input.files[0]){ m.file=input.files[0].name; m.ts=fmtStamp(new Date()); paint(); flashSaved(); }
+    });
+  });
+
+  function fmtStamp(d){
+    const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+    let h=d.getHours(), ap=h>=12?'PM':'AM'; h=h%12||12;
+    const mm=String(d.getMinutes()).padStart(2,'0');
+    return mo+' '+d.getDate()+', '+d.getFullYear()+' · '+h+':'+mm+' '+ap;
+  }
+  function fmtDateLong(d){
+    const mo=['January','February','March','April','May','June','July','August','September','October','November','December'][d.getMonth()];
+    return mo+' '+d.getDate()+', '+d.getFullYear();
+  }
+
+  /* ---------- modals ---------- */
+  function openOverlay(id){ document.getElementById(id).classList.add('show'); }
+  function closeOverlay(el){ el.classList.remove('show'); }
+  document.querySelectorAll('.overlay').forEach(ov=>{
+    ov.addEventListener('click', e=>{ if(e.target===ov) closeOverlay(ov); });
+    ov.querySelectorAll('[data-close]').forEach(b=> b.addEventListener('click', ()=>closeOverlay(ov)));
+  });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') document.querySelectorAll('.overlay.show').forEach(closeOverlay); });
+
+  document.getElementById('publishBtn').addEventListener('click', ()=> openOverlay('publishOverlay'));
+  document.getElementById('publishConfirm').addEventListener('click', ()=>{
+    closeOverlay(document.getElementById('publishOverlay')); showToast('Menu published to guests');
+  });
+
+  const rbOverlay=document.getElementById('rollbackOverlay'), rbInput=document.getElementById('rollbackInput'), rbConfirm=document.getElementById('rollbackConfirm');
+  document.getElementById('rollbackBtn').addEventListener('click', ()=>{ rbInput.value=''; rbConfirm.disabled=true; openOverlay('rollbackOverlay'); setTimeout(()=>rbInput.focus(),60); });
+  rbInput.addEventListener('input', ()=>{ rbConfirm.disabled = (rbInput.value !== 'DO IT'); });
+  rbConfirm.addEventListener('click', ()=>{ if(rbInput.value!=='DO IT') return; closeOverlay(rbOverlay); showToast('Rolled back to the previous version'); });
+
+  let toastTimer;
+  function showToast(msg){
+    const t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=msg;
+    t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+  }
+  let savedTimer;
+  function flashSaved(){ const p=document.getElementById('savedPill'); p.classList.add('show'); clearTimeout(savedTimer); savedTimer=setTimeout(()=>p.classList.remove('show'),1800); }
+
+  /* ---------- print ---------- */
+  function buildPrintSheet(){
+    const order=['Sparkling','White','Red','Dessert'], byType={};
+    document.querySelectorAll('#grid .row').forEach(row=>{
+      const w=WINES[+row.dataset.i];
+      const bT=row.querySelector('[data-pour="bottle"] .tog').checked, gT=row.querySelector('[data-pour="glass"] .tog').checked;
+      const bP=row.querySelector('[data-pour="bottle"] .pinput').value.trim(), gP=row.querySelector('[data-pour="glass"] .pinput').value.trim();
+      if(!(bT||gT)) return;
+      const parts=[]; if(gT&&gP) parts.push('Glass $'+gP); if(bT&&bP) parts.push('Bottle $'+bP);
+      if(!parts.length) return;
+      (byType[w.type]=byType[w.type]||[]).push({w, price:parts.join('   /   ')});
+    });
+    let html='<div class="ps-head"><div class="ps-title">Spotted Duck</div><div class="ps-sub">Wine List</div><div class="ps-date">'+fmtDateLong(new Date())+'</div></div>';
+    order.forEach(t=>{ if(!byType[t]) return;
+      html+='<div class="ps-section"><div class="ps-cat">'+(t==='Dessert'?'Dessert &amp; Fortified':t)+'</div>';
+      byType[t].forEach(({w,price})=>{ const v=w.vint?w.vint+' ':'';
+        html+='<div class="ps-wine"><div><span class="ps-w-name">'+v+w.name+'</span><span class="ps-w-meta">'+w.country+' &middot; '+w.varietal+'</span></div><div class="ps-w-price">'+price+'</div></div>';
+      });
+      html+='</div>';
+    });
+    document.getElementById('printSheet').innerHTML=html;
+  }
+  document.getElementById('printBtn').addEventListener('click', ()=>{ buildPrintSheet(); window.print(); });
+
+  /* ---------- download ---------- */
+  function downloadPNG(){
+    const node=document.querySelector('.app'); document.body.classList.add('capturing'); closeAllMS();
+    html2canvas(node,{backgroundColor:'#130d1e',scale:2,useCORS:true,logging:false,windowWidth:document.documentElement.clientWidth,width:node.scrollWidth,height:node.scrollHeight})
+      .then(canvas=>{ document.body.classList.remove('capturing'); const a=document.createElement('a'); a.download='cellareye-hospitality-pricing.png'; a.href=canvas.toDataURL('image/png'); a.click(); })
+      .catch(err=>{ document.body.classList.remove('capturing'); alert('Export failed: '+err.message); });
+  }
+</script>
+</body>
+</html>
