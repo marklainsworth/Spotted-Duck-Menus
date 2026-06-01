@@ -1046,6 +1046,13 @@
                         matchesCategory = true;
                     } else if (currentCategory === 'glass') {
                         matchesCategory = card.getAttribute('data-glass') === 'true';
+                    } else if (currentCategory === 'red' || currentCategory === 'white') {
+                        // Red / White chips list only true table wines of that
+                        // colour. Dessert wines (ports, Madeira, Pineau, sweet
+                        // whites) live under the Dessert chip only, even though
+                        // some are technically red. Search still finds them; the
+                        // colour chips never list them here.
+                        matchesCategory = (group === currentCategory);
                     } else {
                         matchesCategory = group.includes(currentCategory);
                     }
@@ -1202,9 +1209,10 @@
         };
 
         // Build a tasting profile (1-5 per axis) from the wine's varietal/style text
-        // === GENERATED WINE MAP START — do not hand-edit; edit data/wine_tasting_notes.csv then run build_wine_map.py ===
-        // Sourced from data/wine_tasting_notes.csv. Keyed by normalized
-        // display name (see wineNorm). Overrides regex when matched.
+        // === GENERATED WINE MAP START - do not hand-edit; edit data/wine_tasting_notes.csv then run build_wine_map.py ===
+        // Source of truth: data/wine_tasting_notes.csv. Keyed by the
+        // normalized wine display name (see wineNorm). This OVERRIDES
+        // the regex style logic whenever a wine matches.
         const WINE = {
 "anjos vinho verde": {
 "acid": 4,
@@ -1427,7 +1435,7 @@
 "body": 3,
 "fourth": 2,
 "isRed": true,
-"note": "A classic southern Rhône GSM blend (Grenache, Syrah, Mourvèdre), largely unoaked to keep the fruit bright. Juicy blackberry, raspberry, and cherry with violet, licorice, and a touch of garrigue, medium-bodied, fresh, and silky with soft tannins. NOTE: the widely sold 'Les Abeilles' Côtes du Rhône is Jean-Luc Colombo's GSM; menu source attribution referenced J. Boutin, so confirm producer.",
+"note": "A classic southern Rhône GSM blend (Grenache, Syrah, Mourvèdre), largely unoaked to keep the fruit bright. Juicy blackberry, raspberry, and cherry with violet, licorice, and a touch of garrigue, medium-bodied, fresh, and silky with soft tannins.",
 "sweet": 1
 },
 "leviathan cabernet blend": {
@@ -1491,7 +1499,7 @@
 "body": 4,
 "fourth": 3,
 "isRed": true,
-"note": "A coastal Tuscan red from Bolgheri, led by Sangiovese and Cabernet with Merlot and Syrah. Red and black cherry, currant, and raspberry with leather, tobacco, and spice, medium to full-bodied and harmonious with fresh acidity and supple tannins. NOTE: this is a multi-grape Bolgheri Rosso (roughly 30% Sangiovese, 30% Cabernet, plus Merlot and Syrah), not a Sangiovese varietal.",
+"note": "A coastal Tuscan red from Bolgheri, led by Sangiovese and Cabernet with Merlot and Syrah. Red and black cherry, currant, and raspberry with leather, tobacco, and spice, medium to full-bodied and harmonious with fresh acidity and supple tannins.",
 "sweet": 1
 },
 "nacina off-dry riesling": {
@@ -1587,7 +1595,7 @@
 "body": 4,
 "fourth": 2,
 "isRed": false,
-"note": "A California Chardonnay from the historic Seghesio family, with a small splash of estate Vermentino for lift. Lemon curd, pear, and white peach with just a kiss of oak, creamy in the middle but kept fresh by bright acidity. NOTE: tri-county blend (Sonoma/Monterey/SLO), about 95% Chardonnay with 5% estate Vermentino; menu lists Monterey only.",
+"note": "A California Chardonnay from the historic Seghesio family, with a small splash of estate Vermentino for lift. Lemon curd, pear, and white peach with just a kiss of oak, creamy in the middle but kept fresh by bright acidity.",
 "sweet": 1
 },
 "seghesio family vineyards zinfandel": {
@@ -1675,7 +1683,7 @@
 "body": 3,
 "fourth": 1,
 "isRed": false,
-"note": "An estate Viognier from a Santa Ynez Rhône pioneer, with vines planted in 1997. White flowers, nectarine, and orange blossom with peach and honeysuckle, medium-bodied and aromatic but kept dry and refreshing by lively acidity. NOTE: menu prints 'Cushion Block'; producer labels this bottling 'Cushman Block'.",
+"note": "An estate Viognier from a Santa Ynez Rhône pioneer, with vines planted in 1997. White flowers, nectarine, and orange blossom with peach and honeysuckle, medium-bodied and aromatic but kept dry and refreshing by lively acidity.",
 "sweet": 1
 },
 "zardetto prosecco rosé extra dry": {
@@ -1792,6 +1800,13 @@
                 if(!nameEl) return;
                 const name=nameEl.textContent.trim();
                 const group=(card.closest('.wine-section')||{}).getAttribute ? card.closest('.wine-section').getAttribute('data-group') : '';
+                // Non-wine items stay as flat line items: no producer link, no
+                // tasting profile, no synthetic search attributes. Beer, soda,
+                // lemonade, water and cocktails have no winery or varietal, so a
+                // tasting graphic or "winery" blurb would be wrong here. They are
+                // still findable by name/description through the normal search.
+                const NONWINE = new Set(['cocktails','beer','water']);
+                if(NONWINE.has(group)) return;
                 const regions=[...card.querySelectorAll('.wine-meta span')].map(s=>s.textContent.trim()).filter(Boolean);
                 const sub=regions.join(' · ');
 
