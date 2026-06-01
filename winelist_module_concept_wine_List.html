@@ -57,8 +57,8 @@
   .nav-ic:hover{color:var(--cream);background:rgba(255,255,255,.04);}
   .nav-ic.active{color:var(--gold-bright);background:rgba(224,192,116,.1);box-shadow:inset 0 0 0 1px rgba(224,192,116,.25);}
   .nav-ic svg{width:21px;height:21px;}
-  .main{flex:1;min-width:0;padding:30px 34px 130px;}
-  .main-inner{max-width:1360px;margin:0 auto;}
+  .main{flex:1;min-width:0;padding:30px 22px 130px;}
+  .main-inner{max-width:1480px;margin:0 auto;}
 
   .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;
     color:var(--gold);border:1px solid rgba(224,192,116,.28);padding:5px 12px;border-radius:20px;margin-bottom:14px;}
@@ -81,6 +81,8 @@
   .upl-cap .fn{color:var(--gold-bright);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
   .upl-cap .ts{color:var(--muted-2);}
   .upl-cap.empty{color:var(--muted-2);font-style:italic;padding-top:3px;}
+  .upl-logo .upl-btn{border-color:rgba(224,192,116,.4);color:var(--gold-bright);background:rgba(224,192,116,.05);}
+  .upl-logo .upl-btn:hover{background:rgba(224,192,116,.12);}
   .act-right{margin-left:auto;}
   .act-btns{display:flex;align-items:center;gap:10px;}
   .btn{height:42px;border-radius:10px;border:1px solid var(--line-strong);background:rgba(255,255,255,.02);
@@ -130,8 +132,8 @@
 
   .grid{background:linear-gradient(180deg, rgba(27,19,48,.55), rgba(21,15,38,.55));
     border:1px solid var(--line-strong);border-radius:18px;overflow:hidden;}
-  .grid-head, .row{display:grid;grid-template-columns: minmax(220px,1.1fr) 150px 90px 116px 146px 86px 150px 150px 100px;align-items:center;}
-  .grid-head{padding:15px 26px;border-bottom:1px solid var(--line-strong);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:500;}
+  .grid-head, .row{display:grid;grid-template-columns: minmax(150px,1fr) 118px 74px 92px 104px 120px 62px 116px 116px 84px;align-items:center;column-gap:6px;}
+  .grid-head{padding:13px 18px;border-bottom:1px solid var(--line-strong);font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:500;}
   .hcell{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;transition:.14s;}
   .hcell:hover{color:var(--cream);}
   .sar{display:inline-flex;flex-direction:column;line-height:.62;}
@@ -152,46 +154,48 @@
   .switch input:checked + .track{background:linear-gradient(160deg,var(--gold-bright),var(--gold));}
   .switch input:checked + .track::before{transform:translateX(18px);}
   .switch input:focus-visible + .track{outline:2px solid var(--gold-line);outline-offset:2px;}
-  .row{padding:14px 26px;border-bottom:1px solid var(--line);transition:.18s;}
+  .row{padding:11px 18px;border-bottom:1px solid var(--line);transition:.18s;}
   .row:last-child{border-bottom:none;}
   .row:hover{background:rgba(255,255,255,.018);}
   .row.off{opacity:.46;}
-  .wine{display:flex;align-items:center;gap:14px;min-width:0;padding-right:14px;}
-  .thumb{width:40px;height:56px;flex:0 0 40px;border-radius:6px;border:1px solid var(--line-strong);background:linear-gradient(155deg,#241a3a,#191227);display:grid;place-items:center;}
-  .thumb svg{width:17px;height:auto;opacity:.62;}
+  .wine{display:flex;align-items:center;gap:10px;min-width:0;padding-right:8px;}
+  .thumb{width:32px;height:46px;flex:0 0 32px;border-radius:5px;border:1px solid var(--line-strong);background:linear-gradient(155deg,#241a3a,#191227);display:grid;place-items:center;}
+  .thumb svg{width:14px;height:auto;opacity:.62;}
   .wine-txt{min-width:0;}
-  .wname{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;line-height:1.12;color:#f4eee3;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .wname .vint{color:var(--gold-bright);margin-right:6px;}
-  .wmeta{font-size:12px;color:var(--muted);margin-top:3px;font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .tpill{display:inline-flex;align-items:center;font-size:11.5px;font-weight:500;padding:5px 10px;border-radius:7px;letter-spacing:.2px;}
+  .wname{font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;line-height:1.1;color:#f4eee3;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wname .vint{color:var(--gold-bright);margin-right:5px;}
+  .wmeta{font-size:11px;color:var(--muted);margin-top:2px;font-weight:300;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tpill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:500;padding:4px 8px;border-radius:6px;letter-spacing:.2px;}
   .tpill.red{color:#dd9a9a;background:rgba(184,72,72,.16);box-shadow:inset 0 0 0 1px rgba(184,72,72,.3);}
   .tpill.white{color:#dcd29a;background:rgba(190,178,108,.13);box-shadow:inset 0 0 0 1px rgba(190,178,108,.28);}
   .tpill.sparkling{color:#e6cd86;background:rgba(224,192,116,.15);box-shadow:inset 0 0 0 1px rgba(224,192,116,.32);}
   .tpill.dessert{color:#d8a657;background:rgba(216,166,87,.14);box-shadow:inset 0 0 0 1px rgba(216,166,87,.3);}
-  .country{font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:8px;}
-  .country .flag{font-size:15px;}
+  .country{font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:6px;min-width:0;}
+  .country .flag{font-size:14px;}
+  .country .cname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   /* drink window */
-  .dwin{padding-right:14px;}
-  .dwin-bar{position:relative;height:7px;border-radius:5px;overflow:visible;}
-  .dwin-mark{position:absolute;top:50%;width:3px;height:15px;border-radius:2px;background:#f3ede2;
+  .dwin{padding-right:8px;}
+  .dwin-bar{position:relative;height:6px;border-radius:5px;overflow:visible;}
+  .dwin-mark{position:absolute;top:50%;width:3px;height:13px;border-radius:2px;background:#f3ede2;
     box-shadow:0 0 0 2px rgba(19,13,30,.7), 0 1px 4px rgba(0,0,0,.5);transform:translate(-50%,-50%);}
-  .dwin-lab{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+  .dwin-lab{font-size:10px;margin-top:5px;display:flex;align-items:center;gap:5px;white-space:nowrap;}
   .dwin-lab .yr{color:var(--text);font-variant-numeric:tabular-nums;}
   .dwin-lab .st{font-weight:500;}
   .dwin-lab.now .st{color:#74c79a;}
   .dwin-lab.hold .st{color:#8fb6e0;}
   .dwin-lab.past .st{color:#d8a657;}
-  .volume{font-size:13px;color:#cabfd6;font-variant-numeric:tabular-nums;}
-  .varietal{font-size:12.8px;color:#bdb3c9;line-height:1.28;padding-right:12px;}
-  .pour{display:flex;align-items:center;gap:11px;}
-  .tog{appearance:none;-webkit-appearance:none;margin:0;width:22px;height:22px;flex:0 0 22px;border-radius:6px;border:1.5px solid var(--muted-2);background:rgba(20,14,32,.5);cursor:pointer;position:relative;transition:.16s;}
+  .volume{font-size:12.5px;color:#cabfd6;font-variant-numeric:tabular-nums;}
+  .region{font-size:11.5px;color:#bdb3c9;line-height:1.25;padding-right:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .varietal{font-size:11.5px;color:#bdb3c9;line-height:1.25;padding-right:6px;}
+  .pour{display:flex;align-items:center;gap:7px;}
+  .tog{appearance:none;-webkit-appearance:none;margin:0;width:20px;height:20px;flex:0 0 20px;border-radius:5px;border:1.5px solid var(--muted-2);background:rgba(20,14,32,.5);cursor:pointer;position:relative;transition:.16s;}
   .tog:hover{border-color:var(--gold);}
   .tog:checked{background:linear-gradient(160deg,var(--gold-bright),var(--gold));border-color:var(--gold-bright);}
-  .tog:checked::after{content:"";position:absolute;left:6.5px;top:3px;width:5px;height:10px;border:solid #1a1024;border-width:0 2.2px 2.2px 0;transform:rotate(43deg);}
+  .tog:checked::after{content:"";position:absolute;left:6px;top:2.5px;width:4.5px;height:9px;border:solid #1a1024;border-width:0 2.2px 2.2px 0;transform:rotate(43deg);}
   .tog:focus-visible{outline:2px solid var(--gold-line);outline-offset:2px;}
-  .price{display:flex;align-items:center;height:42px;border-radius:10px;border:1px solid var(--line-strong);background:rgba(20,14,32,.55);padding:0 11px;gap:3px;width:98px;transition:.16s;}
-  .price .cur{color:var(--muted-2);font-size:15px;}
-  .price input{border:none;background:transparent;color:var(--gold-bright);font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;width:100%;outline:none;padding:0;}
+  .price{display:flex;align-items:center;height:38px;border-radius:9px;border:1px solid var(--line-strong);background:rgba(20,14,32,.55);padding:0 8px;gap:2px;width:84px;transition:.16s;}
+  .price .cur{color:var(--muted-2);font-size:13px;}
+  .price input{border:none;background:transparent;color:var(--gold-bright);font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;width:100%;outline:none;padding:0;}
   .price input::placeholder{color:var(--muted-2);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;}
   .price.disabled{opacity:.4;}
   .price.disabled input{color:var(--muted);}
@@ -199,8 +203,8 @@
   .needs-hint{display:none;font-size:10.5px;color:var(--amber);margin-top:5px;letter-spacing:.2px;}
   .pour.show-hint .needs-hint{display:block;}
   .status{display:flex;justify-content:flex-start;}
-  .pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;padding:6px 12px;border-radius:8px;letter-spacing:.2px;}
-  .pill .pdot{width:7px;height:7px;border-radius:50%;}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;padding:5px 8px;border-radius:7px;letter-spacing:.1px;white-space:nowrap;}
+  .pill .pdot{width:6px;height:6px;border-radius:50%;}
   .pill.on{color:var(--green);background:var(--green-bg);box-shadow:inset 0 0 0 1px var(--green-line);}
   .pill.on .pdot{background:var(--green);}
   .pill.offm{color:var(--muted);background:rgba(255,255,255,.03);box-shadow:inset 0 0 0 1px var(--line-strong);}
@@ -254,7 +258,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast svg{width:18px;height:18px;}
 
-  @media (max-width:980px){ .main-inner{overflow-x:auto;} .grid{min-width:1300px;} }
+  @media (max-width:1180px){ .main-inner{overflow-x:auto;} .grid{min-width:1140px;} }
 
   /* print: clean paper wine list */
   .print-sheet{display:none;}
@@ -345,6 +349,7 @@
           <div class="ms" id="msWindow"></div>
           <div class="ms" id="msType"></div>
           <div class="ms" id="msCountry"></div>
+          <div class="ms" id="msRegion"></div>
           <div class="ms" id="msVarietal"></div>
           <div class="ms" id="msVolume"></div>
           <div class="spacer"></div>
@@ -358,6 +363,7 @@
             <div class="hcell" data-sort="window"><span>Drink Window</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
             <div class="hcell" data-sort="type"><span>Type</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
             <div class="hcell" data-sort="country"><span>Country</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="region"><span>Region</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
             <div class="hcell" data-sort="varietal"><span>Varietal</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
             <div class="hcell" data-sort="volume"><span>Volume</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
             <div class="hcell" data-sort="bottle"><span>By Bottle</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
@@ -415,16 +421,16 @@
 
 <script>
   const WINES = [
-    {vint:"NV",  name:"Roederer Estate Brut",            prod:"Roederer Estate", type:"Sparkling", country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Chardonnay, Pinot Noir", vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"52", gOn:true,  gPrice:"14"},
-    {vint:"'23", name:"Tiefenbrunner Pinot Grigio",      prod:"Tiefenbrunner",   type:"White",     country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", varietal:"Pinot Grigio",          vol:"750ml", dFrom:2023, dTo:2025, bOn:true,  bPrice:"40", gOn:true,  gPrice:"12"},
-    {vint:"'22", name:"Trefethen Chardonnay",            prod:"Trefethen",       type:"White",     country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Chardonnay",            vol:"750ml", dFrom:2024, dTo:2028, bOn:true,  bPrice:"48", gOn:true,  gPrice:"15"},
-    {vint:"'23", name:"Venta Morales Tempranillo",       prod:"Venta Morales",   type:"Red",       country:"Spain",     flag:"\uD83C\uDDEA\uD83C\uDDF8", varietal:"Tempranillo",           vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"38", gOn:true,  gPrice:"12"},
-    {vint:"'23", name:"Les Abeilles C\u00f4tes du Rh\u00f4ne", prod:"Les Abeilles", type:"Red",     country:"France",    flag:"\uD83C\uDDEB\uD83C\uDDF7", varietal:"Grenache, Syrah, Mourv\u00e8dre", vol:"750ml", dFrom:2025, dTo:2029, bOn:true, bPrice:"42", gOn:true, gPrice:"14"},
-    {vint:"'22", name:"J Vineyards Pinot Noir",          prod:"J Vineyards",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Pinot Noir",            vol:"1.5L",  dFrom:2024, dTo:2029, bOn:true,  bPrice:"98", gOn:true,  gPrice:"16"},
-    {vint:"",    name:"Robert Hall Cabernet Sauvignon",  prod:"Robert Hall",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2026, dTo:2032, bOn:true,  bPrice:"",   gOn:true,  gPrice:"17"},
-    {vint:"'20", name:"Jordan Cabernet Sauvignon",       prod:"Jordan",          type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2027, dTo:2037, bOn:true,  bPrice:"78", gOn:false, gPrice:""},
-    {vint:"",    name:"Graham's 10 Year Tawny Port",     prod:"Graham's",        type:"Dessert",   country:"Portugal",  flag:"\uD83C\uDDF5\uD83C\uDDF9", varietal:"Port Blend",            vol:"375ml", dFrom:2024, dTo:2034, bOn:false, bPrice:"", gOn:true,  gPrice:"12"},
-    {vint:"'22", name:"Tornatore Etna Rosso",            prod:"Tornatore",       type:"Red",       country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", varietal:"Nerello Mascalese",     vol:"750ml", dFrom:2028, dTo:2034, bOn:false, bPrice:"", gOn:false, gPrice:""}
+    {vint:"NV",  name:"Roederer Estate Brut",            prod:"Roederer Estate", type:"Sparkling", country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Anderson Valley", varietal:"Chardonnay, Pinot Noir", vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"52", gOn:true,  gPrice:"14"},
+    {vint:"'23", name:"Tiefenbrunner Pinot Grigio",      prod:"Tiefenbrunner",   type:"White",     country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", region:"Alto Adige", varietal:"Pinot Grigio",          vol:"750ml", dFrom:2023, dTo:2025, bOn:true,  bPrice:"40", gOn:true,  gPrice:"12"},
+    {vint:"'22", name:"Trefethen Chardonnay",            prod:"Trefethen",       type:"White",     country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Napa Valley", varietal:"Chardonnay",            vol:"750ml", dFrom:2024, dTo:2028, bOn:true,  bPrice:"48", gOn:true,  gPrice:"15"},
+    {vint:"'23", name:"Venta Morales Tempranillo",       prod:"Venta Morales",   type:"Red",       country:"Spain",     flag:"\uD83C\uDDEA\uD83C\uDDF8", region:"La Mancha", varietal:"Tempranillo",           vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"38", gOn:true,  gPrice:"12"},
+    {vint:"'23", name:"Les Abeilles C\u00f4tes du Rh\u00f4ne", prod:"Les Abeilles", type:"Red",     country:"France",    flag:"\uD83C\uDDEB\uD83C\uDDF7", region:"C\u00f4tes du Rh\u00f4ne", varietal:"Grenache, Syrah, Mourv\u00e8dre", vol:"750ml", dFrom:2025, dTo:2029, bOn:true, bPrice:"42", gOn:true, gPrice:"14"},
+    {vint:"'22", name:"J Vineyards Pinot Noir",          prod:"J Vineyards",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Russian River Valley", varietal:"Pinot Noir",            vol:"1.5L",  dFrom:2024, dTo:2029, bOn:true,  bPrice:"98", gOn:true,  gPrice:"16"},
+    {vint:"",    name:"Robert Hall Cabernet Sauvignon",  prod:"Robert Hall",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Paso Robles", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2026, dTo:2032, bOn:true,  bPrice:"52", gOn:true,  gPrice:"17"},
+    {vint:"'20", name:"Jordan Cabernet Sauvignon",       prod:"Jordan",          type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Alexander Valley", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2027, dTo:2037, bOn:true,  bPrice:"78", gOn:false, gPrice:""},
+    {vint:"",    name:"Graham's 10 Year Tawny Port",     prod:"Graham's",        type:"Dessert",   country:"Portugal",  flag:"\uD83C\uDDF5\uD83C\uDDF9", region:"Douro", varietal:"Port Blend",            vol:"375ml", dFrom:2024, dTo:2034, bOn:false, bPrice:"", gOn:true,  gPrice:"12"},
+    {vint:"'22", name:"Tornatore Etna Rosso",            prod:"Tornatore",       type:"Red",       country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", region:"Etna", varietal:"Nerello Mascalese",     vol:"750ml", dFrom:2028, dTo:2034, bOn:false, bPrice:"", gOn:false, gPrice:""}
   ];
   const VOL_ML = {'375ml':375, '750ml':750, '1.5L':1500};
   const NOW_YEAR = 2026;
@@ -449,7 +455,7 @@
   WINES.forEach((w, i) => {
     const row = document.createElement('div');
     row.className = 'row'; row.dataset.i = i;
-    row.dataset.name=w.name; row.dataset.prod=w.prod; row.dataset.type=w.type; row.dataset.country=w.country; row.dataset.varietal=w.varietal;
+    row.dataset.name=w.name; row.dataset.prod=w.prod; row.dataset.type=w.type; row.dataset.country=w.country; row.dataset.region=w.region; row.dataset.varietal=w.varietal;
     row.dataset.volume=w.vol; row.dataset.window=windowState(w);
     row.dataset.volml=VOL_ML[w.vol]||0; row.dataset.dfrom=w.dFrom;
     const vint = w.vint ? '<span class="vint">'+w.vint+'</span>' : '';
@@ -458,7 +464,8 @@
         <div class="wine-txt"><div class="wname">${vint}${w.name}</div><div class="wmeta">${w.prod}</div></div></div>
       ${drinkBar(w)}
       <div><span class="tpill ${TYPE_CLASS[w.type]}">${w.type}</span></div>
-      <div class="country"><span class="flag">${w.flag}</span> ${w.country}</div>
+      <div class="country"><span class="flag">${w.flag}</span> <span class="cname">${w.country}</span></div>
+      <div class="region">${w.region}</div>
       <div class="varietal">${w.varietal}</div>
       <div class="volume">${w.vol}</div>
       <div class="pour" data-pour="bottle">
@@ -494,9 +501,9 @@
   }
 
   /* ---------- multi-select filters ---------- */
-  const selected = {window:new Set(), type:new Set(), country:new Set(), varietal:new Set(), volume:new Set()};
-  const NOUN = {window:'windows', type:'types', country:'countries', varietal:'varietals', volume:'sizes'};
-  const ALL  = {window:'Any Window', type:'All Types', country:'All Countries', varietal:'All Varietals', volume:'All Sizes'};
+  const selected = {window:new Set(), type:new Set(), country:new Set(), region:new Set(), varietal:new Set(), volume:new Set()};
+  const NOUN = {window:'windows', type:'types', country:'countries', region:'regions', varietal:'varietals', volume:'sizes'};
+  const ALL  = {window:'Any Window', type:'All Types', country:'All Countries', region:'All Regions', varietal:'All Varietals', volume:'All Sizes'};
 
   function buildMS(hostId, key, ordered, valFn){
     const host = document.getElementById(hostId);
@@ -535,6 +542,7 @@
   buildMS('msWindow','window',['Drink now','Hold','Past peak'], w=>windowState(w));
   buildMS('msType','type',['Red','White','Sparkling','Dessert']);
   buildMS('msCountry','country');
+  buildMS('msRegion','region');
   buildMS('msVarietal','varietal');
   buildMS('msVolume','volume',['375ml','750ml','1.5L'], w=>w.vol);
 
@@ -547,23 +555,24 @@
       const okW = selected.window.size===0 || selected.window.has(d.window);
       const okT = selected.type.size===0 || selected.type.has(d.type);
       const okC = selected.country.size===0 || selected.country.has(d.country);
+      const okR = selected.region.size===0 || selected.region.has(d.region);
       const okV = selected.varietal.size===0 || selected.varietal.has(d.varietal);
       const okZ = selected.volume.size===0 || selected.volume.has(d.volume);
-      const hay=(d.name+' '+d.prod+' '+d.type+' '+d.country+' '+d.varietal+' '+d.volume+' '+d.window).toLowerCase();
+      const hay=(d.name+' '+d.prod+' '+d.type+' '+d.country+' '+d.region+' '+d.varietal+' '+d.volume+' '+d.window).toLowerCase();
       const okQ = q===''||hay.includes(q);
-      const ok = okW&&okT&&okC&&okV&&okZ&&okQ;
+      const ok = okW&&okT&&okC&&okR&&okV&&okZ&&okQ;
       row.style.display = ok?'grid':'none'; if(ok) shown++;
     });
     countText.textContent='Showing '+shown+' of '+WINES.length+' wines';
     emptyState.classList.toggle('show',shown===0);
-    const any = selected.window.size||selected.type.size||selected.country.size||selected.varietal.size||selected.volume.size||q!=='';
+    const any = selected.window.size||selected.type.size||selected.country.size||selected.region.size||selected.varietal.size||selected.volume.size||q!=='';
     resetBtn.classList.toggle('show',!!any);
   }
   listSearch.addEventListener('input', applyFilters);
   resetBtn.addEventListener('click', ()=>{
     Object.values(selected).forEach(s=>s.clear()); listSearch.value='';
     document.querySelectorAll('.ms-opt.sel').forEach(o=>o.classList.remove('sel'));
-    ['msWindow','msType','msCountry','msVarietal','msVolume'].forEach(id=>{ const k=id.replace('ms','').toLowerCase(); updateMSLabel(document.getElementById(id),k); });
+    ['msWindow','msType','msCountry','msRegion','msVarietal','msVolume'].forEach(id=>{ const k=id.replace('ms','').toLowerCase(); updateMSLabel(document.getElementById(id),k); });
     applyFilters();
   });
   applyFilters();
@@ -582,6 +591,7 @@
     window:  r=>+r.dataset.dfrom,
     type:    r=>r.dataset.type.toLowerCase(),
     country: r=>r.dataset.country.toLowerCase(),
+    region:  r=>r.dataset.region.toLowerCase(),
     varietal:r=>r.dataset.varietal.toLowerCase(),
     volume:  r=>+r.dataset.volml,
     bottle:  r=>priceNum(r,'bottle'),
@@ -611,30 +621,36 @@
     h.addEventListener('click', ()=> applySort(h.dataset.sort));
   });
   const MENUS = [
-    {key:'Dinner',    file:'dinner_menu_v3.pdf', ts:'Apr 21, 2026 · 12:42 PM'},
-    {key:'Lunch',     file:'lunch_spring.pdf',   ts:'Apr 18, 2026 · 9:15 AM'},
-    {key:'Dessert',   file:'dessert_menu.pdf',   ts:'Mar 30, 2026 · 4:20 PM'},
-    {key:'Cocktail',  file:'',                   ts:''},
-    {key:'Beverages', file:'na_beverages.pdf',   ts:'Apr 02, 2026 · 11:05 AM'}
+    {key:'Dinner',    file:'dinner_menu_v3.pdf', ts:'Apr 21, 2026 · 12:42 PM', accept:'.pdf,.png,.jpg,.jpeg'},
+    {key:'Lunch',     file:'lunch_spring.pdf',   ts:'Apr 18, 2026 · 9:15 AM',  accept:'.pdf,.png,.jpg,.jpeg'},
+    {key:'Dessert',   file:'dessert_menu.pdf',   ts:'Mar 30, 2026 · 4:20 PM',  accept:'.pdf,.png,.jpg,.jpeg'},
+    {key:'Cocktail',  file:'',                   ts:'',                        accept:'.pdf,.png,.jpg,.jpeg'},
+    {key:'Beverages', file:'na_beverages.pdf',   ts:'Apr 02, 2026 · 11:05 AM', accept:'.pdf,.png,.jpg,.jpeg'},
+    {key:'Current Logo', file:'spotted_duck_logo.png', ts:'Apr 21, 2026 · 12:50 PM', accept:'.png', logo:true}
   ];
   const uplIcon='<svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0L8 8m4-4 4 4M5 20h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const logoIcon='<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="9" r="1.6" stroke="currentColor" stroke-width="1.4"/><path d="M5 18l4.5-5 3 3 2.5-2.5L19 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const uplGrid=document.getElementById('uplGrid');
   MENUS.forEach((m,idx)=>{
-    const item=document.createElement('div'); item.className='upl-item';
+    const item=document.createElement('div'); item.className='upl-item'+(m.logo?' upl-logo':'');
     item.innerHTML =
-      '<button class="upl-btn">'+uplIcon+' '+m.key+'</button>'+
-      '<input type="file" accept=".pdf,.png,.jpg,.jpeg" hidden>'+
+      '<button class="upl-btn">'+(m.logo?logoIcon:uplIcon)+' '+m.key+'</button>'+
+      '<input type="file" accept="'+(m.accept||'.pdf,.png,.jpg,.jpeg')+'" hidden>'+
       '<div class="upl-cap"></div>';
     uplGrid.appendChild(item);
     const btn=item.querySelector('.upl-btn'), input=item.querySelector('input'), cap=item.querySelector('.upl-cap');
     function paint(){
       if(m.file){ cap.className='upl-cap'; cap.innerHTML='<span class="fn">'+m.file+'</span><span class="ts">'+m.ts+'</span>'; }
-      else { cap.className='upl-cap empty'; cap.textContent='Not uploaded yet'; }
+      else { cap.className='upl-cap empty'; cap.textContent=m.logo?'No logo yet · PNG':'Not uploaded yet'; }
     }
     paint();
     btn.addEventListener('click', ()=> input.click());
     input.addEventListener('change', ()=>{
-      if(input.files && input.files[0]){ m.file=input.files[0].name; m.ts=fmtStamp(new Date()); paint(); flashSaved(); }
+      if(input.files && input.files[0]){
+        const f=input.files[0];
+        if(m.logo && !/\.png$/i.test(f.name)){ showToast('Logo must be a PNG file'); input.value=''; return; }
+        m.file=f.name; m.ts=fmtStamp(new Date()); paint(); flashSaved();
+      }
     });
   });
 
