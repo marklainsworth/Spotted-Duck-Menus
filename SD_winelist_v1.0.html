@@ -1,6 +1,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<!-- Microsoft Clarity -->
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "x0xi91hc17");
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#024258">
 <meta name="description" content="Digital Beverage Menu for The Spotted Duck">
@@ -1816,13 +1824,22 @@
                 nameEl.classList.add('has-winery');
                 nameEl.innerHTML='<span class="winery-link">'+nameEl.innerHTML+'</span>';
                 nameEl.addEventListener('click',()=>{
-                    const bl = findWinery(name);
+                    const ov=wineLookup(name);
+                    const p=ov?{body:ov.body,sweet:ov.sweet,acid:ov.acid,fourth:ov.fourth,isRed:ov.isRed}:tastingProfile(name+' '+sub, group);
+                    const fourth = (group==='dessert') ? axisHtml('Fresh','Rich',p.fourth) : (p.isRed ? axisHtml('Smooth','Bold',p.fourth) : axisHtml('Unoaked','Oaked',p.fourth));
+                    const nt = ov?ov.note:tastingNote(name+' '+sub, p);
                     openModal(
                       '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
-                      '<div class="modal-eyebrow">'+'The Winery'+'</div>'+
+                      '<div class="modal-eyebrow">'+'Tasting Profile'+'</div>'+
                       '<div class="modal-title">'+name+'</div>'+
                       (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
-                      '<div class="modal-body">'+(bl||'A producer profile for this wine is being prepared.')+'</div>'
+                      '<div class="modal-body">'+
+                        axisHtml('Light','Full',p.body)+
+                        axisHtml('Dry','Sweet',p.sweet)+
+                        axisHtml('Soft','Crisp',p.acid)+
+                        fourth+
+                        '<div class="modal-note">'+nt+'</div>'+
+                      '</div>'
                     );
                 });
 
@@ -1851,27 +1868,18 @@
                 // Add the + tasting sign inline, right after the wine name
                 const btn=document.createElement('button');
                 btn.className='info-btn'; btn.type='button'; btn.textContent='+';
-                btn.setAttribute('aria-label','Tasting profile');
+                btn.setAttribute('aria-label','Winery');
                 nameEl.appendChild(btn);
                 {
                     btn.addEventListener('click',(e)=>{
                         e.stopPropagation();
-                        const ov=wineLookup(name);
-                        const p=ov?{body:ov.body,sweet:ov.sweet,acid:ov.acid,fourth:ov.fourth,isRed:ov.isRed}:tastingProfile(name+' '+sub, group);
-                        const fourth = (group==='dessert') ? axisHtml('Fresh','Rich',p.fourth) : (p.isRed ? axisHtml('Smooth','Bold',p.fourth) : axisHtml('Unoaked','Oaked',p.fourth));
-                        const nt = ov?ov.note:tastingNote(name+' '+sub, p);
+                        const bl = findWinery(name);
                         openModal(
                           '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
-                          '<div class="modal-eyebrow">'+'Tasting Profile'+'</div>'+
+                          '<div class="modal-eyebrow">'+'The Winery'+'</div>'+
                           '<div class="modal-title">'+name+'</div>'+
                           (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
-                          '<div class="modal-body">'+
-                            axisHtml('Light','Full',p.body)+
-                            axisHtml('Dry','Sweet',p.sweet)+
-                            axisHtml('Soft','Crisp',p.acid)+
-                            fourth+
-                            '<div class="modal-note">'+nt+'</div>'+
-                          '</div>'
+                          '<div class="modal-body">'+(bl||'A producer profile for this wine is being prepared.')+'</div>'
                         );
                     });
                 }
@@ -1891,23 +1899,6 @@
                 nameEl.innerHTML='<span class="winery-link">'+nameEl.innerHTML+'</span>';
                 nameEl.style.cursor='pointer';
                 nameEl.addEventListener('click',()=>{
-                    const bl = findWinery(name);
-                    openModal(
-                      '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
-                      '<div class="modal-eyebrow">'+'The Winery'+'</div>'+
-                      '<div class="modal-title">'+name+'</div>'+
-                      (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
-                      '<div class="modal-body">'+(bl||'A producer profile for this wine is being prepared.')+'</div>'
-                    );
-                });
-
-                // plus sign for the tasting grid
-                const btn=document.createElement('button');
-                btn.className='info-btn'; btn.type='button'; btn.textContent='+';
-                btn.setAttribute('aria-label','Tasting profile');
-                nameEl.appendChild(btn);
-                btn.addEventListener('click',(e)=>{
-                    e.stopPropagation();
                     const ov=wineLookup(name);
                     const p=ov?{body:ov.body,sweet:ov.sweet,acid:ov.acid,fourth:ov.fourth,isRed:ov.isRed}:tastingProfile(name+' '+sub, '');
                     const fourth = p.isRed ? axisHtml('Smooth','Bold',p.fourth) : axisHtml('Unoaked','Oaked',p.fourth);
@@ -1924,6 +1915,23 @@
                         fourth+
                         '<div class="modal-note">'+nt+'</div>'+
                       '</div>'
+                    );
+                });
+
+                // plus sign for the tasting grid
+                const btn=document.createElement('button');
+                btn.className='info-btn'; btn.type='button'; btn.textContent='+';
+                btn.setAttribute('aria-label','Winery');
+                nameEl.appendChild(btn);
+                btn.addEventListener('click',(e)=>{
+                    e.stopPropagation();
+                    const bl = findWinery(name);
+                    openModal(
+                      '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
+                      '<div class="modal-eyebrow">'+'The Winery'+'</div>'+
+                      '<div class="modal-title">'+name+'</div>'+
+                      (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
+                      '<div class="modal-body">'+(bl||'A producer profile for this wine is being prepared.')+'</div>'
                     );
                 });
             });
