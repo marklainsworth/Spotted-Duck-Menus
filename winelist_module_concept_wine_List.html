@@ -132,7 +132,7 @@
 
   .grid{background:linear-gradient(180deg, rgba(27,19,48,.55), rgba(21,15,38,.55));
     border:1px solid var(--line-strong);border-radius:18px;overflow:hidden;}
-  .grid-head, .row{display:grid;grid-template-columns: minmax(150px,1fr) 118px 74px 92px 104px 120px 62px 116px 116px 84px;align-items:center;column-gap:6px;}
+  .grid-head, .row{display:grid;grid-template-columns: minmax(146px,1fr) 112px 66px 68px 84px 96px 110px 56px 110px 110px 78px;align-items:center;column-gap:6px;}
   .grid-head{padding:13px 18px;border-bottom:1px solid var(--line-strong);font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:500;}
   .hcell{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;transition:.14s;}
   .hcell:hover{color:var(--cream);}
@@ -185,6 +185,12 @@
   .dwin-lab.hold .st{color:#8fb6e0;}
   .dwin-lab.past .st{color:#d8a657;}
   .volume{font-size:12.5px;color:#cabfd6;font-variant-numeric:tabular-nums;}
+  .qty{font-variant-numeric:tabular-nums;font-size:15px;font-weight:500;color:#d7cee0;display:flex;align-items:baseline;gap:4px;}
+  .qty .qn{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;line-height:1;}
+  .qty .qu{font-size:9.5px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;}
+  .qty.low .qn{color:var(--amber);}
+  .qty.zero .qn{color:#dd9a9a;}
+  .qty.zero .qu{color:#dd9a9a;}
   .region{font-size:11.5px;color:#bdb3c9;line-height:1.25;padding-right:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .varietal{font-size:11.5px;color:#bdb3c9;line-height:1.25;padding-right:6px;}
   .pour{display:flex;align-items:center;gap:7px;}
@@ -258,7 +264,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast svg{width:18px;height:18px;}
 
-  @media (max-width:1180px){ .main-inner{overflow-x:auto;} .grid{min-width:1140px;} }
+  @media (max-width:1180px){ .main-inner{overflow-x:auto;} .grid{min-width:1180px;} }
 
   /* print: clean paper wine list */
   .print-sheet{display:none;}
@@ -352,6 +358,7 @@
           <div class="ms" id="msRegion"></div>
           <div class="ms" id="msVarietal"></div>
           <div class="ms" id="msVolume"></div>
+          <div class="ms" id="msCellars"></div>
           <div class="spacer"></div>
           <span class="count" id="countText"></span>
           <button class="reset" id="resetBtn">Reset</button>
@@ -361,6 +368,7 @@
           <div class="grid-head">
             <div class="hcell" data-sort="name"><span>Wine</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
             <div class="hcell" data-sort="window"><span>Drink Window</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
+            <div class="hcell" data-sort="qty"><span>Qty OH</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
             <div class="hcell" data-sort="type"><span>Type</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
             <div class="hcell" data-sort="country"><span>Country</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
             <div class="hcell" data-sort="region"><span>Region</span><span class="sar"><i class="up">&#9650;</i><i class="dn">&#9660;</i></span></div>
@@ -420,19 +428,21 @@
 <div class="print-sheet" id="printSheet"></div>
 
 <script>
+  const CELLARS = ['Main Cellar','Stock Room','Offsite'];
   const WINES = [
-    {vint:"NV",  name:"Roederer Estate Brut",            prod:"Roederer Estate", type:"Sparkling", country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Anderson Valley", varietal:"Chardonnay, Pinot Noir", vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"52", gOn:true,  gPrice:"14"},
-    {vint:"'23", name:"Tiefenbrunner Pinot Grigio",      prod:"Tiefenbrunner",   type:"White",     country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", region:"Alto Adige", varietal:"Pinot Grigio",          vol:"750ml", dFrom:2023, dTo:2025, bOn:true,  bPrice:"40", gOn:true,  gPrice:"12"},
-    {vint:"'22", name:"Trefethen Chardonnay",            prod:"Trefethen",       type:"White",     country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Napa Valley", varietal:"Chardonnay",            vol:"750ml", dFrom:2024, dTo:2028, bOn:true,  bPrice:"48", gOn:true,  gPrice:"15"},
-    {vint:"'23", name:"Venta Morales Tempranillo",       prod:"Venta Morales",   type:"Red",       country:"Spain",     flag:"\uD83C\uDDEA\uD83C\uDDF8", region:"La Mancha", varietal:"Tempranillo",           vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"38", gOn:true,  gPrice:"12"},
-    {vint:"'23", name:"Les Abeilles C\u00f4tes du Rh\u00f4ne", prod:"Les Abeilles", type:"Red",     country:"France",    flag:"\uD83C\uDDEB\uD83C\uDDF7", region:"C\u00f4tes du Rh\u00f4ne", varietal:"Grenache, Syrah, Mourv\u00e8dre", vol:"750ml", dFrom:2025, dTo:2029, bOn:true, bPrice:"42", gOn:true, gPrice:"14"},
-    {vint:"'22", name:"J Vineyards Pinot Noir",          prod:"J Vineyards",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Russian River Valley", varietal:"Pinot Noir",            vol:"1.5L",  dFrom:2024, dTo:2029, bOn:true,  bPrice:"98", gOn:true,  gPrice:"16"},
-    {vint:"",    name:"Robert Hall Cabernet Sauvignon",  prod:"Robert Hall",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Paso Robles", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2026, dTo:2032, bOn:true,  bPrice:"52", gOn:true,  gPrice:"17"},
-    {vint:"'20", name:"Jordan Cabernet Sauvignon",       prod:"Jordan",          type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Alexander Valley", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2027, dTo:2037, bOn:true,  bPrice:"78", gOn:false, gPrice:""},
-    {vint:"",    name:"Graham's 10 Year Tawny Port",     prod:"Graham's",        type:"Dessert",   country:"Portugal",  flag:"\uD83C\uDDF5\uD83C\uDDF9", region:"Douro", varietal:"Port Blend",            vol:"375ml", dFrom:2024, dTo:2034, bOn:false, bPrice:"", gOn:true,  gPrice:"12"},
-    {vint:"'22", name:"Tornatore Etna Rosso",            prod:"Tornatore",       type:"Red",       country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", region:"Etna", varietal:"Nerello Mascalese",     vol:"750ml", dFrom:2028, dTo:2034, bOn:false, bPrice:"", gOn:false, gPrice:""}
+    {vint:"NV",  name:"Roederer Estate Brut",            prod:"Roederer Estate", type:"Sparkling", country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Anderson Valley", varietal:"Chardonnay, Pinot Noir", vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"52", gOn:true,  gPrice:"14", stock:{'Main Cellar':18,'Stock Room':12,'Offsite':6}},
+    {vint:"'23", name:"Tiefenbrunner Pinot Grigio",      prod:"Tiefenbrunner",   type:"White",     country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", region:"Alto Adige", varietal:"Pinot Grigio",          vol:"750ml", dFrom:2023, dTo:2025, bOn:true,  bPrice:"40", gOn:true,  gPrice:"12", stock:{'Main Cellar':9,'Stock Room':24,'Offsite':0}},
+    {vint:"'22", name:"Trefethen Chardonnay",            prod:"Trefethen",       type:"White",     country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Napa Valley", varietal:"Chardonnay",            vol:"750ml", dFrom:2024, dTo:2028, bOn:true,  bPrice:"48", gOn:true,  gPrice:"15", stock:{'Main Cellar':6,'Stock Room':0,'Offsite':0}},
+    {vint:"'23", name:"Venta Morales Tempranillo",       prod:"Venta Morales",   type:"Red",       country:"Spain",     flag:"\uD83C\uDDEA\uD83C\uDDF8", region:"La Mancha", varietal:"Tempranillo",           vol:"750ml", dFrom:2024, dTo:2027, bOn:true,  bPrice:"38", gOn:true,  gPrice:"12", stock:{'Main Cellar':30,'Stock Room':18,'Offsite':12}},
+    {vint:"'23", name:"Les Abeilles C\u00f4tes du Rh\u00f4ne", prod:"Les Abeilles", type:"Red",     country:"France",    flag:"\uD83C\uDDEB\uD83C\uDDF7", region:"C\u00f4tes du Rh\u00f4ne", varietal:"Grenache, Syrah, Mourv\u00e8dre", vol:"750ml", dFrom:2025, dTo:2029, bOn:true, bPrice:"42", gOn:true, gPrice:"14", stock:{'Main Cellar':14,'Stock Room':10,'Offsite':4}},
+    {vint:"'22", name:"J Vineyards Pinot Noir",          prod:"J Vineyards",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Russian River Valley", varietal:"Pinot Noir",            vol:"1.5L",  dFrom:2024, dTo:2029, bOn:true,  bPrice:"98", gOn:true,  gPrice:"16", stock:{'Main Cellar':3,'Stock Room':1,'Offsite':0}},
+    {vint:"",    name:"Robert Hall Cabernet Sauvignon",  prod:"Robert Hall",     type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Paso Robles", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2026, dTo:2032, bOn:true,  bPrice:"52", gOn:true,  gPrice:"17", stock:{'Main Cellar':22,'Stock Room':16,'Offsite':8}},
+    {vint:"'20", name:"Jordan Cabernet Sauvignon",       prod:"Jordan",          type:"Red",       country:"USA",       flag:"\uD83C\uDDFA\uD83C\uDDF8", region:"Alexander Valley", varietal:"Cabernet Sauvignon",    vol:"750ml", dFrom:2027, dTo:2037, bOn:true,  bPrice:"78", gOn:false, gPrice:"", stock:{'Main Cellar':10,'Stock Room':6,'Offsite':20}},
+    {vint:"",    name:"Graham's 10 Year Tawny Port",     prod:"Graham's",        type:"Dessert",   country:"Portugal",  flag:"\uD83C\uDDF5\uD83C\uDDF9", region:"Douro", varietal:"Port Blend",            vol:"375ml", dFrom:2024, dTo:2034, bOn:false, bPrice:"", gOn:true,  gPrice:"12", stock:{'Main Cellar':5,'Stock Room':4,'Offsite':3}},
+    {vint:"'22", name:"Tornatore Etna Rosso",            prod:"Tornatore",       type:"Red",       country:"Italy",     flag:"\uD83C\uDDEE\uD83C\uDDF9", region:"Etna", varietal:"Nerello Mascalese",     vol:"750ml", dFrom:2028, dTo:2034, bOn:false, bPrice:"", gOn:false, gPrice:"", stock:{'Main Cellar':0,'Stock Room':0,'Offsite':0}}
   ];
   const VOL_ML = {'375ml':375, '750ml':750, '1.5L':1500};
+  const LOW_QTY = 6;
   const NOW_YEAR = 2026;
   function windowState(w){ return NOW_YEAR < w.dFrom ? 'Hold' : (NOW_YEAR > w.dTo ? 'Past peak' : 'Drink now'); }
   const STATE_CLASS = {'Drink now':'now', 'Hold':'hold', 'Past peak':'past'};
@@ -458,11 +468,13 @@
     row.dataset.name=w.name; row.dataset.prod=w.prod; row.dataset.type=w.type; row.dataset.country=w.country; row.dataset.region=w.region; row.dataset.varietal=w.varietal;
     row.dataset.volume=w.vol; row.dataset.window=windowState(w);
     row.dataset.volml=VOL_ML[w.vol]||0; row.dataset.dfrom=w.dFrom;
+    row.dataset.stock=JSON.stringify(w.stock||{});
     const vint = w.vint ? '<span class="vint">'+w.vint+'</span>' : '';
     row.innerHTML = `
       <div class="wine"><div class="thumb">${bottleSVG}</div>
         <div class="wine-txt"><div class="wname">${vint}${w.name}</div><div class="wmeta">${w.prod}</div></div></div>
       ${drinkBar(w)}
+      <div class="qty"><span class="qn">0</span><span class="qu">btl</span></div>
       <div><span class="tpill ${TYPE_CLASS[w.type]}">${w.type}</span></div>
       <div class="country"><span class="flag">${w.flag}</span> <span class="cname">${w.country}</span></div>
       <div class="region">${w.region}</div>
@@ -501,9 +513,9 @@
   }
 
   /* ---------- multi-select filters ---------- */
-  const selected = {window:new Set(), type:new Set(), country:new Set(), region:new Set(), varietal:new Set(), volume:new Set()};
-  const NOUN = {window:'windows', type:'types', country:'countries', region:'regions', varietal:'varietals', volume:'sizes'};
-  const ALL  = {window:'Any Window', type:'All Types', country:'All Countries', region:'All Regions', varietal:'All Varietals', volume:'All Sizes'};
+  const selected = {window:new Set(), type:new Set(), country:new Set(), region:new Set(), varietal:new Set(), volume:new Set(), cellar:new Set()};
+  const NOUN = {window:'windows', type:'types', country:'countries', region:'regions', varietal:'varietals', volume:'sizes', cellar:'cellars'};
+  const ALL  = {window:'Any Window', type:'All Types', country:'All Countries', region:'All Regions', varietal:'All Varietals', volume:'All Sizes', cellar:'All Cellars'};
 
   function buildMS(hostId, key, ordered, valFn){
     const host = document.getElementById(hostId);
@@ -546,6 +558,44 @@
   buildMS('msVarietal','varietal');
   buildMS('msVolume','volume',['375ml','750ml','1.5L'], w=>w.vol);
 
+  // Cellars: drives the Qty OH sum rather than hiding rows
+  function buildCellarMS(){
+    const host=document.getElementById('msCellars'); if(!host) return;
+    const counts={}; CELLARS.forEach(c=>{ counts[c]=WINES.filter(w=>(w.stock&&w.stock[c]>0)).length; });
+    host.innerHTML =
+      '<button class="ms-btn"><span class="ms-label">'+ALL.cellar+'</span>'+
+      '<span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="#9387a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>'+
+      '<div class="ms-panel">'+ CELLARS.map(c =>
+        '<div class="ms-opt" data-val="'+c.replace(/"/g,'&quot;')+'"><span class="cb"></span><span>'+c+'</span><span class="cnt">'+counts[c]+'</span></div>'
+      ).join('') +'</div>';
+    const btn=host.querySelector('.ms-btn');
+    btn.addEventListener('click',(e)=>{ e.stopPropagation(); const open=host.classList.contains('open'); closeAllMS(); host.classList.toggle('open',!open); });
+    host.querySelectorAll('.ms-opt').forEach(opt=>{
+      opt.addEventListener('click',(e)=>{ e.stopPropagation();
+        const v=opt.dataset.val;
+        if(selected.cellar.has(v)){ selected.cellar.delete(v); opt.classList.remove('sel'); }
+        else { selected.cellar.add(v); opt.classList.add('sel'); }
+        updateMSLabel(host,'cellar'); renderQty(); applyFilters();
+      });
+    });
+  }
+  buildCellarMS();
+
+  // Sum on-hand across the selected cellars (empty = all cellars) and paint each row
+  function renderQty(){
+    const sel = selected.cellar.size ? [...selected.cellar] : CELLARS;
+    document.querySelectorAll('#grid .row').forEach(row=>{
+      let stock={}; try{ stock=JSON.parse(row.dataset.stock||'{}'); }catch(e){}
+      let sum=0; sel.forEach(c=>{ sum += (stock[c]||0); });
+      row.dataset.qtynum=sum;
+      const cell=row.querySelector('.qty'); if(!cell) return;
+      cell.querySelector('.qn').textContent=sum;
+      cell.classList.toggle('zero', sum===0);
+      cell.classList.toggle('low', sum>0 && sum<=LOW_QTY);
+      cell.title = sel.map(c=>c+': '+(stock[c]||0)).join('  ·  ');
+    });
+  }
+
   const listSearch=document.getElementById('listSearch'), countText=document.getElementById('countText'), resetBtn=document.getElementById('resetBtn');
   function applyFilters(){
     const q=(listSearch.value||'').toLowerCase().trim();
@@ -565,16 +615,17 @@
     });
     countText.textContent='Showing '+shown+' of '+WINES.length+' wines';
     emptyState.classList.toggle('show',shown===0);
-    const any = selected.window.size||selected.type.size||selected.country.size||selected.region.size||selected.varietal.size||selected.volume.size||q!=='';
+    const any = selected.window.size||selected.type.size||selected.country.size||selected.region.size||selected.varietal.size||selected.volume.size||selected.cellar.size||q!=='';
     resetBtn.classList.toggle('show',!!any);
   }
   listSearch.addEventListener('input', applyFilters);
   resetBtn.addEventListener('click', ()=>{
     Object.values(selected).forEach(s=>s.clear()); listSearch.value='';
     document.querySelectorAll('.ms-opt.sel').forEach(o=>o.classList.remove('sel'));
-    ['msWindow','msType','msCountry','msRegion','msVarietal','msVolume'].forEach(id=>{ const k=id.replace('ms','').toLowerCase(); updateMSLabel(document.getElementById(id),k); });
-    applyFilters();
+    ['msWindow','msType','msCountry','msRegion','msVarietal','msVolume','msCellars'].forEach(id=>{ const el=document.getElementById(id); if(!el) return; const k=(id==='msCellars')?'cellar':id.replace('ms','').toLowerCase(); updateMSLabel(el,k); });
+    renderQty(); applyFilters();
   });
+  renderQty();
   applyFilters();
 
   /* ---------- column sort ---------- */
@@ -589,6 +640,7 @@
   const SORTVAL = {
     name:    r=>r.dataset.name.toLowerCase(),
     window:  r=>+r.dataset.dfrom,
+    qty:     r=>+(r.dataset.qtynum||0),
     type:    r=>r.dataset.type.toLowerCase(),
     country: r=>r.dataset.country.toLowerCase(),
     region:  r=>r.dataset.region.toLowerCase(),
