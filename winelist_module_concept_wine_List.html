@@ -266,23 +266,7 @@
 
   @media (max-width:1180px){ .main-inner{overflow-x:auto;} .grid{min-width:1180px;} }
 
-  /* print: clean paper wine list */
-  .print-sheet{display:none;}
-  @media print{
-    body{background:#fff;}
-    .app,.dl-wrap,.overlay,.toast{display:none !important;}
-    .print-sheet{display:block;color:#1b1b1b;font-family:'Cormorant Garamond',Georgia,serif;padding:6px 10px;}
-    .ps-head{text-align:center;border-bottom:2px solid #b8a98c;padding-bottom:14px;margin-bottom:18px;}
-    .ps-title{font-size:36px;font-weight:700;letter-spacing:1px;}
-    .ps-sub{font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#7a6f52;font-family:'Jost',sans-serif;margin-top:6px;}
-    .ps-date{font-size:11px;color:#999;font-family:'Jost',sans-serif;margin-top:6px;}
-    .ps-section{break-inside:avoid;margin-bottom:14px;}
-    .ps-cat{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-family:'Jost',sans-serif;color:#8a6d3b;border-bottom:1px solid #e0d8c8;padding-bottom:5px;margin:14px 0 9px;}
-    .ps-wine{display:flex;justify-content:space-between;align-items:baseline;gap:18px;margin:6px 0;}
-    .ps-w-name{font-size:18px;font-weight:600;}
-    .ps-w-meta{font-size:11px;color:#888;font-family:'Jost',sans-serif;margin-left:9px;font-weight:400;}
-    .ps-w-price{font-size:14px;font-weight:600;white-space:nowrap;font-family:'Jost',sans-serif;}
-  }
+  /* print wine list opens in a separate page (winelist_print_populated.html) */
 </style>
 </head>
 <body>
@@ -425,7 +409,7 @@
 
 <div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none"><path d="m5 13 4 4L19 7" stroke="#7fd6a0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="toastMsg"></span></div>
 
-<div class="print-sheet" id="printSheet"></div>
+
 
 <script>
   const CELLARS = ['Main Cellar','Stock Room','Offsite'];
@@ -754,28 +738,47 @@
   function flashSaved(){ const p=document.getElementById('savedPill'); p.classList.add('show'); clearTimeout(savedTimer); savedTimer=setTimeout(()=>p.classList.remove('show'),1800); }
 
   /* ---------- print ---------- */
-  function buildPrintSheet(){
-    const order=['Sparkling','White','Red','Dessert'], byType={};
+  // Print Wine List opens the standalone print layout in a new tab.
+  // The print layout (winelist_print_populated.html) owns the paper design:
+  // header, page breaks, footer. It currently renders its own baked-in
+  // snapshot of the menu data.
+  //
+  // PRODUCTION (live data) - when wired to the real database, build the
+  // current grid data and hand it to the print page instead of its snapshot.
+  // The handoff is the one line marked below: append the data to the URL
+  // (or write it to sessionStorage) and have the print page read it on load.
+  const PRINT_LAYOUT_URL = 'winelist_print_populated.html';
+
+  function currentListData(){
+    // Collect what the member has actually set in the grid right now.
+    // This is what gets passed to the print layout in production.
+    const out = [];
     document.querySelectorAll('#grid .row').forEach(row=>{
-      const w=WINES[+row.dataset.i];
-      const bT=row.querySelector('[data-pour="bottle"] .tog').checked, gT=row.querySelector('[data-pour="glass"] .tog').checked;
-      const bP=row.querySelector('[data-pour="bottle"] .pinput').value.trim(), gP=row.querySelector('[data-pour="glass"] .pinput').value.trim();
+      const bT=row.querySelector('[data-pour="bottle"] .tog').checked;
+      const gT=row.querySelector('[data-pour="glass"] .tog').checked;
+      const bP=row.querySelector('[data-pour="bottle"] .pinput').value.trim();
+      const gP=row.querySelector('[data-pour="glass"] .pinput').value.trim();
       if(!(bT||gT)) return;
-      const parts=[]; if(gT&&gP) parts.push('Glass $'+gP); if(bT&&bP) parts.push('Bottle $'+bP);
-      if(!parts.length) return;
-      (byType[w.type]=byType[w.type]||[]).push({w, price:parts.join('   /   ')});
-    });
-    let html='<div class="ps-head"><div class="ps-title">Spotted Duck</div><div class="ps-sub">Wine List</div><div class="ps-date">'+fmtDateLong(new Date())+'</div></div>';
-    order.forEach(t=>{ if(!byType[t]) return;
-      html+='<div class="ps-section"><div class="ps-cat">'+(t==='Dessert'?'Dessert &amp; Fortified':t)+'</div>';
-      byType[t].forEach(({w,price})=>{ const v=w.vint?w.vint+' ':''; const fmt=(w.vol&&w.vol!=='750ml')?' &middot; '+w.vol:'';
-        html+='<div class="ps-wine"><div><span class="ps-w-name">'+v+w.name+'</span><span class="ps-w-meta">'+w.country+' &middot; '+w.varietal+fmt+'</span></div><div class="ps-w-price">'+price+'</div></div>';
+      const rows=[]; if(gT&&gP) rows.push(['Glass','$'+gP]); if(bT&&bP) rows.push(['Bottle','$'+bP]);
+      if(!rows.length) return;
+      out.push({
+        type:row.dataset.type, name:row.dataset.name,
+        metas:[row.dataset.region, row.dataset.varietal].filter(Boolean),
+        rows
       });
-      html+='</div>';
     });
-    document.getElementById('printSheet').innerHTML=html;
+    return out;
   }
-  document.getElementById('printBtn').addEventListener('click', ()=>{ buildPrintSheet(); window.print(); });
+
+  document.getElementById('printBtn').addEventListener('click', ()=>{
+    // STATIC (today): open the print layout as-is with its built-in snapshot.
+    window.open(PRINT_LAYOUT_URL, '_blank');
+
+    // PRODUCTION (live data): replace the line above with the handoff, e.g.
+    //   sessionStorage.setItem('ce_print_data', JSON.stringify(currentListData()));
+    //   window.open(PRINT_LAYOUT_URL, '_blank');
+    // and have the print page read ce_print_data on load instead of its snapshot.
+  });
 
   /* ---------- download ---------- */
   function downloadPNG(){
