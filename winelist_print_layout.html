@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wine List, Print Layout</title>
+<title>Wine List, Print Layout (v1.0 data)</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   /* ============================================================
@@ -44,9 +44,11 @@
 
   .stage{padding:30px 16px 60px;display:flex;justify-content:center;}
 
-  /* ---------- the printable sheet (SCREEN PREVIEW) ---------- */
-  /* US Letter proportions for preview: 8.5 x 11 at 96dpi = 816 x 1056 */
-  .sheet{
+  /* ---------- discrete page sheets ----------
+     Each .page is one printed Letter page. On screen they stack with a gap
+     so you SEE the pagination. In print each .page starts on a fresh sheet. */
+  .pages{display:flex;flex-direction:column;align-items:center;gap:26px;}
+  .page{
     width:816px;min-height:1056px;box-sizing:border-box;
     background:#fff;color:var(--ink);
     font-family:'Cormorant Garamond',Georgia,serif;
@@ -77,19 +79,23 @@
 
   /* ---------- PRINT: what actually goes to PDF ---------- */
   @media print{
-    @page{ size:Letter; margin:0.6in; }
-    body{background:#fff;}
-    .toolbar,.stage{all:unset;}
+    @page{ size:Letter; margin:0.55in; }
+    html,body{background:#fff;margin:0;padding:0;}
     .toolbar{display:none !important;}
-    .stage{display:block;padding:0;}
-    .sheet{width:auto;min-height:0;box-shadow:none;padding:0;}
+    .stage{display:block;padding:0;margin:0;}
+    .pages{display:block;gap:0;}
+    .page{
+      width:auto;min-height:0;box-shadow:none;padding:0;
+      break-after:page;page-break-after:always;
+    }
+    .page:last-child{ break-after:auto;page-break-after:auto; }
   }
 </style>
 </head>
 <body>
 
   <div class="toolbar">
-    <h1>Wine List, Print Layout</h1>
+    <h1>Wine List, Print Layout — populated from v1.0 menu</h1>
     <span class="hint">This page is an exact preview of the printed sheet. Edit the styles and reload.</span>
     <span class="spacer"></span>
     <button onclick="rebuild()">Refresh data</button>
@@ -97,73 +103,1237 @@
   </div>
 
   <div class="stage">
-    <div class="sheet" id="sheet"><!-- built by JS --></div>
+    <div class="pages" id="pages"><!-- built by JS --></div>
   </div>
 
 <script>
-  // ----- sample data (mirrors the module's on-menu, priced wines) -----
-  const WINES = [
-    {vint:"NV",  name:"Roederer Estate Brut",      type:"Sparkling", country:"USA",      region:"Anderson Valley",     varietal:"Chardonnay, Pinot Noir",       vol:"750ml", bottle:"52", glass:"14"},
-    {vint:"'23", name:"Tiefenbrunner Pinot Grigio", type:"White",    country:"Italy",    region:"Alto Adige",          varietal:"Pinot Grigio",                 vol:"750ml", bottle:"40", glass:"12"},
-    {vint:"'22", name:"Trefethen Chardonnay",       type:"White",    country:"USA",      region:"Napa Valley",         varietal:"Chardonnay",                   vol:"750ml", bottle:"48", glass:"15"},
-    {vint:"'23", name:"Venta Morales Tempranillo",  type:"Red",      country:"Spain",    region:"La Mancha",           varietal:"Tempranillo",                  vol:"750ml", bottle:"38", glass:"12"},
-    {vint:"'23", name:"Les Abeilles C\u00f4tes du Rh\u00f4ne", type:"Red", country:"France", region:"C\u00f4tes du Rh\u00f4ne", varietal:"Grenache, Syrah, Mourv\u00e8dre", vol:"750ml", bottle:"42", glass:"14"},
-    {vint:"'22", name:"J Vineyards Pinot Noir",     type:"Red",      country:"USA",      region:"Russian River Valley", varietal:"Pinot Noir",                  vol:"1.5L",  bottle:"98", glass:"16"},
-    {vint:"",    name:"Robert Hall Cabernet Sauvignon", type:"Red",  country:"USA",      region:"Paso Robles",         varietal:"Cabernet Sauvignon",           vol:"750ml", bottle:"52", glass:"17"},
-    {vint:"'20", name:"Jordan Cabernet Sauvignon",  type:"Red",      country:"USA",      region:"Alexander Valley",    varietal:"Cabernet Sauvignon",           vol:"750ml", bottle:"78", glass:""},
-    {vint:"",    name:"Graham's 10 Year Tawny Port", type:"Dessert", country:"Portugal", region:"Douro",               varietal:"Port Blend",                   vol:"375ml", bottle:"",   glass:"12"}
-  ];
+  // (sample data removed; this file is populated with the real v1.0 menu)
 
-  const ORDER = ['Sparkling','White','Red','Dessert'];
-  const CAT_LABEL = {Sparkling:'Sparkling', White:'White', Red:'Red', Dessert:'Dessert &amp; Fortified'};
 
   function fmtDateLong(d){
     return d.toLocaleDateString('en-US',{month:'long', day:'numeric', year:'numeric'});
   }
 
-  function buildSheet(){
-    const byType = {};
-    WINES.forEach(w=>{
-      const parts=[];
-      if(w.glass)  parts.push('Glass $'+w.glass);
-      if(w.bottle) parts.push('Bottle $'+w.bottle);
-      if(!parts.length) return;                 // skip wines with no price
-      (byType[w.type] = byType[w.type] || []).push({w, price:parts.join('\u2003/\u2003')});
+  const MENU = [
+  {
+    "sec": "Sparkling",
+    "cards": [
+      {
+        "name": "Roederer Estate Brut",
+        "metas": [
+          "Anderson Valley, CA",
+          "375 ml"
+        ],
+        "bin": "Bin 8",
+        "rows": [
+          [
+            "Bottle",
+            "$33"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Josep Masachs \"Mas Fi\" Cava Brut",
+        "metas": [
+          "Spain"
+        ],
+        "bin": "Bin 9",
+        "rows": [
+          [
+            "Glass",
+            "$10"
+          ],
+          [
+            "Bottle",
+            "$36"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Contadi Castaldi Brut Rosé",
+        "metas": [
+          "Franciacorta, Italy",
+          "375 ml"
+        ],
+        "bin": "Bin 8",
+        "rows": [
+          [
+            "Bottle",
+            "$41"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Zardetto Prosecco Rosé Extra Dry",
+        "metas": [
+          "Italy"
+        ],
+        "bin": "Bin 9",
+        "rows": [
+          [
+            "Glass",
+            "$13"
+          ],
+          [
+            "Bottle",
+            "$43"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Le Grand Courtage Blanc de Blancs",
+        "metas": [
+          "France"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$12"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Lyre's Classico",
+        "metas": [
+          "0% Sparkling, Australia"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$11"
+          ]
+        ],
+        "single": ""
+      }
+    ]
+  },
+  {
+    "sec": "White",
+    "cards": [
+      {
+        "name": "Squealing Pig Rosé",
+        "metas": [
+          "Sonoma, CA | '23"
+        ],
+        "bin": "Bin 5",
+        "rows": [
+          [
+            "Glass",
+            "$11"
+          ],
+          [
+            "Bottle",
+            "$36"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Campuget Tradition Blanc",
+        "metas": [
+          "France | '24",
+          "Roussanne + Grenache Blanc + Marsanne"
+        ],
+        "bin": "Bin 22",
+        "rows": [
+          [
+            "Bottle",
+            "$37"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Anjos Vinho Verde",
+        "metas": [
+          "Portugal | '23",
+          "Arinto + Loureiro + Trajadura"
+        ],
+        "bin": "Bin 1",
+        "rows": [
+          [
+            "Glass",
+            "$11"
+          ],
+          [
+            "Bottle",
+            "$38"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Sean Minor Sauvignon Blanc",
+        "metas": [
+          "California | '23"
+        ],
+        "bin": "Bin 23",
+        "rows": [
+          [
+            "Glass",
+            "$12"
+          ],
+          [
+            "Bottle",
+            "$39"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Tiefenbrunner Pinot Grigio",
+        "metas": [
+          "Italy | '24"
+        ],
+        "bin": "Bin 17",
+        "rows": [
+          [
+            "Glass",
+            "$12"
+          ],
+          [
+            "Bottle",
+            "$39"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "De Loach Chardonnay",
+        "metas": [
+          "Sonoma, CA | '24"
+        ],
+        "bin": "Bin 21",
+        "rows": [
+          [
+            "Glass",
+            "$13"
+          ],
+          [
+            "Bottle",
+            "$42"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Nacina Off-Dry Riesling",
+        "metas": [
+          "Tondre Vineyard, Santa Lucia Highlands, Monterey, CA | '15"
+        ],
+        "bin": "Bin 4",
+        "rows": [
+          [
+            "Bottle",
+            "$42"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Pine Ridge Chenin Blanc + Viognier",
+        "metas": [
+          "Napa, CA | '24"
+        ],
+        "bin": "Bin 1",
+        "rows": [
+          [
+            "Bottle",
+            "$43"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "M. Chapoutier Belleruche Blanc",
+        "metas": [
+          "Côtes du Rhône, France | '24"
+        ],
+        "bin": "Bin 22",
+        "rows": [
+          [
+            "Glass",
+            "$13"
+          ],
+          [
+            "Bottle",
+            "$43"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Bernardus Sauvignon Blanc",
+        "metas": [
+          "Arroyo Seco, CA | '23"
+        ],
+        "bin": "Bin 7",
+        "rows": [
+          [
+            "Bottle",
+            "$43"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Seghesio Chardonnay",
+        "metas": [
+          "Monterey, CA | '23"
+        ],
+        "bin": "Bin 3",
+        "rows": [
+          [
+            "Bottle",
+            "$46"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Trefethen Chardonnay",
+        "metas": [
+          "Oak Knoll, Napa, CA | '23"
+        ],
+        "bin": "Bin 3",
+        "rows": [
+          [
+            "Bottle",
+            "$47"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Zaca Mesa \"Cushion Block\" Viognier",
+        "metas": [
+          "Santa Ynez Valley, CA | '21"
+        ],
+        "bin": "Bin 7",
+        "rows": [
+          [
+            "Bottle",
+            "$49"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Neyers Chardonnay",
+        "metas": [
+          "Carneros District, Sonoma, CA | '21"
+        ],
+        "bin": "Bin 3",
+        "rows": [
+          [
+            "Bottle",
+            "$53"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Tornatore Etna Bianco Carricante",
+        "metas": [
+          "Sicily, Italy | '23"
+        ],
+        "bin": "Bin 1",
+        "rows": [
+          [
+            "Bottle",
+            "$56"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Livio Felluga Pinot Grigio",
+        "metas": [
+          "Italy | '22"
+        ],
+        "bin": "Bin 2",
+        "rows": [
+          [
+            "Bottle",
+            "$56"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Flowers Chardonnay",
+        "metas": [
+          "Sonoma, CA | '23"
+        ],
+        "bin": "Bin 2",
+        "rows": [
+          [
+            "Bottle",
+            "$74"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Rochioli Sauvignon Blanc",
+        "metas": [
+          "Russian River, Sonoma, CA | '25"
+        ],
+        "bin": "Bin 6",
+        "rows": [
+          [
+            "Bottle",
+            "$83"
+          ]
+        ],
+        "single": ""
+      }
+    ]
+  },
+  {
+    "sec": "Red",
+    "cards": [
+      {
+        "name": "Dow Vale do Bomfim",
+        "metas": [
+          "Portugal | '20",
+          "Touriga Nacional + Tinta Roriz + Touriga Franca"
+        ],
+        "bin": "Bin 18",
+        "rows": [
+          [
+            "Bottle",
+            "$36"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Venta Morales Tempranillo",
+        "metas": [
+          "Spain | '23"
+        ],
+        "bin": "Bin 16",
+        "rows": [
+          [
+            "Glass",
+            "$12"
+          ],
+          [
+            "Bottle",
+            "$38"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Llama Malbec",
+        "metas": [
+          "Argentina | '22"
+        ],
+        "bin": "Bin 12",
+        "rows": [
+          [
+            "Bottle",
+            "$38"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Les Abeilles Côtes du Rhône",
+        "metas": [
+          "France | '23",
+          "Grenache + Syrah + Mourvèdre"
+        ],
+        "bin": "Bin 18",
+        "rows": [
+          [
+            "Glass",
+            "$14"
+          ],
+          [
+            "Bottle",
+            "$42"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Seghesio Family Vineyards Zinfandel",
+        "metas": [
+          "Healdsburg, Sonoma, CA | '23"
+        ],
+        "bin": "Bin 14",
+        "rows": [
+          [
+            "Glass",
+            "$16"
+          ],
+          [
+            "Bottle",
+            "$45"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Blackboard by Matthews Cabernet",
+        "metas": [
+          "Columbia Valley, WA | '21"
+        ],
+        "bin": "Bin 11",
+        "rows": [
+          [
+            "Bottle",
+            "$46"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Château Rocher-Calon Saint-Émilion",
+        "metas": [
+          "Bordeaux, France | '21",
+          "Merlot"
+        ],
+        "bin": "Bin 12",
+        "rows": [
+          [
+            "Bottle",
+            "$47"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "J Vineyards Pinot Noir",
+        "metas": [
+          "Sonoma, CA | '22"
+        ],
+        "bin": "Bin 23",
+        "rows": [
+          [
+            "Glass",
+            "$16"
+          ],
+          [
+            "Bottle",
+            "$52"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Sense of Place Pinot Noir",
+        "metas": [
+          "Coastal Cuvée, Monterey, CA | '24"
+        ],
+        "bin": "Bin 14",
+        "rows": [
+          [
+            "Bottle",
+            "$52"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Tornatore Etna Rosso",
+        "metas": [
+          "Sicily, Italy | '22",
+          "Nerello Mascalese + Nerello Cappuccio"
+        ],
+        "bin": "Bin 10",
+        "rows": [
+          [
+            "Bottle",
+            "$56"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Cotière Pinot Noir",
+        "metas": [
+          "Santa Barbara, CA | '23"
+        ],
+        "bin": "Bin 15",
+        "rows": [
+          [
+            "Bottle",
+            "$62"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Michele Satta Super Tuscan",
+        "metas": [
+          "Tuscany, Italy | '23",
+          "Sangiovese"
+        ],
+        "bin": "Bin 10",
+        "rows": [
+          [
+            "Bottle",
+            "$62"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Leviathan Cabernet Blend",
+        "metas": [
+          "California | '22"
+        ],
+        "bin": "Bin 11",
+        "rows": [
+          [
+            "Bottle",
+            "$65"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Cristia Châteauneuf-du-Pape",
+        "metas": [
+          "France | '23",
+          "Grenache + Syrah"
+        ],
+        "bin": "Bin 20",
+        "rows": [
+          [
+            "Bottle",
+            "$75"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Louis Latour Pinot Noir",
+        "metas": [
+          "Burgundy, France | '22"
+        ],
+        "bin": "Bin 15",
+        "rows": [
+          [
+            "Bottle",
+            "$78"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Jordan Cabernet Sauvignon",
+        "metas": [
+          "Sonoma, CA | '20"
+        ],
+        "bin": "Bin 12",
+        "rows": [
+          [
+            "Bottle",
+            "$78"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Robert Hall Cabernet Sauvignon",
+        "metas": [
+          "Paso Robles, CA"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$17"
+          ],
+          [
+            "Bottle",
+            "$48"
+          ]
+        ],
+        "single": ""
+      }
+    ]
+  },
+  {
+    "sec": "Half Bottles",
+    "cards": [
+      {
+        "name": "Roederer Estate Brut",
+        "metas": [
+          "Anderson Valley, CA",
+          "375 ml"
+        ],
+        "bin": "Bin 8",
+        "rows": [
+          [
+            "Bottle",
+            "$33"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Clos du Val Sauvignon Blanc",
+        "metas": [
+          "Napa Valley, CA | '24",
+          "375 ml"
+        ],
+        "bin": "Bin 6",
+        "rows": [
+          [
+            "Bottle",
+            "$34"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Markham Merlot",
+        "metas": [
+          "Napa Valley, CA | '20",
+          "375 ml"
+        ],
+        "bin": "Bin 13",
+        "rows": [
+          [
+            "Bottle",
+            "$35"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "J. Lohr Cabernet",
+        "metas": [
+          "Hilltop Vineyard, Monterey, CA | '22",
+          "375 ml"
+        ],
+        "bin": "Bin 13",
+        "rows": [
+          [
+            "Bottle",
+            "$36"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Contadi Castaldi Brut Rosé",
+        "metas": [
+          "Franciacorta, Italy",
+          "375 ml"
+        ],
+        "bin": "Bin 8",
+        "rows": [
+          [
+            "Bottle",
+            "$41"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Domaine Vocoret &amp; Fils Chablis",
+        "metas": [
+          "France | '21",
+          "375 ml"
+        ],
+        "bin": "Bin 6",
+        "rows": [
+          [
+            "Bottle",
+            "$41"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Bernardus Pinot Noir",
+        "metas": [
+          "Santa Lucia Highlands, Monterey, CA | '22",
+          "375 ml"
+        ],
+        "bin": "Bin 13",
+        "rows": [
+          [
+            "Bottle",
+            "$41"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Domaine du Vieux Lazaret Châteauneuf-du-Pape",
+        "metas": [
+          "France | '22",
+          "Grenache blend",
+          "375 ml"
+        ],
+        "bin": "Bin 20",
+        "rows": [
+          [
+            "Bottle",
+            "$43"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Felsina Chianti Classico Riserva",
+        "metas": [
+          "Italy | '21",
+          "Sangiovese",
+          "375 ml"
+        ],
+        "bin": "Bin 20",
+        "rows": [
+          [
+            "Bottle",
+            "$44"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Château Paveil de Luze Margaux",
+        "metas": [
+          "Bordeaux, France | '18",
+          "Cabernet + Merlot",
+          "375 ml"
+        ],
+        "bin": "Bin 13",
+        "rows": [
+          [
+            "Bottle",
+            "$46"
+          ]
+        ],
+        "single": ""
+      }
+    ]
+  },
+  {
+    "sec": "Large Format",
+    "cards": [
+      {
+        "name": "Bernardus Cabernet Sauvignon",
+        "metas": [
+          "Monterey, CA | '19",
+          "1.5 L Magnum"
+        ],
+        "bin": "Bin 19",
+        "rows": [
+          [
+            "Bottle",
+            "$190"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Orma Toscana",
+        "metas": [
+          "Italy | '16",
+          "1.5 L Magnum"
+        ],
+        "bin": "Bin 19",
+        "rows": [
+          [
+            "Bottle",
+            "$200"
+          ]
+        ],
+        "single": ""
+      }
+    ]
+  },
+  {
+    "sec": "Dessert Wine",
+    "cards": [
+      {
+        "name": "Yalumba \"Antique\" Muscat",
+        "metas": [
+          "Australia"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$12"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Graham's Tawny Port",
+        "metas": [
+          "10 Year"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$12"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Dow's Reserve Tawny Port",
+        "metas": [
+          "Portugal"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$14"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Sandeman Founders Reserve Ruby Port",
+        "metas": [
+          "Portugal"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$10"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Heinz Eifel Beerenauslese",
+        "metas": [
+          "Germany | '18",
+          "Late Harvest Riesling"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$13"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Toro Albalá \"Don PX\" Sherry",
+        "metas": [
+          "Pedro Ximénez | '99"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$16"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Normandin-Mercier Pineau des Charentes Blanc",
+        "metas": [
+          "France"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$10"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Normandin-Mercier Pineau des Charentes Rouge",
+        "metas": [
+          "France"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$10"
+          ]
+        ],
+        "single": ""
+      },
+      {
+        "name": "Blandy's Malmsey Madeira",
+        "metas": [
+          "10 Year Old"
+        ],
+        "bin": "",
+        "rows": [
+          [
+            "Glass",
+            "$10"
+          ]
+        ],
+        "single": ""
+      }
+    ]
+  },
+  {
+    "sec": "Session Cocktails",
+    "cards": [
+      {
+        "name": "The Holman",
+        "metas": [
+          "Pomegranate juice, elderflower syrup, cranberry juice, Seedlip Spice, Aplós Calme"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$13"
+      },
+      {
+        "name": "Imperial Sour Plum",
+        "metas": [
+          "Berliner Weisse tart cherry sour beer, ume plum sake"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$13"
+      },
+      {
+        "name": "Three Dog Spritz",
+        "metas": [
+          "Lyre's Bittersweet Amalfi, Wilderton Lustre botanical"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$13"
+      },
+      {
+        "name": "Amaro Spritz",
+        "metas": [
+          "Le Grand Courtage sparkling, LoFi Amaro"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$13"
+      },
+      {
+        "name": "Summer Breeze",
+        "metas": [
+          "Sabe Blanco, Sabe Citron, ginger-spiked peach nectar"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$13"
+      },
+      {
+        "name": "PG Spot",
+        "metas": [
+          "Martini &amp; Rossi Fiero, soju, elderflower syrup, rosemary, cranberry bitters"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$13"
+      },
+      {
+        "name": "Yuzu Rose Shandy",
+        "metas": [
+          "Pilsner, yuzu sake, rose lemonade"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$13"
+      }
+    ]
+  },
+  {
+    "sec": "Beer",
+    "cards": [
+      {
+        "name": "Alvarado Street Monterey Lager",
+        "metas": [
+          "Draft"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$8"
+      },
+      {
+        "name": "Alvarado Street Tropical Mai Tai IPA",
+        "metas": [
+          "Draft"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$9"
+      },
+      {
+        "name": "Alvarado Street Cold Pressed Hazy IPA",
+        "metas": [
+          "Draft"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$9"
+      },
+      {
+        "name": "Brew Dog \"Elvis AF\" IPA",
+        "metas": [
+          "Alcohol Free"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$6"
+      }
+    ]
+  },
+  {
+    "sec": "Water + Soda",
+    "cards": [
+      {
+        "name": "San Pellegrino",
+        "metas": [
+          "Seasonal flavor, ask server"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$5"
+      },
+      {
+        "name": "Saratoga Still Water",
+        "metas": [
+          "28 oz"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$8"
+      },
+      {
+        "name": "Saratoga Sparkling Water",
+        "metas": [
+          "28 oz"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$8"
+      },
+      {
+        "name": "Alvarado Street \"Froth Water\"",
+        "metas": [
+          "16 oz, sparkling hop-flavored water"
+        ],
+        "bin": "",
+        "rows": [],
+        "single": "$6"
+      },
+      {
+        "name": "Fentimans Rose Lemonade",
+        "metas": [],
+        "bin": "",
+        "rows": [],
+        "single": "$5"
+      },
+      {
+        "name": "Fentimans Curiosity Cola",
+        "metas": [],
+        "bin": "",
+        "rows": [],
+        "single": "$5"
+      },
+      {
+        "name": "Abita Root Beer",
+        "metas": [],
+        "bin": "",
+        "rows": [],
+        "single": "$5"
+      }
+    ]
+  }
+];
+
+  function priceText(card){
+    if(card.rows && card.rows.length){
+      return card.rows.map(r=>r[0]+' '+r[1]).join('\u2003/\u2003');
+    }
+    return card.single || '';
+  }
+
+  function renderSection(section, extraClass){
+    let h = '<div class="ps-section'+(extraClass?' '+extraClass:'')+'"><div class="ps-cat">'+section.sec+'</div>';
+    section.cards.forEach(card=>{
+      const meta = (card.metas||[]).join(' \u00b7 ');
+      const price = priceText(card);
+      h +=
+        '<div class="ps-wine">'+
+          '<div><span class="ps-w-name">'+card.name+'</span>'+
+          (meta ? '<span class="ps-w-meta">'+meta+'</span>' : '')+'</div>'+
+          '<div class="ps-w-price">'+price+'</div>'+
+        '</div>';
     });
+    h += '</div>';
+    return h;
+  }
 
-    let html =
-      '<div class="ps-head">'+
-        '<img class="ps-logo" src="https://images.squarespace-cdn.com/content/v1/64499bef98adda64f34bdefc/dc7de386-05fd-40f6-b702-1983be045ace/Spotted+Duck-Final.png?format=1500w" alt="The Spotted Duck" onerror="this.style.display=\'none\';">'+
-        '<div class="ps-head-txt">'+
-          '<div class="ps-title-row"><span class="ps-title">Spotted Duck</span><span class="ps-sub">Wine List</span></div>'+
-          '<div class="ps-date">'+fmtDateLong(new Date())+'</div>'+
-        '</div>'+
-      '</div>';
+  function headerHtml(){
+    return '<div class="ps-head">'+
+      '<img class="ps-logo" src="https://images.squarespace-cdn.com/content/v1/64499bef98adda64f34bdefc/dc7de386-05fd-40f6-b702-1983be045ace/Spotted+Duck-Final.png?format=1500w" alt="The Spotted Duck" onerror="this.style.display=\'none\';">'+
+      '<div class="ps-head-txt">'+
+        '<div class="ps-title-row"><span class="ps-title">Spotted Duck</span><span class="ps-sub">Wine List</span></div>'+
+        '<div class="ps-date">'+fmtDateLong(new Date())+'</div>'+
+      '</div>'+
+    '</div>';
+  }
 
-    ORDER.forEach(t=>{
-      if(!byType[t]) return;
-      html += '<div class="ps-section"><div class="ps-cat">'+CAT_LABEL[t]+'</div>';
-      byType[t].forEach(({w, price})=>{
-        const vint = w.vint ? '<span class="ps-w-vint">'+w.vint+'</span> ' : '';
-        const size = (w.vol && w.vol !== '750ml') ? ' &middot; '+w.vol : '';
-        html +=
-          '<div class="ps-wine">'+
-            '<div><span class="ps-w-name">'+vint+w.name+'</span>'+
-            '<span class="ps-w-meta">'+w.region+' &middot; '+w.varietal+size+'</span></div>'+
-            '<div class="ps-w-price">'+price+'</div>'+
-          '</div>';
-      });
-      html += '</div>';
-    });
-
-    html += '<div class="ps-foot">'+
+  function footHtml(){
+    return '<div class="ps-foot">'+
       '<div class="addr">542 Lighthouse Ave, Pacific Grove, CA 93950</div>'+
       '<div class="contact">831-920-2662 &nbsp;&middot;&nbsp; @spottedduckpg</div>'+
     '</div>';
-    document.getElementById('sheet').innerHTML = html;
+  }
+
+  function buildSheet(){
+    const find = name => MENU.find(s => s.sec === name);
+    const FIRST = 'Session Cocktails';
+    const LAST  = 'Water + Soda';
+    const middle = MENU.filter(s => s.sec !== FIRST && s.sec !== LAST);
+
+    let html = '';
+
+    // --- Page 1: Session Cocktails, on its own page ---
+    const cocktails = find(FIRST);
+    if(cocktails){
+      html += '<div class="page">' + headerHtml() + renderSection(cocktails) + '</div>';
+    }
+
+    // --- Middle page(s): wine and everything else, in the menu's order ---
+    let mid = headerHtml();
+    middle.forEach(section => { mid += renderSection(section); });
+    html += '<div class="page">' + mid + '</div>';
+
+    // --- Last page: Beverages, on its own page, with the footer ---
+    const bev = find(LAST);
+    if(bev){
+      html += '<div class="page">' + headerHtml() + renderSection(bev) + footHtml() + '</div>';
+    }
+
+    document.getElementById('pages').innerHTML = html;
   }
   function rebuild(){ buildSheet(); }
   buildSheet();
+
 </script>
 </body>
 </html>
