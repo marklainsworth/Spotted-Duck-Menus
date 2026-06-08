@@ -595,7 +595,7 @@
         display: inline-flex;
         align-items: center;
     }
-    .info-btn svg { width: 17px; height: 17px; display: block; }
+    .info-btn svg { width: 25px; height: 25px; display: block; }
     .info-btn:hover, .info-btn:active { color: var(--color-shcc-green); }
 
     /* v1.4: consolidated wine modal sections (winery + tasting + pairs-with) */
@@ -710,13 +710,25 @@
     .modal-foot b { color: var(--color-cellareye-purple); }
 
     /* Larger, higher-contrast secondary text on phones for readability */
-    @media (max-width: 600px) {
+    /* Phones and tablets: darker, stronger text for readability on devices and
+       the kiosk. Desktops/laptops keep the lighter base styles above. */
+    @media (max-width: 1024px) {
         .wine-meta { font-size: 16px; color: #3f3f3f; font-weight: 600; }
         .pair-region { font-size: 16px; color: #3f3f3f; font-weight: 600; }
         .pair-note { font-size: 15px; color: #3f3f3f; font-weight: 500; }
         .dish-desc { font-size: 15px; color: #3f3f3f; font-weight: 500; }
         .pp-label { font-size: 11px; color: #3f3f3f; font-weight: 700; }
         .wine-bin { font-size: 12px; color: #4a4a4a; }
+
+        /* modal text: match the darker device treatment */
+        .modal-body { color: #1f1f1f; font-weight: 500; }
+        .modal-winery { font-size: 14px; color: #1c1c1c; font-weight: 500; }
+        .modal-note { color: #333333; }
+        .modal-sub { color: #444444; }
+        .pw-group-label { color: #4a4a4a; }
+        .pw-dish-note { font-size: 13px; color: #2a2a2a; font-weight: 500; }
+        .pw-empty { color: #2a2a2a; }
+        .pairing-intro { color: #333333; }
     }
 
     /* Tablet and desktop: nudge wine name and description up for readability */
@@ -2028,7 +2040,7 @@
         }
 
         // Food-pairing icon: fork on the left, knife on the right.
-        const PLATE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+
+        const PLATE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round">'+
             // fork (left)
             '<path d="M6 3v4.2a2 2 0 0 0 4 0V3"/><path d="M8 7.2V21"/>'+
             // knife (right)
