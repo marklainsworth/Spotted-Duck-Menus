@@ -589,11 +589,42 @@
         font-weight: 400;
         cursor: pointer;
         padding: 0;
-        margin-left: 12px;
+        margin-left: 10px;
         vertical-align: middle;
         transition: color 0.15s ease;
+        display: inline-flex;
+        align-items: center;
     }
+    .info-btn svg { width: 17px; height: 17px; display: block; }
     .info-btn:hover, .info-btn:active { color: var(--color-shcc-green); }
+
+    /* v1.4: consolidated wine modal sections (winery + tasting + pairs-with) */
+    .modal-winery {
+        font-size: 13.5px; line-height: 1.55; color: var(--color-text-main);
+        margin: 2px 0 4px;
+    }
+    .modal-section-label {
+        font-family: var(--font-ui);
+        font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+        color: var(--color-shcc-gold);
+        margin: 22px 0 12px;
+        padding-bottom: 7px;
+        border-bottom: 1px solid var(--color-divider);
+    }
+    .pairs-with { margin-top: 4px; }
+    .pw-group + .pw-group { margin-top: 14px; }
+    .pw-group-label {
+        font-family: var(--font-ui);
+        font-size: 10.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+        color: var(--color-text-muted);
+        margin-bottom: 7px;
+    }
+    .pw-dish { padding: 7px 0; border-bottom: 1px solid var(--color-divider); }
+    .pw-dish:last-child { border-bottom: none; }
+    .pw-dish-name { font-family: var(--font-heading); font-size: 16px; font-weight: 700; color: var(--color-shcc-green); line-height: 1.2; }
+    .pw-dish-note { font-size: 12.5px; color: var(--color-text-muted); line-height: 1.45; margin-top: 3px; }
+    .pw-empty { font-size: 13px; color: var(--color-text-muted); font-style: italic; }
+    .pairing-intro { font-size: 13px; color: var(--color-text-muted); font-style: italic; line-height: 1.5; margin: 2px 0 18px; }
 
     .card-actions { position: relative; }
     .actions-row { display: flex; align-items: flex-start; gap: 10px; }
@@ -1827,12 +1858,190 @@
         }
         function closeModal(){ overlay.classList.remove('open'); overlay.dispatchEvent(new CustomEvent('ce:close')); }
 
+        // v1.4: invert the dish->wine pairings into wine->dishes, split by
+        // course (Starters vs Entrees) using the pairing section headers.
+        // v1.4: full sommelier pairing engine. Every wine is classified into a
+        // style, and each style maps to 2 starters + 3 entrees from Chef Jerry's
+        // menu, each with a reason. Always returns a full set; no "does not pair".
+
+        // Classify a wine into a pairing style from its name + tasting profile.
+        function wineStyleOf(name, p, group){
+            const t = (name||'').toLowerCase();
+            if(/lyre|0%|non-alcoholic|alcohol-removed|zero proof/.test(t)) return 'sparkling_dry';
+            const sparkling = /sparkling|brut|cava|prosecco|blanc de blancs|cr\u00e9mant|cremant|champagne|spumante|franciacorta|sekt/.test(t) || group==='sparkling';
+            const rosey = /ros\u00e9|ros\u00e9|rose\b|rosato|blush/.test(t);
+            if(sparkling && rosey) return 'sparkling_rose';
+            if(sparkling) return 'sparkling_dry';
+            if(group==='dessert' || /\bport\b|madeira|sherry|pedro xim|don px|\bpx\b|muscat|moscato|sauternes|beerenauslese|eiswein|ice wine|pineau|malmsey|tawny|ruby|vin santo|tokaji|late harvest|dessert/.test(t)) return 'dessert_sweet';
+            if(rosey) return 'rose';
+            const red = (p&&p.isRed) || group==='red' || /cabernet|merlot|malbec|syrah|shiraz|zinfandel|pinot noir|sangiovese|tempranillo|grenache|mourv|nebbiolo|barolo|barbera|nerello|etna rosso|bordeaux|saint-\u00e9milion|saint-emilion|margaux|rh\u00f4ne|rhone|ch\u00e2teauneuf|chateauneuf|touriga|tannat|super tuscan|chianti|rosso|rouge|bolgheri|toscana|primitivo|petite sirah|carignan|montepulciano/.test(t);
+            if(red){
+                if(/cabernet|bordeaux|saint-\u00e9milion|saint-emilion|margaux|malbec|super tuscan|bolgheri|toscana|\bsyrah\b|shiraz|petite sirah|tannat|barolo|amarone|zinfandel/.test(t)) return 'red_bold';
+                if(/pinot noir|nerello|etna rosso|gamay|schiava/.test(t)) return 'red_light';
+                return 'red_medium';
+            }
+            // whites
+            if(/chablis/.test(t)) return 'white_crisp';
+            if(/riesling|viognier|gew\u00fcrz|gewurz|chenin|torront|m\u00fcller|scheurebe/.test(t)) return 'white_aromatic';
+            if(/chardonnay/.test(t)) return 'white_rich';
+            if(p && p.body>=4 && p.acid<=3) return 'white_rich';
+            if(p && p.sweet>=3) return 'white_aromatic';
+            return 'white_crisp';
+        }
+
+        // Style -> { s:[2 starters], e:[3 entrees] }, each [dishName, reason].
+        const PAIR_MENU = {
+          sparkling_dry: {
+            s:[["Spotted Duck Cheese Fries","Dry bubbles scrub the rich mornay and duck confit clean, resetting the palate between every bite."],
+               ["Charcuterie + Cheese Board","Sparkling wine and cured meats are a classic, the bubbles cutting the fat and refreshing against the salami and brie."]],
+            e:[["Caramelized Sea Scallops","Fine bubbles and bright acidity lift the sweet scallops and lighten the porcini blanquette."],
+               ["Saut\u00e9ed Rock Cod","Crisp and clean, it stays out of the delicate cod's way while the bubbles brighten the meyer-lemon brown butter."],
+               ["Forest Mushroom Risotto","The bubbles cut through the creamy, earthy mushroom risotto and keep every forkful fresh."]]
+          },
+          sparkling_rose: {
+            s:[["Charcuterie + Cheese Board","Red-berry fruit and fine bubbles play into the fig jam and refresh between bites of salami and prosciutto."],
+               ["Drunken Skillet Seared Octopus","Berry fruit meets the sweet black-bean glaze while the bubbles cut the char on the octopus."]],
+            e:[["Seared Tucker Reserve Duck Breast","A sparkling ros\u00e9 bridges the duck and its green-tomato ginger jam, fruit meeting fruit with bubbles to lift the richness."],
+               ["Caramelized Sea Scallops","Delicate red fruit and lively bubbles flatter the sweet scallops without overwhelming them."],
+               ["Forest Mushroom Risotto","Berry-tinged bubbles brighten the earthy mushrooms and the caramelized onion sauce."]]
+          },
+          rose: {
+            s:[["Drunken Skillet Seared Octopus","Berry and a clean, dry bite balance the sweet black-bean glaze and refresh against the charred octopus."],
+               ["Swank Farms Asparagus & Beet Salad","Dry ros\u00e9 echoes the beets' earthiness and the citrus vinaigrette while keeping the burrata light."]],
+            e:[["Seared Tucker Reserve Duck Breast","Fruit-forward and dry, it follows the duck and its green-tomato ginger jam without weighing down the plate."],
+               ["Caramelized Sea Scallops","Crisp and fruity, ros\u00e9 lifts the sweet scallops and brightens the porcini cream."],
+               ["Pork Belly + Bistro Beef Burger","Ros\u00e9's fruit and acid cut the fatty pork belly and refresh against the smoked cheddar."]]
+          },
+          white_crisp: {
+            s:[["Swank Farms Asparagus & Beet Salad","Bright citrus and herb echo the vinaigrette and stand up to the asparagus, while the acidity keeps the burrata fresh."],
+               ["Chopped Romaine Salad","High acid cuts the anchovy salt and the grana padano richness, the classic crisp-white move on a Caesar."]],
+            e:[["Saut\u00e9ed Rock Cod","Citrus and zip flatter the delicate cod and brighten the meyer-lemon brown butter."],
+               ["Caramelized Sea Scallops","Bright acidity lifts the sweet scallops and cuts through the porcini blanquette."],
+               ["Forest Mushroom Risotto","Clean and fresh, it lightens the earthy mushroom risotto and resets the richness."]]
+          },
+          white_aromatic: {
+            s:[["Drunken Skillet Seared Octopus","Aromatic and just off-dry, it plays into the sweet black-bean glaze and tames Jerry's everything seasoning."],
+               ["Duck Liver P\u00e2t\u00e9","A touch of sweetness is the classic foil for rich liver, lifting the p\u00e2t\u00e9 and meeting the port gelee."]],
+            e:[["Seared Tucker Reserve Duck Breast","Off-dry stone fruit flatters the duck and echoes the green-tomato ginger jam, an aromatic-white-and-duck classic."],
+               ["Pork Belly + Bistro Beef Burger","Fragrant fruit and a hint of sweetness cut the fatty pork belly and play off the smoked cheddar."],
+               ["Caramelized Sea Scallops","Peach and floral notes lift the sweet scallops while the wine's body matches the porcini cream."]]
+          },
+          white_rich: {
+            s:[["Swank Farms Asparagus Bisque","Oak and weight mirror the creamy asparagus bisque and round out the blackened shrimp."],
+               ["Chardonnay Steamed Mussels","A richer white with the body to match the saffron broth, echoing the Chardonnay in the dish itself."]],
+            e:[["Caramelized Sea Scallops","Texture and gentle oak meet the sweet scallops and the porcini blanquette, a Chardonnay-and-scallops classic."],
+               ["Saut\u00e9ed Rock Cod","Round and weighted, it carries the meyer-lemon brown butter and the delicate cod."],
+               ["Forest Mushroom Risotto","Creamy and full, it echoes the risotto's richness and the porcini depth."]]
+          },
+          red_light: {
+            s:[["Charcuterie + Cheese Board","Silky red fruit and gentle tannins flatter the cured meats without overpowering the brie."],
+               ["Duck Liver P\u00e2t\u00e9","Bright cherry and soft structure lift the rich p\u00e2t\u00e9 and meet the port gelee."]],
+            e:[["Seared Tucker Reserve Duck Breast","A light, silky red is a benchmark partner for duck, its earthy red fruit following the jus and the ginger jam."],
+               ["Forest Mushroom Risotto","Earthy and red-fruited, it's a natural with the porcini and black-trumpet mushrooms."],
+               ["Caramelized Sea Scallops","Light enough for the sweet scallops, with savory fruit to meet the porcini blanquette."]]
+          },
+          red_medium: {
+            s:[["Charcuterie + Cheese Board","Savory red fruit and easy tannins match the salami and sopressata and play into the fig jam."],
+               ["Drunken Skillet Seared Octopus","Juicy fruit meets the sweet black-bean glaze while soft tannins handle the char."]],
+            e:[["Pork Belly + Bistro Beef Burger","Bright fruit and structure cut the fatty pork belly and stand up to the smoked cheddar and beef."],
+               ["Cabernet Braised Lamb Shoulder","Savory and medium-bodied, it meets the braised lamb and the sundried-tomato and Tuscan-kale jus."],
+               ["Seared Tucker Reserve Duck Breast","Red fruit and fresh acidity follow the duck and lift the green-tomato ginger jam."]]
+          },
+          red_bold: {
+            s:[["Charcuterie + Cheese Board","Big structure stands up to the richest cuts on the board, from sopressata to aged bella vitano."],
+               ["Spotted Duck Cheese Fries","Firm tannins cut the mornay richness and the duck confit on the loaded fries."]],
+            e:[["Cabernet Braised Lamb Shoulder","A natural with the cabernet-braised lamb, the tannins meeting the meat and echoing the cabernet-rosemary jus."],
+               ["Steak + Frites","Bold and tannic, built for the Kobe flank, the structure scrubbing the fat with every bite."],
+               ["Pork Belly + Bistro Beef Burger","Dark fruit and grip handle the pork belly and beef and match the smoke off the cheddar."]]
+          },
+          dessert_sweet: {
+            s:[["Duck Liver P\u00e2t\u00e9","The classic: sweet wine and rich liver, honeyed fruit lifting the p\u00e2t\u00e9 and meeting the port gelee."],
+               ["Charcuterie + Cheese Board","Sweetness plays against the salty cured meats and the brie, and pours right into the fig jam."]],
+            e:[["Seared Tucker Reserve Duck Breast","Sweet stone fruit echoes the green-tomato ginger jam and balances the rich duck."],
+               ["Pork Belly + Bistro Beef Burger","Honeyed richness meets the sweet glaze on the pork belly and the smoked cheddar."],
+               ["Cabernet Braised Lamb Shoulder","A bold sweet wine can stand beside the braised lamb, its sweetness playing off the sundried tomato and rosemary."]]
+          }
+        };
+
+        // Build the "Pairs well with" HTML for a wine: 2 starters + 3 entrees,
+        // chosen by the wine's style. Always a full set.
+        function pairsWithHtml(wineName, group){
+            const ov = wineLookup(wineName);
+            const p = ov ? {body:ov.body,sweet:ov.sweet,acid:ov.acid,fourth:ov.fourth,isRed:ov.isRed} : tastingProfile(wineName+' '+(group||''), group||'');
+            const style = wineStyleOf(wineName, p, group||'');
+            const sel = PAIR_MENU[style] || PAIR_MENU.white_crisp;
+
+            function groupHtml(label, items){
+                let h = '<div class="pw-group"><div class="pw-group-label">'+label+'</div>';
+                items.forEach(it=>{
+                    h += '<div class="pw-dish"><div class="pw-dish-name">'+it[0]+'</div>'+
+                         '<div class="pw-dish-note">'+it[1]+'</div></div>';
+                });
+                h += '</div>';
+                return h;
+            }
+            return {
+                html: '<div class="pairs-with">'+ groupHtml('Starters', sel.s) + groupHtml('Entr\u00e9es', sel.e) +'</div>',
+                style: style
+            };
+        }
+
+        // The wine card: winery blurb + tasting graphic + note. (Pairings live
+        // in their own modal now, opened from the food icon.)
+        function openWineCard(name, sub, group){
+            const ov = wineLookup(name);
+            const p = ov ? {body:ov.body,sweet:ov.sweet,acid:ov.acid,fourth:ov.fourth,isRed:ov.isRed} : tastingProfile(name+' '+sub, group||'');
+            const fourth = (group==='dessert') ? axisHtml('Fresh','Rich',p.fourth) : (p.isRed ? axisHtml('Smooth','Bold',p.fourth) : axisHtml('Unoaked','Oaked',p.fourth));
+            const nt = ov ? ov.note : tastingNote(name+' '+sub, p);
+            const blurb = findWinery(name);
+            openModal(
+              '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
+              '<div class="modal-eyebrow">Tasting Profile</div>'+
+              '<div class="modal-title">'+name+'</div>'+
+              (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
+              '<div class="modal-body">'+
+                (blurb?'<div class="modal-winery">'+blurb+'</div>':'')+
+                '<div class="modal-section-label">How it tastes</div>'+
+                axisHtml('Light','Full',p.body)+
+                axisHtml('Dry','Sweet',p.sweet)+
+                axisHtml('Soft','Crisp',p.acid)+
+                fourth+
+                '<div class="modal-note">'+nt+'</div>'+
+              '</div>'
+            );
+        }
+
+        // The pairing card: a separate modal listing each dish this wine pairs
+        // with and why, the same way the Wine Pairings page reads.
+        function openPairingCard(name, sub, group){
+            const pw = pairsWithHtml(name, group);
+            openModal(
+              '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
+              '<div class="modal-eyebrow">Food Pairings</div>'+
+              '<div class="modal-title">'+name+'</div>'+
+              (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
+              '<div class="modal-body">'+
+                '<div class="pairing-intro">Dishes from Chef Jerry\u2019s menu that pair with this wine, and why.</div>'+
+                pw.html+
+              '</div>'
+            );
+        }
+
+        // Food-pairing icon: fork on the left, knife on the right.
+        const PLATE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+
+            // fork (left)
+            '<path d="M6 3v4.2a2 2 0 0 0 4 0V3"/><path d="M8 7.2V21"/>'+
+            // knife (right)
+            '<path d="M17.5 3c-1.3 0-2 1.6-2 4 0 1.8.7 3 2 3.2V21"/>'+
+          '</svg>';
+
         function buildInfoFeatures(){
             overlay = document.createElement('div');
             overlay.className='modal-overlay';
             overlay.innerHTML='<div class="modal-card"></div>';
             document.body.appendChild(overlay);
             overlay.addEventListener('click',(e)=>{ if(e.target===overlay) closeModal(); });
+
 
             document.querySelectorAll('.inventory-list .wine-section .wine-card').forEach(card=>{
                 const nameEl=card.querySelector('.wine-name');
@@ -1849,29 +2058,11 @@
                 const regions=[...card.querySelectorAll('.wine-meta span')].map(s=>s.textContent.trim()).filter(Boolean);
                 const sub=regions.join(' · ');
 
-                // Make the name a winery link
+                // Make the name open the consolidated wine card
                 const blurb=findWinery(name);
                 nameEl.classList.add('has-winery');
                 nameEl.innerHTML='<span class="winery-link">'+nameEl.innerHTML+'</span>';
-                nameEl.addEventListener('click',()=>{
-                    const ov=wineLookup(name);
-                    const p=ov?{body:ov.body,sweet:ov.sweet,acid:ov.acid,fourth:ov.fourth,isRed:ov.isRed}:tastingProfile(name+' '+sub, group);
-                    const fourth = (group==='dessert') ? axisHtml('Fresh','Rich',p.fourth) : (p.isRed ? axisHtml('Smooth','Bold',p.fourth) : axisHtml('Unoaked','Oaked',p.fourth));
-                    const nt = ov?ov.note:tastingNote(name+' '+sub, p);
-                    openModal(
-                      '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
-                      '<div class="modal-eyebrow">'+'Tasting Profile'+'</div>'+
-                      '<div class="modal-title">'+name+'</div>'+
-                      (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
-                      '<div class="modal-body">'+
-                        axisHtml('Light','Full',p.body)+
-                        axisHtml('Dry','Sweet',p.sweet)+
-                        axisHtml('Soft','Crisp',p.acid)+
-                        fourth+
-                        '<div class="modal-note">'+nt+'</div>'+
-                      '</div>'
-                    );
-                });
+                nameEl.addEventListener('click',()=>{ openWineCard(name, sub, group); });
 
                 // Build the hidden search index: blurb + tasting note + attribute words
                 const ov=wineLookup(name);
@@ -1895,24 +2086,15 @@
                 // Index for search
                 card.dataset.search=[name, sub, blurb||'', note, attrs.join(' ')].join(' ').toLowerCase();
 
-                // Add the + tasting sign inline, right after the wine name
+                // Add the food-pairing icon inline, right after the wine name
                 const btn=document.createElement('button');
-                btn.className='info-btn'; btn.type='button'; btn.textContent='+';
-                btn.setAttribute('aria-label','Winery');
+                btn.className='info-btn'; btn.type='button'; btn.innerHTML=PLATE_SVG;
+                btn.setAttribute('aria-label','Food pairings');
                 nameEl.appendChild(btn);
-                {
-                    btn.addEventListener('click',(e)=>{
-                        e.stopPropagation();
-                        const bl = findWinery(name);
-                        openModal(
-                          '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
-                          '<div class="modal-eyebrow">'+'The Winery'+'</div>'+
-                          '<div class="modal-title">'+name+'</div>'+
-                          (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
-                          '<div class="modal-body">'+(bl||'A producer profile for this wine is being prepared.')+'</div>'
-                        );
-                    });
-                }
+                btn.addEventListener('click',(e)=>{
+                    e.stopPropagation();
+                    openPairingCard(name, sub, group);
+                });
             });
 
             // Pairing wines: same winery link + tasting plus as the main list
@@ -1924,45 +2106,20 @@
                 const regionEl=pairEl.querySelector('.pair-region');
                 const sub=regionEl?regionEl.textContent.trim():'';
 
-                // winery link on the name
+                // winery link on the name -> consolidated wine card
                 nameEl.classList.add('has-winery');
                 nameEl.innerHTML='<span class="winery-link">'+nameEl.innerHTML+'</span>';
                 nameEl.style.cursor='pointer';
-                nameEl.addEventListener('click',()=>{
-                    const ov=wineLookup(name);
-                    const p=ov?{body:ov.body,sweet:ov.sweet,acid:ov.acid,fourth:ov.fourth,isRed:ov.isRed}:tastingProfile(name+' '+sub, '');
-                    const fourth = p.isRed ? axisHtml('Smooth','Bold',p.fourth) : axisHtml('Unoaked','Oaked',p.fourth);
-                    const nt = ov?ov.note:tastingNote(name+' '+sub, p);
-                    openModal(
-                      '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
-                      '<div class="modal-eyebrow">'+'Tasting Profile'+'</div>'+
-                      '<div class="modal-title">'+name+'</div>'+
-                      (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
-                      '<div class="modal-body">'+
-                        axisHtml('Light','Full',p.body)+
-                        axisHtml('Dry','Sweet',p.sweet)+
-                        axisHtml('Soft','Crisp',p.acid)+
-                        fourth+
-                        '<div class="modal-note">'+nt+'</div>'+
-                      '</div>'
-                    );
-                });
+                nameEl.addEventListener('click',(e)=>{ e.stopPropagation(); openWineCard(name, sub, ''); });
 
-                // plus sign for the tasting grid
+                // food-pairing icon
                 const btn=document.createElement('button');
-                btn.className='info-btn'; btn.type='button'; btn.textContent='+';
-                btn.setAttribute('aria-label','Winery');
+                btn.className='info-btn'; btn.type='button'; btn.innerHTML=PLATE_SVG;
+                btn.setAttribute('aria-label','Food pairings');
                 nameEl.appendChild(btn);
                 btn.addEventListener('click',(e)=>{
                     e.stopPropagation();
-                    const bl = findWinery(name);
-                    openModal(
-                      '<div class="modal-head"><button class="modal-close" aria-label="Close">&times;</button>'+
-                      '<div class="modal-eyebrow">'+'The Winery'+'</div>'+
-                      '<div class="modal-title">'+name+'</div>'+
-                      (sub?'<div class="modal-sub">'+sub+'</div>':'')+'</div>'+
-                      '<div class="modal-body">'+(bl||'A producer profile for this wine is being prepared.')+'</div>'
-                    );
+                    openPairingCard(name, sub, '');
                 });
             });
 
