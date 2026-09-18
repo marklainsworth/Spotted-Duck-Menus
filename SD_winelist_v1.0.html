@@ -159,6 +159,29 @@
     border-radius:30px;color:var(--color-text-main);font-size:16px;outline:none;transition:all .3s ease;
     box-shadow:inset 0 2px 4px rgba(0,0,0,0.03);}
   .search-input:focus{border-color:var(--color-primary);box-shadow:0 0 0 3px rgba(0,0,0,0.08);}
+  /* Ask by voice. Hidden by script when the browser has no speech recognition. */
+  .mic-btn{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--color-divider);
+    border-radius:50%;background:var(--color-surface);color:var(--color-primary);padding:0;cursor:pointer;}
+  .mic-btn svg{width:20px;height:20px;}
+  .mic-btn.listening{background:var(--color-accent);border-color:var(--color-accent);color:#fff;animation:micPulse 1.1s ease-in-out infinite;}
+  @keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,0,0,.14);}50%{box-shadow:0 0 0 8px rgba(0,0,0,0);}}
+  /* Ask the Somm reply: sits above the list and answers the question in a sentence before the
+     filtered cards do it in detail. */
+  .somm-reply{max-width:600px;margin:14px auto 4px;padding:16px 18px 14px;background:var(--color-surface);
+    border:1px solid var(--color-divider);border-left:3px solid var(--color-accent);border-radius:8px;}
+  .somm-eyebrow{font-family:var(--font-label);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--color-accent);margin-bottom:4px;}
+  .somm-title{font-family:var(--font-display);font-size:20px;line-height:1.25;color:var(--color-primary);}
+  .somm-sub{font-size:13px;color:var(--color-text-muted);margin-top:3px;font-style:italic;}
+  .somm-picks{display:flex;flex-direction:column;gap:6px;margin-top:12px;}
+  .somm-pick{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;padding:10px 12px;
+    background:var(--color-bg);border:1px solid var(--color-divider);border-radius:6px;color:inherit;font:inherit;cursor:pointer;}
+  .somm-pick:active{background:var(--color-surface-active);}
+  .somm-pick-name{font-family:var(--font-label);font-weight:600;font-size:15px;color:var(--color-primary);}
+  .somm-pick-note{font-size:13px;line-height:1.4;color:var(--color-text-main);}
+  .somm-pick-price{font-size:12px;color:var(--color-text-muted);letter-spacing:.3px;}
+  .somm-foot{font-size:13px;color:var(--color-text-muted);margin-top:10px;line-height:1.4;}
+  .somm-also{font-size:12px;color:var(--color-text-muted);margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .somm-also-btn{font:inherit;font-size:12px;padding:4px 10px;border-radius:14px;border:1px solid var(--color-divider);background:var(--color-bg);color:var(--color-primary);cursor:pointer;}
 
   .filter-scroll{background:var(--color-bg);border-bottom:1px solid var(--color-divider);}
   /* One row per tier, each scrolling on its own. Wrapping was the old behavior and it does not
@@ -299,8 +322,8 @@
   .dish-side{margin-left:auto;text-align:right;flex-shrink:0;display:flex;flex-direction:column;
     align-items:flex-end;gap:5px;}
   .dish-count{display:inline-flex;align-items:center;gap:5px;color:var(--color-accent);
-    font-family:var(--font-label);font-size:12.5px;white-space:nowrap;}
-  .dish-count svg{width:13px;height:13px;}
+    font-family:var(--font-label);font-size:16px;white-space:nowrap;}
+  .dish-count svg{width:17px;height:17px;}
   .dish-panel{max-height:0;overflow:hidden;transition:max-height .28s ease;}
   .dish.open .dish-panel{max-height:2000px;}
   .dish-pairs{padding:2px 0 16px;}
@@ -354,7 +377,7 @@
   #coverView,#tocView{display:none;}
   body.page-cover #coverView,body.page-contents #tocView{display:block;}
   body.page-cover .app-header,body.page-cover .sticky-bar,body.page-cover .menu-footer,body.page-cover #menuFooter,
-  body.page-cover #wineListContainer,body.page-cover #pairingsView,body.page-cover .empty-state,
+  body.page-cover #wineListContainer,body.page-cover #pairingsView,body.page-cover .empty-state,body.page-cover .somm-reply,body.page-contents .somm-reply,
   body.page-contents .sticky-bar,body.page-contents #wineListContainer,
   body.page-contents #pairingsView,body.page-contents .empty-state{display:none !important;}
   body.page-cover{padding-bottom:0;}
@@ -507,6 +530,9 @@
       </button>
       <input type="text" id="searchInput" class="search-input" placeholder="Search the menu…"
         onkeydown="if(event.key==='Enter') this.blur();">
+      <button type="button" class="mic-btn" id="micBtn" aria-label="Ask by voice" title="Ask by voice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
+      </button>
     </div>
     <nav class="filter-scroll">
       <div class="filter-row" id="filterRow1"><div class="filter-port"><div class="filter-track" id="filterTracks"><!-- tier 1 --></div></div></div>
@@ -525,6 +551,7 @@
     <img src="https://framerusercontent.com/images/cDGGCdKVygsIWUMBx5pTAMJPg2Y.png" alt="CellarEye" class="ce-logo-icon" onerror="this.style.display='none';">
   </a>
 
+  <div class="somm-reply" id="sommReply" style="display:none;" aria-live="polite"><!-- Ask the Somm --></div>
   <div class="empty-state" id="emptyState" style="display:none;">No matches — try another search.</div>
   <main class="inventory-list" id="wineListContainer"><!-- wine + beverage sections --></main>
   <div id="pairingsView"><!-- pairings --></div>
@@ -737,7 +764,7 @@
       ? '<span class="wine-name-txt wn-clickable" data-wine-info="'+w._idx+'">'+esc(shownName(w))+'</span>'
       : '<span class="wine-name-txt">'+esc(shownName(w))+'</span>';
     if(hasPairings(w)) nameHtml += '<button class="pair-btn" data-wine-pairs="'+w._idx+'" aria-label="Food pairings">'+HINT_SVG+'</button>';
-    return '<article class="wine-card" data-group="'+slug(w.section)+'"' +
+    return '<article class="wine-card" data-idx="'+w._idx+'" data-group="'+slug(w.section)+'"' +
       (w.glassPrice!=null ? ' data-glass="true"' : '') +
       ' data-volume="'+(w.volumeMl==null?750:w.volumeMl)+'"' +
       ' data-search="'+esc(searchText(w))+'">' +
@@ -839,6 +866,271 @@
     markActive();
   }
 
+  /* ---------- Ask the Somm: on-device intent parser ----------
+     Turns a typed or spoken question into filters over WINES + SRC.pairings. No network, no model:
+     price ranges, colour/type, style words mapped to the profile axes, grape/region synonyms and
+     "what goes with the pork" dish look-ups all resolve against data already in this file. Anything
+     the parser does not claim falls through to the existing word search. */
+  var SOMM_TYPE = [
+    [/\b(reds?|rosso|rouge|tinto)\b/, 'RED'],
+    [/\b(whites?|bianco|blanc|blanco)\b/, 'WHITE'],
+    [/\b(ros[eé]s?|pinks?|rosato|rosado)\b/, 'ROSE'],
+    [/\b(sparkling|sparklers?|bubbl(y|es|ies)|fizz|champagne|prosecco|cava|franciacorta|brut|spumante)\b/, 'SPARKLING'],
+    [/\b(desserts?|sweets?|sweeter|port|ports|porto|tawny|madeira|sticky|after[- ]dinner|digestif|fortified|late[- ]harvest)\b/, 'DESSERT']
+  ];
+  var SOMM_STYLE = [
+    [/\b(crisp|crisper|bright|zesty|zippy|refreshing|acidic|tart|mineral|racy)\b/, function(p){ return p.acid >= 4; }],
+    [/\b(dry|drier|bone[- ]dry|not sweet)\b/, function(p){ return p.sweet <= 2; }],
+    [/\b(off[- ]dry|slightly sweet|little sweet|touch of sweet|semi[- ]sweet)\b/, function(p){ return p.sweet >= 2 && p.sweet <= 3; }],
+    [/\b(light|lighter|delicate|easy|easy[- ]drinking|chillable)\b/, function(p){ return p.body <= 2; }],
+    [/\b(medium[- ]bod(y|ied))\b/, function(p){ return p.body === 3; }],
+    [/\b(full|fuller|big|bigger|bold|bolder|rich|richer|heavy|powerful|robust|hearty|full[- ]bod(y|ied))\b/, function(p){ return p.body >= 4; }],
+    [/\b(oak|oaky|oaked|buttery|toasty|vanilla)\b/, function(p){ return p.fourthLabel === 'Oak' && p.fourth >= 3; }],
+    [/\b(unoaked|no oak|steel|stainless)\b/, function(p){ return p.fourthLabel !== 'Oak' || p.fourth <= 2; }],
+    [/\b(tannic|grippy|structured|firm)\b/, function(p){ return p.fourthLabel === 'Tannin' && p.fourth >= 4; }],
+    [/\b(smooth|soft|softer|silky|velvety|mellow|gentle|low[- ]tannin)\b/, function(p){ return p.fourthLabel !== 'Tannin' || p.fourth <= 2; }],
+    [/\b(fruity|fruit[- ]forward|juicy|jammy)\b/, function(p){ return p.body <= 3 && p.sweet >= 2; }],
+    [/\b(earthy|savou?ry|funky|rustic)\b/, function(p, w){ return /earth|forest|savou?r|smok|herb|garrigue|mineral|volcan/i.test(w.tastingNote || ''); }],
+    [/\b(spicy|spice|spiced|peppery|pepper)\b/, function(p, w){ return /spic|pepper|clove|cinnamon|ginger/i.test(w.tastingNote || ''); }],
+    [/\b(floral|flowery|aromatic|perfumed|fragrant)\b/, function(p, w){ return /floral|flower|blossom|honeysuckle|jasmine|perfum|aromatic|fragrant|violet|rose petal/i.test(w.tastingNote || ''); }],
+    [/\b(citrus|citrusy|lemony|lemon|lime|grapefruit)\b/, function(p, w){ return /citrus|lemon|lime|grapefruit|orange/i.test(w.tastingNote || ''); }],
+    [/\b(smoky|smokey|toasty|charred)\b/, function(p, w){ return /smok|toast|char|ash|flint/i.test(w.tastingNote || ''); }],
+    [/\b(berry|berries|cherry|cherries|red fruit|red[- ]fruited)\b/, function(p, w){ return /berr|cherr|cranberr|red fruit|pomegranate/i.test(w.tastingNote || ''); }],
+    [/\b(dark fruit|black fruit|plum|plummy|cassis|blackberry|jammy)\b/, function(p, w){ return /plum|cassis|blackberr|black fruit|dark fruit|blackcurrant|bramble/i.test(w.tastingNote || ''); }],
+    [/\b(chocolate|mocha|coffee|espresso)\b/, function(p, w){ return /chocolate|mocha|coffee|espresso|cocoa/i.test(w.tastingNote || ''); }]
+  ];
+  // Words guests use that are not the words on the label.
+  var SOMM_SYN = [
+    [/\b(cab|cabs)\b/g, 'cabernet'], [/\b(chard|chards)\b/g, 'chardonnay'], [/\b(sauv|savvy)\b/g, 'sauvignon'],
+    [/\b(zin|zins)\b/g, 'zinfandel'], [/\bpinot noirs?\b/g, 'pinot noir'], [/\bgrigio\b/g, 'grigio gris'],
+    [/\bitalian\b/g, 'italy'], [/\bfrench\b/g, 'france'], [/\bspanish\b/g, 'spain'], [/\bportuguese\b/g, 'portugal'],
+    [/\bgerman\b/g, 'germany'], [/\b(american|domestic|us|usa)\b/g, 'united states'], [/\bcalifornian\b/g, 'california'],
+    [/\b(burgundian|burgundy)\b/g, 'bourgogne burgundy marsannay chablis'], [/\bbordeaux\b/g, 'bordeaux margaux emilion'],
+    [/\b(rhone|rhône)\b/g, 'rhone rhône ventoux chateauneuf châteauneuf'], [/\btuscan\b/g, 'toscana tuscany chianti bolgheri'],
+    [/\bsicil(y|ian)\b/g, 'etna sicilia sicily'], [/\bnapa\b/g, 'napa'], [/\bsonoma\b/g, 'sonoma'],
+    [/\bfizz\b/g, 'sparkling'], [/\bbubbles\b/g, 'sparkling']
+  ];
+  var SOMM_LOCAL = /monterey|carmel|santa lucia|arroyo seco|santa cruz|salinas|paso robles|san luis obispo|sta\.? rita|santa ynez|santa barbara/i;
+  var SOMM_FILLER = new Set(['i','a','an','the','some','any','of','for','with','and','or','to','me','my','us','we','our','you','your','it','is','are','be','that','this','please','like','want','looking','look','show','find','get','give','prefer','enjoy','love','need','something','anything','can','could','would','should','do','does','have','has','really','very','just','quite','bit','kind','sort','type','drink','drinking','wine','wines','taste','tonight','one','go','goes','good','well','best','nice','recommend','recommendation','recommendations','suggest','suggestion','pair','pairs','pairing','pairings','match','matches','what','whats','which','whatever','there','here','on','in','at','by','from','ok','hi','hey','hello','order','ordering','having','eat','eating','dish','dishes','plate','course','meal','food','dinner','about','around','thinking','maybe','so','im','ill','we\'re','were','going','glass','glasses','bottle','bottles','pour','pours','price','priced','cost','costs','dollar','dollars','bucks','range','between','under','over','above','below','less','more','than','cheaper','cheap','inexpensive','expensive','value','budget','max','maximum','min','minimum','least','most','up','down','and','then','thats','that\'s','how','bodied','body','style','styled','flavor','flavour','flavors','flavours','tasting','notes','options','option','choice','choices','pick','picks','start','starter','starters','begin','first','before','while','wait','waiting','table','tonight','evening','date','night','also','else','other','another','again','instead']);
+  // Food words guests use for a dish they cannot name: mapped to the words on the kitchen's menu.
+  var SOMM_DISH_SYN = [
+    [/\b(fish|seafood|white fish)\b/g, 'cod scallops mussels octopus'], [/\bshellfish\b/g, 'scallops mussels'],
+    [/\b(beef|red meat|ny strip|new york|ribeye|filet)\b/g, 'steak'], [/\b(veg|veggie|vegetarian|vegan|meatless)\b/g, 'risotto'],
+    [/\b(pasta|gnocchi)\b/g, 'gnocchi risotto'], [/\b(pate|pâté|liver)\b/g, 'pâté'], [/\bfries\b/g, 'fries frites'],
+    [/\b(sprouts|brussels)\b/g, 'brussel'], [/\b(cheese board|charcuterie|cheese plate|meat and cheese)\b/g, 'charcuterie'],
+    [/\b(ice cream|gelato)\b/g, 'ice cream'], [/\b(cake|chocolate|pudding|fritter|sorbet|affogato)\b/g, '$1']
+  ];
+
+  function sommMoney(v){ return money(v); }
+  // What is on the label: name, grape, place, section. Used ahead of tasting prose so that
+  // "pinot noir" does not also return a rosé whose note merely mentions the grape.
+  function sommStrictHay(w){ return w._strict || (w._strict = norm([w.name, w.displayName, w.varietal, w.region, w.appellation, w.section].filter(Boolean).join(' '))); }
+  function sommPrice(q){
+    var s = q.replace(/\$/g, '').replace(/,/g, '');
+    var out = null, m;
+    if((m = s.match(/\b(?:between|from)?\s*(\d{1,4})\s*(?:-|–|to|and|through)\s*(\d{1,4})\b/)))        out = {min:+m[1], max:+m[2]};
+    else if((m = s.match(/\b(?:under|below|less than|cheaper than|no more than|max(?:imum)?|up to|at most|not over|within)\s*(\d{1,4})\b/))) out = {max:+m[1]};
+    else if((m = s.match(/\b(?:over|above|more than|at least|min(?:imum)?|upwards of|starting at|from)\s*(\d{1,4})\b/)))          out = {min:+m[1]};
+    else if((m = s.match(/\b(?:around|about|roughly|near|close to|approximately|ish)\s*(\d{1,4})\b/)) || (m = s.match(/\b(\d{1,4})\s*(?:ish|or so|dollars?|bucks)\b/))) out = {min:Math.round(+m[1]*0.8), max:Math.round(+m[1]*1.2)};
+    else if((m = q.match(/\$\s*(\d{1,4})\b/)))                                                        out = {min:Math.round(+m[1]*0.8), max:Math.round(+m[1]*1.2)};
+    else if(/\b(cheap|cheapest|inexpensive|value|budget|affordable|bargain|entry|least expensive)\b/.test(q)) out = {tier:'low'};
+    else if(/\b(splurge|expensive|premium|top shelf|finest|priciest|most expensive|special occasion|celebrat)/.test(q)) out = {tier:'high'};
+    if(!out) return null;
+    if(out.min != null && out.max != null && out.min > out.max){ var t = out.min; out.min = out.max; out.max = t; }
+    out.unit = /\b(by the glass|glass|glasses|pour|pours)\b/.test(q) && !/\bbottles?\b/.test(q) ? 'glass' : 'bottle';
+    if(out.tier){
+      var vals = WINES.map(function(w){ return out.unit==='glass' ? w.glassPrice : w.bottlePrice; }).filter(function(v){ return v != null; }).sort(function(a,b){ return a-b; });
+      if(!vals.length) return null;
+      var q1 = vals[Math.floor(vals.length*0.5)], q3 = vals[Math.floor(vals.length*0.7)];
+      if(out.tier==='low') out.max = q1; else out.min = q3;
+    }
+    return out;
+  }
+  function sommPriceOk(w, pr){
+    if(!pr) return true;
+    var v = pr.unit==='glass' ? w.glassPrice : (w.bottlePrice != null ? w.bottlePrice : w.glassPrice);
+    if(v == null) return false;
+    if(pr.min != null && v < pr.min) return false;
+    if(pr.max != null && v > pr.max) return false;
+    return true;
+  }
+  function sommTypeOf(w){
+    var t = (w.wineType || '').toUpperCase(), s = (w.section || '').toUpperCase();
+    if(/SPARKLING/.test(t) || /SPARKLING/.test(s)) return 'SPARKLING';
+    if(/SWEET|FORTIFIED|DESSERT|PORT/.test(t) || /DESSERT/.test(s)) return 'DESSERT';
+    if(/ROSE/.test(t) || /ROS/.test(s)) return 'ROSE';
+    if(/WHITE/.test(t) || /WHITE/.test(s)) return 'WHITE';
+    return 'RED';
+  }
+  // Dish look-up: score every dish on the words shared with the question. Name hits count double,
+  // description hits single, so "pork" finds the pork belly burger before anything braised in port.
+  function sommDish(tokens){
+    var p = SRC.pairings; if(!p || !p.courses || !tokens.length) return null;
+    var best = null, bestScore = 0, ties = [];
+    p.courses.forEach(function(co, ci){
+      (co.dishes||[]).forEach(function(d, di){
+        var name = norm(d.name), desc = norm(d.desc || ''), score = 0;
+        tokens.forEach(function(t){
+          var stem = t.replace(/(es|s)$/, '');
+          if(stem.length < 3) return;
+          if(wordHit(name, stem) || prefixHit(name, stem)) score += 2;
+          else if(wordHit(desc, stem) || prefixHit(desc, stem)) score += 1;
+        });
+        if(score > bestScore){ bestScore = score; best = {dish:d, ci:ci, di:di}; ties = [best]; }
+        else if(score && score === bestScore) ties.push({dish:d, ci:ci, di:di});
+      });
+    });
+    return best ? {pick:best, also:ties.slice(1, 4), score:bestScore} : null;
+  }
+  function parseAsk(raw){
+    var q = norm(raw).replace(/[?!.,;:]/g, ' ');
+    var intent = {raw:raw, price:null, type:null, styles:[], local:false, format:null, dish:null, tokens:[], any:false};
+    intent.price = sommPrice(q);
+    if(intent.price) q = q.replace(/\$?\s*\d{1,4}\s*(?:-|–|to|and|through)\s*\$?\s*\d{1,4}|\$?\s*\d{1,4}\b/g, ' ');
+    // A named dessert style ("port", "tawny") is both a type and a label word: keep it as a search token too.
+    var keep = (q.match(/\b(ports?|porto|tawny|madeira|malmsey|prosecco|cava|franciacorta|champagne)\b/g) || []).map(function(k){ return k.replace(/s$/, ""); });
+    SOMM_TYPE.forEach(function(r){ if(!intent.type && r[0].test(q)){ intent.type = r[1]; q = q.replace(r[0], ' '); } });
+    q += ' ' + keep.join(' ');
+    SOMM_STYLE.forEach(function(r){ if(r[0].test(q)){ intent.styles.push(r[1]); q = q.replace(r[0], ' '); } });
+    if(/\b(local|locally|nearby|monterey county|from here|from around here|from the area)\b/.test(q)){ intent.local = true; q = q.replace(/\b(local|locally|nearby|from here|from around here|from the area)\b/g, ' '); }
+    if(/\b(half bottle|half bottles|halves|375)\b/.test(q)){ intent.format = 'half'; q = q.replace(/\b(half bottles?|halves|375)\b/g, ' '); }
+    else if(/\b(magnum|magnums|large format|big bottle|1\.5)\b/.test(q)){ intent.format = 'large'; q = q.replace(/\b(magnums?|large format|big bottle)\b/g, ' '); }
+    else if(/\b(by the glass|glass|glasses|pour|pours)\b/.test(q) && !/\bbottles?\b/.test(q)){ intent.format = 'glass'; }
+    SOMM_SYN.forEach(function(r){ q = q.replace(r[0], r[1]); });
+    var toks = q.split(/\s+/).filter(function(t){ return t.length >= 2 && !SOMM_FILLER.has(t); });
+    var pairingAsk = /\b(with|pair|pairs|pairing|goes|go with|alongside|for the|for my|having|eating|ordering|order|recommend|suggest|match)\b/.test(norm(raw));
+    var dq = toks.join(' '); SOMM_DISH_SYN.forEach(function(r){ dq = dq.replace(r[0], r[1]); });
+    var dishToks = dq.split(/\s+/).filter(Boolean);
+    // Without a food cue, a word that is also on a wine label ("chardonnay", "cabernet") is a wine
+    // search, not a dish search: "oaky chardonnay" must not land on the Chardonnay Steamed Mussels.
+    if(!pairingAsk) dishToks = dishToks.filter(function(t){ var st = t.replace(/(es|s)$/, ''); return !WINES.some(function(w){ return wordHit(sommStrictHay(w), st) || prefixHit(sommStrictHay(w), st); }); });
+    var dish = sommDish(dishToks);
+    // A dish wins when the guest sounds like they are asking about food, or when the words only make
+    // sense as a dish ("pork", "scallops"). A bare grape or region stays a wine search.
+    if(dish && (pairingAsk || dish.score >= 2)){
+      intent.dish = dish;
+      var dn = norm(dish.pick.dish.name), dd = norm(dish.pick.dish.desc || '');
+      var dsyn = toks.join(' '); SOMM_DISH_SYN.forEach(function(r){ dsyn = dsyn.replace(r[0], r[1]); });
+      dn += ' ' + dsyn; // synonym-expanded words count as consumed too
+      toks = toks.filter(function(t){ var s = t.replace(/(es|s)$/, ''); var syn = t; SOMM_DISH_SYN.forEach(function(r){ syn = syn.replace(r[0], r[1]); }); return syn === t && !(wordHit(dn, s) || prefixHit(dn, s) || wordHit(dd, s) || prefixHit(dd, s)); });
+    }
+    intent.tokens = toks;
+    intent.strict = toks.length > 0 && WINES.some(function(w){ return tokensHit(sommStrictHay(w), toks); });
+    intent.any = !!(intent.price || intent.type || intent.styles.length || intent.local || intent.format || intent.dish || intent.strict);
+    intent.question = pairingAsk || /\b(what|which|recommend|suggest|any|do you|is there|got)\b/.test(norm(raw));
+    return intent;
+  }
+  function sommWineOk(w, it){
+    if(it.type && sommTypeOf(w) !== it.type) return false;
+    if(!sommPriceOk(w, it.price)) return false;
+    if(it.format === 'glass' && w.glassPrice == null) return false;
+    if(it.format === 'half' && !(w.volumeMl && w.volumeMl < 750)) return false;
+    if(it.format === 'large' && !(w.volumeMl && w.volumeMl > 750)) return false;
+    if(it.local && !SOMM_LOCAL.test(w.region || '')) return false;
+    if(it.styles.length){
+      var p = w.profile; if(!p) return false;
+      for(var i = 0; i < it.styles.length; i++) if(!it.styles[i](p, w)) return false;
+    }
+    if(it.dish){
+      var d = it.dish.pick.dish, hit = (d.wines||[]).some(function(pw){ return norm(pw.name) === norm(w.name); });
+      if(!hit) return false;
+    }
+    if(it.tokens.length && !tokensHit(it.strict ? sommStrictHay(w) : searchText(w), it.tokens)) return false;
+    return true;
+  }
+  function sommDescribe(it, count){
+    var bits = [];
+    if(it.styles.length || it.type || it.local || it.format){
+      var adj = [];
+      if(it.local) adj.push('local');
+      if(it.type) adj.push({RED:'red', WHITE:'white', ROSE:'rosé', SPARKLING:'sparkling', DESSERT:'dessert'}[it.type]);
+      var kind = it.format==='glass' ? 'pours by the glass' : it.format==='half' ? 'half bottles' : it.format==='large' ? 'large formats' : 'wines';
+      bits.push((adj.length ? adj.join(' ') + ' ' : '') + kind);
+    } else bits.push('wines');
+    if(it.price){
+      var pr = it.price, u = pr.unit==='glass' ? ' a glass' : ' a bottle';
+      if(pr.tier==='low') bits.push('at the friendlier end of the list');
+      else if(pr.tier==='high') bits.push('from the top of the list');
+      else if(pr.min != null && pr.max != null) bits.push('between ' + sommMoney(pr.min) + ' and ' + sommMoney(pr.max) + u);
+      else if(pr.max != null) bits.push('under ' + sommMoney(pr.max) + u);
+      else if(pr.min != null) bits.push('over ' + sommMoney(pr.min) + u);
+    }
+    if(it.tokens.length) bits.push('matching “' + it.tokens.join(' ') + '”');
+    var s = bits.join(' ');
+    return s.charAt(0).toUpperCase() + s.slice(1) + ' · ' + count + (count === 1 ? ' match' : ' matches');
+  }
+  function sommReplyHtml(it, matches){
+    var html = '';
+    if(it.dish){
+      var d = it.dish.pick.dish;
+      var picks = featuredPairs(d).filter(function(pw){ var w = wineByName(pw.name); return w && sommWineOk(w, it); });
+      if(!picks.length) picks = (d.wines||[]).filter(function(pw){ var w = wineByName(pw.name); return w && sommWineOk(w, it); }).slice(0, DISH_FEATURED_MAX);
+      html += '<div class="somm-eyebrow">Vina suggests</div>';
+      html += '<div class="somm-title">With the ' + esc(d.name) + '</div>';
+      if(d.desc) html += '<div class="somm-sub">' + esc(d.desc) + '</div>';
+      if(picks.length){
+        html += '<div class="somm-picks">' + picks.map(function(pw){
+          var w = wineByName(pw.name), rows = priceRows(w);
+          return '<button type="button" class="somm-pick" data-somm-wine="' + w._idx + '"><span class="somm-pick-name">' + esc(shownName(w)) + '</span>' +
+            (pw.note ? '<span class="somm-pick-note">' + esc(pw.note) + '</span>' : '') +
+            (rows.length ? '<span class="somm-pick-price">' + rows.map(function(r){ return r[0] + ' ' + esc(r[1]); }).join(' · ') + '</span>' : '') + '</button>';
+        }).join('') + '</div>';
+        if(it.price || it.type || it.styles.length || it.format || it.local) html += '<div class="somm-foot">Narrowed to ' + esc(sommDescribe(it, matches.length).toLowerCase()) + '.</div>';
+        else html += '<div class="somm-foot">All ' + matches.length + ' wines matched to this dish are listed below.</div>';
+      } else {
+        html += '<div class="somm-foot">Nothing on our list fits that exactly for this dish. Try loosening the price or style, or ask your server.</div>';
+      }
+      if(it.dish.also.length) html += '<div class="somm-also">Also asking about: ' + it.dish.also.map(function(a){ return '<button type="button" class="somm-also-btn" data-somm-ask="' + esc('with the ' + a.dish.name) + '">' + esc(a.dish.name) + '</button>'; }).join('') + '</div>';
+    } else {
+      html += '<div class="somm-eyebrow">Vina</div><div class="somm-title">' + esc(sommDescribe(it, matches.length)) + '</div>';
+      if(!matches.length) html += '<div class="somm-foot">Nothing on the list fits that exactly. Try a wider price range, a different style, or ask your server — we may have something not yet listed.</div>';
+    }
+    return html;
+  }
+  function sommTrack(it, count){
+    if(!window.clarity) return;
+    try {
+      clarity('event', count ? 'somm_ask' : 'somm_miss');
+      clarity('set', 'somm_query', String(it.raw).slice(0, 80));
+      if(it.dish) clarity('set', 'somm_dish', it.dish.pick.dish.name);
+      if(it.price) clarity('set', 'somm_price', (it.price.min != null ? it.price.min : '') + '-' + (it.price.max != null ? it.price.max : '') + '/' + it.price.unit);
+      if(it.type) clarity('set', 'somm_type', it.type);
+    } catch(e){}
+  }
+  var sommTimer = null, sommLast = '';
+  function sommTrackLater(it, count){
+    clearTimeout(sommTimer);
+    sommTimer = setTimeout(function(){ if(it.raw !== sommLast){ sommLast = it.raw; sommTrack(it, count); } }, 1200);
+  }
+  function renderSommReply(it, matches){
+    var box = document.getElementById('sommReply');
+    if(!it || !it.any){ box.style.display = 'none'; box.innerHTML = ''; return; }
+    var wasHidden = box.style.display === 'none';
+    box.innerHTML = sommReplyHtml(it, matches);
+    box.style.display = 'block';
+    // First answer after a guest starts typing: bring it into view under the sticky bar, once.
+    if(wasHidden){
+      var bar = document.querySelector('.sticky-bar'), off = bar ? bar.getBoundingClientRect().height : 0;
+      var top = box.getBoundingClientRect().top + window.scrollY - off - 8;
+      if(window.scrollY > top || box.getBoundingClientRect().bottom > window.innerHeight) window.scrollTo({top:Math.max(0, top), behavior:'smooth'});
+    }
+  }
+  function sommSpeech(){
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition, btn = document.getElementById('micBtn');
+    if(!SR || !btn){ if(btn) btn.hidden = true; return; }
+    var rec = new SR(); rec.lang = 'en-US'; rec.interimResults = false; rec.maxAlternatives = 1;
+    var listening = false, input = document.getElementById('searchInput');
+    rec.onresult = function(e){ var t = e.results[0][0].transcript; input.value = t; input.dispatchEvent(new Event('input', {bubbles:true})); };
+    rec.onend = function(){ listening = false; btn.classList.remove('listening'); };
+    rec.onerror = function(){ listening = false; btn.classList.remove('listening'); };
+    btn.addEventListener('click', function(){
+      if(listening){ rec.stop(); return; }
+      try { rec.start(); listening = true; btn.classList.add('listening'); input.placeholder = 'Listening…'; }
+      catch(e){ listening = false; }
+      setTimeout(function(){ input.placeholder = CFG.searchPlaceholder || 'Search the menu…'; }, 4000);
+    });
+  }
+
   /* ---------- search ---------- */
   var STOP = new Set(['i','a','an','the','some','any','of','for','with','and','or','to','me','my','we','our','you','your','it','is','are','be','that','this','please','like','want','looking','show','find','get','give','prefer','enjoy','love','need','something','anything','can','could','would','should','do','does','have','has','really','very','just','quite','bit','kind','sort','type','drink','wine','wines','taste','tonight','one','glass','bottle']);
   function parseQuery(raw){ return raw.toLowerCase().replace(/[^a-z0-9é\s-]/g,' ').split(/\s+/).map(function(w){return w.trim();}).filter(function(w){return w.length>=2 && !STOP.has(w);}); }
@@ -851,20 +1143,30 @@
 
   function applyFilter(){
     var tokens = parseQuery(searchTerm);
+    var intent = searchTerm ? parseAsk(searchTerm) : null, smart = !!(intent && intent.any), matches = [];
     document.querySelectorAll('#wineListContainer .wine-card').forEach(function(card){
       var group = card.getAttribute('data-group');
       var vol = parseInt(card.getAttribute('data-volume')||'750', 10);
       var glass = card.getAttribute('data-glass') === 'true';
       var hay = card.getAttribute('data-search') || card.innerText.toLowerCase();
-      var ms = tokens.length===0 || tokensHit(hay, tokens);
-      var mc;
-      var bucket = bucketFor(currentCategory), groups = bucket ? bucket.sections.map(slug) : null;
-      if(currentCategory==='all') mc = true;
-      else if(currentCategory==='glass') mc = glass;
-      else if(currentCategory==='half') mc = vol < 750;
-      else if(currentCategory==='large') mc = vol > 750;
-      else mc = groups ? groups.indexOf(group) >= 0 : group === currentCategory;
-      if(mc && currentSection) mc = group === currentSection;
+      var idx = card.getAttribute('data-idx'), w = idx != null ? WINES[+idx] : null;
+      var ms, mc;
+      if(smart){
+        // A question about price, style, colour or a dish answers across the whole list, so the
+        // chips step aside: a guest on "Glass" asking for reds under $60 gets every red under $60.
+        ms = w ? sommWineOk(w, intent) : false;
+        mc = true;
+        if(ms && w) matches.push(w);
+      } else {
+        ms = tokens.length===0 || tokensHit(hay, tokens);
+        var bucket = bucketFor(currentCategory), groups = bucket ? bucket.sections.map(slug) : null;
+        if(currentCategory==='all') mc = true;
+        else if(currentCategory==='glass') mc = glass;
+        else if(currentCategory==='half') mc = vol < 750;
+        else if(currentCategory==='large') mc = vol > 750;
+        else mc = groups ? groups.indexOf(group) >= 0 : group === currentCategory;
+        if(mc && currentSection) mc = group === currentSection;
+      }
       card.style.display = (ms && mc) ? 'flex' : 'none';
     });
     document.querySelectorAll('#wineListContainer .wine-section').forEach(function(sec){
@@ -872,12 +1174,17 @@
       sec.style.display = vis ? 'block' : 'none';
     });
     var any = Array.prototype.some.call(document.querySelectorAll('#wineListContainer .wine-section'), function(s){ return s.style.display !== 'none'; });
-    document.getElementById('emptyState').style.display = any ? 'none' : 'block';
+    renderSommReply(intent, matches);
+    document.getElementById('emptyState').style.display = (any || smart) ? 'none' : 'block';
+    if(smart) sommTrackLater(intent, matches.length);
+    else if(searchTerm && !any) sommTrackLater({raw:searchTerm, any:false}, 0);
   }
   function filterPairings(){
     var tokens = parseQuery(searchTerm);
+    var intent = searchTerm ? parseAsk(searchTerm) : null, pick = intent && intent.dish ? norm(intent.dish.pick.dish.name) : null;
+    renderSommReply(null, []);
     var dishes = document.querySelectorAll('#pairingsView .dish');
-    dishes.forEach(function(d){ var t = (d.getAttribute('data-search')||'').toLowerCase(); d.style.display = (tokens.length===0 || tokensHit(t, tokens)) ? 'block' : 'none'; });
+    dishes.forEach(function(d){ var t = (d.getAttribute('data-search')||'').toLowerCase(); var on = pick ? t.indexOf(pick) >= 0 : (tokens.length===0 || tokensHit(t, tokens)); d.style.display = on ? 'block' : 'none'; });
     document.querySelectorAll('#pairingsView .pair-section').forEach(function(sec){
       var vis = Array.prototype.some.call(sec.querySelectorAll('.dish'), function(d){ return d.style.display !== 'none'; });
       sec.style.display = vis ? 'block' : 'none';
@@ -982,7 +1289,7 @@
             '<div class="dish-name">'+esc(d.name)+'</div>' +
             (d.desc ? '<div class="dish-desc">'+esc(d.desc)+'</div>' : '') +
           '</div><div class="dish-side">' +
-            (d.price != null ? '<div class="dish-price">'+esc(money(d.price))+'</div>' : '') +
+            /* Dish prices are deliberately not shown: this is the wine list, the food menu prices its own dishes. */
             (wines.length ? '<div class="dish-count">'+GLASS_SVG+wines.length+' pairing'+(wines.length===1?'':'s')+'</div>' : '') +
           '</div></div>' +
           '<div class="dish-panel"><div class="dish-pairs">' +
@@ -1348,6 +1655,11 @@
   /* ---------- wiring ---------- */
   function wire(){
     document.getElementById('searchInput').addEventListener('input', function(e){ searchTerm = e.target.value.toLowerCase().trim(); applyView(); });
+    document.getElementById('sommReply').addEventListener('click', function(e){
+      var pick = e.target.closest('[data-somm-wine]'); if(pick){ openWineInfoModal(+pick.getAttribute('data-somm-wine')); return; }
+      var ask = e.target.closest('[data-somm-ask]'); if(ask){ var inp = document.getElementById('searchInput'); inp.value = ask.getAttribute('data-somm-ask'); inp.dispatchEvent(new Event('input', {bubbles:true})); }
+    });
+    sommSpeech();
     document.getElementById('filterTracks').addEventListener('click', function(e){ var chip = e.target.closest('.filter-chip'); if(!chip) return;
       var cat = chip.getAttribute('data-category');
       if(cat === 'contents'){ go('contents'); return; }
