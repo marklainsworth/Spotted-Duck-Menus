@@ -29,6 +29,7 @@ The printed v5 menu for The Spotted Duck: three 8.5 x 11 pages in one PDF. Page 
 | `build_menu.py` | Reads the sheet, fills the template, prints the PDF. |
 | `assets/duck-facing-left.png` | Duck mascot in the header. |
 | `assets/vina-qr.png` | Vina QR code (transparent background). |
+| `assets/fonts/` | The three menu fonts and `fonts.css`. |
 
 ## Notes
 
@@ -36,4 +37,4 @@ The printed v5 menu for The Spotted Duck: three 8.5 x 11 pages in one PDF. Page 
 - Drink tags: a ticked Non-Alcoholic box prints `na`.
 - When every drink in a section has the same price (the session cocktails, for example), the price prints once next to the section name.
 - Type sizes: course labels 10.25 pt, item names and descriptions 10.4 pt, footer 7.75 pt. The food side is nearly full, so check the PDF after adding dishes.
-- Fonts load from Google Fonts (Newsreader, IBM Plex Mono, Jost), so building needs internet access.
+- Fonts (Newsreader, IBM Plex Mono, Jost; SIL Open Font License) are bundled in `assets/fonts/`, so builds look the same everywhere and don't need Google Fonts. If they fail to load, the script stops instead of printing a menu in the wrong font.
