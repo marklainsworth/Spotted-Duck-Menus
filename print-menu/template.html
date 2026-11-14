@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{margin:0}</style>
+<title>Spotted Duck Menu v5</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Layout: daily market sheet. Monospace type, all lowercase, a ruled table feel with section labels on the left edge and printed date stamp. Single printed look. */
+:root{--paper:#ffffff;--table:#bdb8ad;--ink:#1a1a18;--ink-soft:#626058;--rule:#c8c3b6;--stamp:#b23b2c;--diet:#b23b2c;
+ --v-slate:#2f3a44;--v-gold:#a68a55;--v-soft:#5d6b78;--v-bar:#b9cbd6;
+ --mono:'IBM Plex Mono',Menlo,Consolas,monospace;--serif:'Newsreader',Georgia,serif}
+body{font-family:var(--mono)}
+.page{padding:0.5in 0.55in 0.36in}
+header{display:grid;grid-template-columns:1fr auto;align-items:end;gap:20px;padding-bottom:12px;border-bottom:1px solid var(--ink)}
+.mascot{height:1.2in;width:auto;max-width:none;justify-self:end;grid-column:2;grid-row:1 / span 2;align-self:end;margin:-0.3in 0 0.02in 0;display:block}
+.title{display:inline-flex;flex-direction:column;align-items:flex-end;justify-self:start}
+.byline{font-family:var(--serif);font-style:italic;font-size:11pt;line-height:1;color:var(--ink-soft);margin-top:-2px;white-space:nowrap}
+header .line2{margin-top:2px}
+h1{font-family:var(--serif);font-weight:500;font-size:60px;line-height:.9;letter-spacing:-.02em;margin:0}
+.stamp{border:1.5px solid var(--stamp);color:var(--stamp);font-size:11px;letter-spacing:.12em;padding:6px 10px;text-align:center;transform:rotate(-3deg);line-height:1.5}
+.line2{grid-column:1;grid-row:2;display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-soft);letter-spacing:.06em}
+.menu{display:flex;flex-direction:column}
+.course{display:grid;grid-template-columns:1.02in 1fr;column-gap:12px;padding:12px 0 11px;border-bottom:1px dashed var(--rule)}
+.course:last-child{border-bottom:0}
+.course h2{margin:0;white-space:nowrap;font-size:10.25pt;font-weight:600;letter-spacing:.08em;text-transform:lowercase;color:var(--stamp)}
+.course h2 span::before{content:"— "}
+.dishes{column-gap:28px;row-gap:8px}
+.name{font-size:10.4pt;font-weight:600;line-height:1.3;text-transform:lowercase}
+.price{font-size:10.4pt;font-weight:600}
+.desc{font-family:var(--serif);font-size:10.4pt;line-height:1.2;color:var(--ink-soft)}
+.foot{padding-top:12px;border-top:1px solid var(--ink)}
+.foot p{font-size:7.75pt;line-height:1.55;color:var(--ink-soft);text-transform:lowercase}
+
+*{box-sizing:border-box}
+body{background:var(--table);color:var(--ink);padding-block:28px 40px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+.sheet-wrap{width:100%;max-width:8.5in;margin:0 auto;overflow:hidden}
+.page{width:8.5in;height:11in;background:var(--paper);color:var(--ink);transform-origin:top left;display:flex;flex-direction:column;position:relative;box-shadow:0 14px 40px rgba(0,0,0,.2)}
+.dishes{display:grid;grid-template-columns:1fr 1fr}
+.dish{display:grid;grid-template-columns:1fr auto;column-gap:10px;min-width:0;align-content:start}
+.desc{grid-column:1 / -1}
+.price{font-variant-numeric:lining-nums tabular-nums}
+.diet{font-size:.78em;font-weight:500;letter-spacing:.06em;color:var(--diet,#8a6d2f);white-space:nowrap}
+.foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:28px}
+.foot p{margin:0;flex:1;min-width:0}
+.vina{display:flex;align-items:center;gap:12px;flex:none}
+.vina-text{text-align:right;font-family:'Jost','Futura','Helvetica Neue',Arial,sans-serif;line-height:1.15}
+.vina-text .meet{font-weight:500;letter-spacing:.18em;font-size:15px;color:var(--v-slate)}
+.vina-text .tag{font-size:14px;line-height:1.15;color:var(--v-gold);letter-spacing:.02em;margin:1px 0 2px}
+.vina-text .what{font-size:9.5px;font-weight:600;letter-spacing:.14em;color:var(--v-slate)}
+.vina-bar{width:2px;align-self:stretch;background:var(--v-bar)}
+.qr{display:block}
+.qr img{width:0.8in;height:0.8in;image-rendering:pixelated;display:block}
+@page{size:8.5in 11in;margin:0}
+@media print{body{background:none;padding:0}.page{background:transparent!important}.sheet-wrap{max-width:none}.page{transform:none!important;box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="sheet-wrap" id="wrap"><main class="page" id="page">
+<header><div class="title"><h1>spotted duck</h1><div class="byline">by Chef Jerry Regester &amp; Gail Grammatico</div></div><img class="mascot" src="assets/duck-facing-left.png" alt="Spotted Duck mascot">
+<div class="line2"><span>pacific grove, ca</span></div></header>
+<div class="menu" id="menu"></div>
+<div class="foot"><p id="footnote"></p><div class="vina"><div class="vina-text"><div class="meet">MEET VINA</div><div class="tag">The Spotted Duck's<br>virtual sommelier</div><div class="what">WINE, COCKTAILS &amp; PAIRINGS</div></div><div class="vina-bar" aria-hidden="true"></div><span class="qr"><img src="assets/vina-qr.png" alt="QR code to open Vina, the virtual sommelier"></span></div></div>
+</main></div>
+<script>
+const PRICE_PREFIX = "";
+const FOOTNOTE = /*FOOTNOTE*/"";
+const MENU = /*MENU*/[];
+
+
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const groups = [];
+for (const [section,dish,desc,price,vegan,veg,gf] of MENU) {
+  let g = groups.find(x => x.name === section);
+  if (!g) groups.push(g = { name:section, rows:[] });
+  g.rows.push({dish,desc,price,tags:(t=>[t(vegan)&&"vg",(t(veg)&&!t(vegan))&&"v",t(gf)&&"gf"])(x=>x===true||/^(yes|true|x)$/i.test(String(x??"").trim())).filter(Boolean)});
+}
+document.getElementById("menu").innerHTML = groups.map(g => `
+  <section class="course"><h2><span>${esc(g.name)}</span></h2><div class="dishes">
+    ${g.rows.map(r => `<div class="dish"><span class="name">${esc(r.dish)}${r.tags.length?` <span class="diet">${r.tags.join(" · ")}</span>`:""}</span><span class="price">${PRICE_PREFIX}${esc(r.price)}</span>${r.desc ? `<span class="desc">${esc(r.desc)}</span>` : ""}</div>`).join("")}
+  </div></section>`).join("");
+document.getElementById("footnote").textContent = "vg vegan · v vegetarian · gf gluten free ~ " + FOOTNOTE;
+const wrap = document.getElementById("wrap"), page = document.getElementById("page");
+function fit(){ const k = Math.min(1, wrap.clientWidth / page.offsetWidth);
+  page.style.transform = k < 1 ? `scale(${k})` : ""; wrap.style.height = (page.offsetHeight * k) + "px"; }
+addEventListener("resize", fit); fit(); if (document.fonts) document.fonts.ready.then(fit);
+</script>
+
+</body>
+</html>
