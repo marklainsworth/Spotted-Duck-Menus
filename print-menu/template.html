@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spotted Duck Menu v5</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Layout: three letter-size sheets (1 food, 2 drinks, 3 desserts). Market-sheet style: mono item names, serif descriptions, red course labels, duck top right, Vina QR bottom right. No page color: printed on colored paper. */
+:root{--paper:#ffffff;--table:#bdb8ad;--ink:#1a1a18;--ink-soft:#626058;--rule:#c8c3b6;--stamp:#b23b2c;--diet:#b23b2c;
+ --v-slate:#2f3a44;--v-gold:#a68a55;--v-soft:#5d6b78;--v-bar:#b9cbd6;
+ --mono:'IBM Plex Mono',Menlo,Consolas,monospace;--serif:'Newsreader',Georgia,serif;--vina:'Jost','Futura','Helvetica Neue',Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--table);color:var(--ink);font-family:var(--mono);padding-block:28px 40px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+.sheets{display:flex;flex-direction:column;align-items:center;gap:28px}
+.sheet-wrap{width:100%;max-width:8.5in;overflow:hidden}
+.page{width:8.5in;height:11in;background:var(--paper);color:var(--ink);transform-origin:top left;display:flex;flex-direction:column;position:relative;
+  padding:0.5in 0.55in 0.36in;box-shadow:0 14px 40px rgba(0,0,0,.2)}
+
+/* header */
+header{display:grid;grid-template-columns:1fr auto;align-items:end;gap:0 20px;padding-bottom:12px;border-bottom:1px solid var(--ink)}
+.title{display:inline-flex;flex-direction:column;align-items:flex-end;justify-self:start}
+h1{font-family:var(--serif);font-weight:500;font-size:60px;line-height:.9;letter-spacing:-.02em;margin:0}
+.byline{font-family:var(--serif);font-style:italic;font-size:11pt;line-height:1;color:var(--ink-soft);margin-top:-2px;white-space:nowrap}
+.line2{grid-column:1;grid-row:2;margin-top:2px;font-size:10.5px;color:var(--ink-soft);letter-spacing:.06em}
+.mascot{height:1.2in;width:auto;max-width:none;justify-self:end;grid-column:2;grid-row:1 / span 2;align-self:end;margin:-0.3in 0 0.02in 0;display:block}
+
+/* courses */
+.menu{display:flex;flex-direction:column}
+.course{display:grid;grid-template-columns:1.02in 1fr;column-gap:12px;padding:12px 0 11px;border-bottom:1px dashed var(--rule)}
+.course:last-child{border-bottom:0}
+.course h2{margin:0;white-space:nowrap;font-size:10.25pt;font-weight:600;letter-spacing:.08em;text-transform:lowercase;color:var(--stamp)}
+.course h2 .label::before{content:"— "}
+.dishes{columns:2;column-gap:28px}
+.dish{display:grid;grid-template-columns:1fr auto;column-gap:10px;break-inside:avoid;margin-bottom:8px}
+.dish:last-child{margin-bottom:0}
+.name{font-size:10.4pt;font-weight:600;line-height:1.3;text-transform:lowercase}
+.price{font-size:10.4pt;font-weight:600;font-variant-numeric:lining-nums tabular-nums}
+.desc{grid-column:1 / -1;font-family:var(--serif);font-size:10.4pt;line-height:1.2;color:var(--ink-soft)}
+.tag{font-size:.78em;font-weight:500;letter-spacing:.06em;color:var(--diet);white-space:nowrap}
+
+/* back page: headings run across the page, items in three columns */
+.back .course,.desserts .course{grid-template-columns:1fr;row-gap:8px}
+.back .course h2,.desserts .course h2{display:flex;justify-content:space-between}
+.course h2 .shared{color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+.back .dishes{columns:3;column-gap:24px}
+.desserts .dishes{columns:2;column-gap:28px}
+.back .dish{margin-bottom:7px}
+/* desserts has fewer items: spread the sections down the page instead of leaving a gap above the footer */
+.desserts .menu{flex:1;justify-content:space-evenly}
+.desserts .course{padding:16px 0 15px}
+.desserts .dish{margin-bottom:13px}
+.desserts .desc{line-height:1.3}
+
+/* footer */
+.foot{margin-top:auto;padding-top:12px;border-top:1px solid var(--ink);display:flex;align-items:center;justify-content:space-between;gap:28px}
+.foot p{margin:0;flex:1;min-width:0;font-size:7.75pt;line-height:1.55;color:var(--ink-soft);text-transform:lowercase}
+.foot p .info{display:block;margin-top:4px;color:var(--ink);font-weight:600}
+.vina{display:flex;align-items:center;gap:12px;flex:none}
+.vina-text{text-align:right;font-family:var(--vina);line-height:1.15}
+.vina-text .meet{font-weight:500;letter-spacing:.18em;font-size:15px;color:var(--v-slate)}
+.vina-text .tagline{font-size:14px;line-height:1.15;color:var(--v-gold);letter-spacing:.02em;margin:1px 0 2px}
+.vina-text .what{font-size:9.5px;font-weight:600;letter-spacing:.14em;color:var(--v-slate)}
+.vina-bar{width:2px;align-self:stretch;background:var(--v-bar)}
+.qr{display:block}
+.qr img{width:0.8in;height:0.8in;display:block}
+
+@page{size:8.5in 11in;margin:0}
+@media print{
+  body{background:none;padding:0}
+  .sheets{display:block}
+  .sheet-wrap{max-width:none;width:8.5in;height:auto!important;overflow:visible;break-after:page}
+  .sheet-wrap:last-child{break-after:auto}
+  .page{background:transparent!important;transform:none!important;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<div class="sheets">
+
+<div class="sheet-wrap"><main class="page front">
+<header><div class="title"><h1>spotted duck</h1><div class="byline">by Chef Jerry Regester &amp; Gail Grammatico</div></div>
+<img class="mascot" src="assets/duck-facing-left.png" alt="Spotted Duck mascot">
+<div class="line2">pacific grove, ca</div></header>
+<div class="menu" id="front"></div>
+<div class="foot"><p id="front-note"></p>
+<div class="vina"><div class="vina-text"><div class="meet">MEET VINA</div><div class="tagline">The Spotted Duck's<br>virtual sommelier</div><div class="what">WINE, COCKTAILS &amp; PAIRINGS</div></div><div class="vina-bar" aria-hidden="true"></div><span class="qr"><img src="assets/vina-qr.png" alt="QR code to open Vina, the virtual sommelier"></span></div></div>
+</main></div>
+
+<div class="sheet-wrap"><main class="page back">
+<header><div class="title"><h1>drinks</h1><div class="byline">wine, cocktails, beer &amp; more</div></div>
+<img class="mascot" src="assets/duck-facing-left.png" alt="Spotted Duck mascot">
+<div class="line2">spotted duck · pacific grove, ca</div></header>
+<div class="menu" id="back"></div>
+<div class="foot"><p id="back-note"></p>
+<div class="vina"><div class="vina-text"><div class="meet">MEET VINA</div><div class="tagline">The Spotted Duck's<br>virtual sommelier</div><div class="what">WINE, COCKTAILS &amp; PAIRINGS</div></div><div class="vina-bar" aria-hidden="true"></div><span class="qr"><img src="assets/vina-qr.png" alt="QR code to open Vina, the virtual sommelier"></span></div></div>
+</main></div>
+
+<div class="sheet-wrap"><main class="page desserts">
+<header><div class="title"><h1>desserts</h1><div class="byline">coffee, tea &amp; after dinner drinks</div></div>
+<img class="mascot" src="assets/duck-facing-left.png" alt="Spotted Duck mascot">
+<div class="line2">spotted duck · pacific grove, ca</div></header>
+<div class="menu" id="desserts"></div>
+<div class="foot"><p id="dessert-note"></p>
+<div class="vina"><div class="vina-text"><div class="meet">MEET VINA</div><div class="tagline">The Spotted Duck's<br>virtual sommelier</div><div class="what">WINE, COCKTAILS &amp; PAIRINGS</div></div><div class="vina-bar" aria-hidden="true"></div><span class="qr"><img src="assets/vina-qr.png" alt="QR code to open Vina, the virtual sommelier"></span></div></div>
+</main></div>
+
+</div>
+<script>
+/* Filled in by build_menu.py from the Google Sheet.
+   FRONT rows: [section, dish, descriptor, price, vegan, vegetarian, gluten free]
+   BACK rows:  [section, item, descriptor, price, non-alcoholic]
+   DESSERT rows: [section, item, descriptor, price, vegan, vegetarian, gluten free] */
+const FRONT = /*FRONT*/[];
+const BACK = /*BACK*/[];
+const DESSERT = /*DESSERT*/[];
+const SETTINGS = /*SETTINGS*/{};
+
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const yes = x => x === true || /^(yes|true|x)$/i.test(String(x ?? "").trim());
+function group(rows){
+  const out = [];
+  for (const r of rows){
+    let g = out.find(x => x.name === r[0]);
+    if (!g) out.push(g = { name: r[0], rows: [] });
+    g.rows.push(r);
+  }
+  return out;
+}
+function item(name, price, desc, tags){
+  return `<div class="dish"><span class="name">${esc(name)}${tags.length ? ` <span class="tag">${tags.join(" · ")}</span>` : ""}</span>` +
+         `<span class="price">${esc(price)}</span>${desc ? `<span class="desc">${esc(desc)}</span>` : ""}</div>`;
+}
+
+document.getElementById("front").innerHTML = group(FRONT).map(g => `
+  <section class="course"><h2><span class="label">${esc(g.name)}</span></h2><div class="dishes">
+  ${g.rows.map(([, dish, desc, price, vg, v, gf]) =>
+      item(dish, price, desc, [yes(vg) && "vg", (yes(v) && !yes(vg)) && "v", yes(gf) && "gf"].filter(Boolean))).join("")}
+  </div></section>`).join("");
+
+document.getElementById("back").innerHTML = group(BACK).map(g => {
+  const prices = [...new Set(g.rows.map(r => String(r[3] ?? "")))];
+  const shared = g.rows.length > 1 && prices.length === 1 && prices[0] !== "" ? prices[0] : "";
+  return `
+  <section class="course"><h2><span class="label">${esc(g.name)}</span>${shared ? `<span class="shared">${esc(shared)}</span>` : ""}</h2><div class="dishes">
+  ${g.rows.map(([, name, desc, price, na]) => item(name, shared ? "" : price, desc, yes(na) ? ["na"] : [])).join("")}
+  </div></section>`;
+}).join("");
+
+function sharedPrice(g){
+  const prices = [...new Set(g.rows.map(r => String(r[3] ?? "")))];
+  return g.rows.length > 1 && prices.length === 1 && prices[0] !== "" ? prices[0] : "";
+}
+const diet = (vg, v, gf) => [yes(vg) && "vg", (yes(v) && !yes(vg)) && "v", yes(gf) && "gf"].filter(Boolean);
+document.getElementById("desserts").innerHTML = group(DESSERT).map(g => {
+  const shared = sharedPrice(g);
+  return `
+  <section class="course"><h2><span class="label">${esc(g.name)}</span>${shared ? `<span class="shared">${esc(shared)}</span>` : ""}</h2><div class="dishes">
+  ${g.rows.map(([, name, desc, price, vg, v, gf]) => item(name, shared ? "" : price, desc, diet(vg, v, gf))).join("")}
+  </div></section>`;
+}).join("");
+
+const date = String(SETTINGS["Menu date code"] ?? "").trim();
+document.getElementById("front-note").textContent =
+  ["vg vegan · v vegetarian · gf gluten free", SETTINGS["Footer note"]].filter(Boolean).join(" ~ ") + (date ? " " + date : "");
+const back = document.getElementById("back-note");
+back.textContent = ["na non-alcoholic", SETTINGS["Back footer note"]].filter(Boolean).join(" ~ ");
+document.getElementById("dessert-note").textContent =
+  ["vg vegan · v vegetarian · gf gluten free", SETTINGS["Dessert footer note"]].filter(Boolean).join(" ~ ");
+if (SETTINGS["Back info line"]) { const s = document.createElement("span"); s.className = "info"; s.textContent = SETTINGS["Back info line"]; back.append(s); }
+
+/* keep each true 8.5 x 11 sheet, shrunk to fit narrow screens */
+function fit(){
+  for (const w of document.querySelectorAll(".sheet-wrap")){
+    const p = w.querySelector(".page"), k = Math.min(1, w.clientWidth / p.offsetWidth);
+    p.style.transform = k < 1 ? `scale(${k})` : ""; w.style.height = (p.offsetHeight * k) + "px";
+  }
+}
+addEventListener("resize", fit); fit(); if (document.fonts) document.fonts.ready.then(fit);
+</script>
+</body>
+</html>
