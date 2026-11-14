@@ -71,7 +71,19 @@ def build_pdf(html, date):
         b = p.chromium.launch()
         pg = b.new_page(viewport={"width": 816, "height": 1056})
         pg.goto(html.as_uri(), wait_until="networkidle")
-        pg.wait_for_timeout(800)
+        missing = pg.evaluate("""async () => {
+            await document.fonts.ready;
+            const need = ['500 60px Newsreader', 'italic 400 11pt Newsreader',
+                          '600 10pt "IBM Plex Mono"', '400 10pt "IBM Plex Mono"', '500 15px Jost'];
+            await Promise.all(need.map(f => document.fonts.load(f).catch(() => [])));
+            const loaded = new Set([...document.fonts].filter(f => f.status === 'loaded')
+                                     .map(f => f.family.replace(/["']/g, '')));
+            return ['Newsreader', 'IBM Plex Mono', 'Jost'].filter(f => !loaded.has(f));
+        }""")
+        if missing:
+            sys.exit("Fonts did not load (" + ", ".join(missing) + "). "
+                     "Make sure print-menu/assets/fonts/ is present; no PDF was made.")
+        pg.wait_for_timeout(300)
         overflow = pg.evaluate("""() => [...document.querySelectorAll('.page')].map(p => {
             const foot = p.querySelector('.foot').getBoundingClientRect();
             const menu = p.querySelector('.menu').getBoundingClientRect();
