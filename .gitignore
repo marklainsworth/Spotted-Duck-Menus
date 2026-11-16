@@ -1,0 +1,8 @@
+
+# build outputs
+print-menu/menu.html
+print-menu/*.pdf
+grove-print-menu/menu.html
+grove-print-menu/*.pdf
+grove-print-menu/assets/order-qr.png
+grove-print-menu/assets/vina-qr.png
