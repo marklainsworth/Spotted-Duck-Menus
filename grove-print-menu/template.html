@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grove Clubhouse Menu</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+/* Layout: one legal sheet (8.5 x 14) per meal. Logo header across the top; food in the left 2/3 (breakfast, then lunch);
+   right 1/3 split: drinks panel on top (19th hole, coffee & tea), visit info below. Colors from the Grove rondel. */
+:root{
+  --paper:#ffffff;
+  --table:#d5ddd2;
+  --navy:#1d3849;
+  --navy-soft:#55697a;
+  --sage:#e6ece0;
+  --sea:#5f8577;
+  --sun:#d9765b;
+  --rope:#b49c84;
+  --display:'Cormorant Garamond','Trajan Pro',Garamond,Georgia,serif;
+  --body:'Mulish','Helvetica Neue',Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html{background:var(--table)}
+body{margin:0;background:var(--table);color:var(--navy);font-family:var(--body);
+  padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sheets{display:flex;flex-direction:column;gap:28px}
+.sheet-wrap{width:100%;max-width:8.5in;margin:0 auto;overflow:hidden}
+.page{width:8.5in;height:14in;background:var(--paper);transform-origin:top left;display:flex;flex-direction:column;
+  padding:0.45in 0.5in 0.4in;box-shadow:0 14px 40px rgba(29,56,73,.18)}
+
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-bottom:6px;border-bottom:1.5px solid var(--navy)}
+header img{height:0.95in;width:auto;display:block}
+.tagline{display:block;margin-top:9px;font-family:var(--display);font-style:italic;font-weight:500;font-size:13pt;letter-spacing:.03em;text-transform:none;color:var(--sea)}
+.disclaimer{margin:0.12in 0 0;font-size:7.2pt;line-height:1.4;text-align:center;color:var(--navy-soft);font-style:italic}
+.hours{text-align:right;font-family:var(--display);font-size:12.5pt;line-height:1.35;letter-spacing:.14em;text-transform:uppercase;color:var(--navy)}
+.hours span{display:block}
+.hours small{font-family:var(--body);font-size:8pt;letter-spacing:.06em;text-transform:none;color:var(--navy-soft)}
+
+/* body grid */
+.cols{flex:1;display:grid;grid-template-columns:1.8fr 1fr;gap:0 0.32in;margin-top:0.2in;min-height:0}
+.food{display:flex;flex-direction:column;gap:0.13in}
+.food .item + .item{margin-top:11px}
+/* the food list stretches to the footer so a short menu does not leave a gap at the bottom */
+.food > .sec{flex:1}
+.food .list{flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:var(--item-gap,14px);padding-bottom:2px}
+.food .list .item + .item{margin-top:0}
+.food .name,.food .price{font-size:14pt}
+.food .desc{font-size:9.6pt;line-height:1.4;max-width:44ch}
+.food .sec h2{font-size:20pt;white-space:nowrap}
+.food .sec{gap:10px}
+.side{display:flex;flex-direction:column;gap:0.1in;min-height:0}
+
+/* section head: title in spaced caps like the wordmark, serving time at right, sun dot as the tee marker */
+.sec{display:flex;flex-direction:column;gap:7px}
+.sec h2{margin:0;display:flex;align-items:baseline;gap:10px;font-family:var(--display);font-weight:600;font-size:17pt;letter-spacing:.2em;text-transform:uppercase;line-height:1}
+.sec h2::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sun);transform:translateY(-3px);flex:none}
+.sec h2 .when{margin-left:auto;font-family:var(--body);font-size:8pt;font-weight:600;letter-spacing:.12em;color:var(--sea)}
+.sec h2::after{content:none}
+.rule{height:1px;background:var(--rope);opacity:.7}
+
+.item{display:grid;grid-template-columns:1fr auto;column-gap:12px;break-inside:avoid}
+.item + .item{margin-top:6px}
+.name{font-family:var(--display);font-weight:700;font-size:12.5pt;line-height:1.15}
+.price{font-family:var(--display);font-weight:700;font-size:12.5pt;font-variant-numeric:lining-nums tabular-nums}
+.desc{grid-column:1 / -1;font-size:8.6pt;line-height:1.35;color:var(--navy-soft)}
+.desc .tag{font-weight:700;letter-spacing:.06em;color:var(--sea);font-size:7.5pt;margin-left:4px}
+.todo{font-style:italic;color:var(--sun)}
+.diet{font-family:var(--body);font-weight:700;font-size:7.4pt;letter-spacing:.06em;color:var(--sea);margin-left:5px;vertical-align:1px}
+
+/* right column */
+.bar{background:var(--sage);border-top:3px solid var(--sea);padding:0.13in 0.16in 0.14in;display:flex;flex-direction:column;gap:0.05in}
+.bar .sec h2{font-size:13pt;letter-spacing:.15em}
+.bar .name,.bar .price{font-size:11.5pt}
+.bar .desc{font-size:8.2pt}
+.bar .item + .item{margin-top:3px}
+
+.visit{margin-top:auto;display:flex;flex-direction:column;gap:9px;padding-top:0.14in;border-top:1px solid var(--rope);font-size:8.6pt;line-height:1.45;color:var(--navy-soft)}
+.visit h3{margin:0;font-family:var(--display);font-weight:600;font-size:13pt;letter-spacing:.18em;text-transform:uppercase;color:var(--navy)}
+.visit dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px}
+.visit dt{font-weight:700;color:var(--navy);letter-spacing:.04em}
+.visit dd{margin:0;font-variant-numeric:tabular-nums}
+.visit p{margin:0}
+
+/* course ordering: golfers order on the front nine and collect at the turn */
+.vina{flex:none;display:flex;align-items:center;justify-content:flex-end;gap:14px;padding-top:0.12in;border-top:1.5px solid var(--navy)}
+.vina-text{text-align:right;line-height:1.2}
+.vina-text .meet{font-family:var(--display);font-weight:600;font-size:21pt;line-height:1.05;letter-spacing:.2em;margin-right:-.2em;text-transform:uppercase;color:var(--navy)}
+.vina-text .meet .meet-sm{font-weight:500;font-size:.5em;letter-spacing:.2em;margin-right:4px}
+.vina-text .meet .tm{font-weight:500;font-size:.38em;letter-spacing:0;line-height:0;vertical-align:1.25em;margin-left:-.05em}
+.vina-text .tag sup{font-style:normal;font-size:.55em;line-height:0;vertical-align:.75em;margin-left:1px}
+.vina-text .tag{font-family:var(--display);font-style:italic;font-size:13pt;color:var(--sea);margin:1px 0 3px}
+.vina-text .what{font-size:7.6pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--navy-soft)}
+.vina-bar{width:2px;align-self:stretch;background:var(--sun)}
+.vina-qr{width:0.85in;height:0.85in;flex:none;display:grid;place-items:center;border:1.5px dashed var(--sea);text-align:center;padding:4px}
+.vina-qr img{width:100%;height:100%;display:block;image-rendering:pixelated}
+.vina-qr:has(img){border:0;padding:0}
+.vina-qr .soon{font-family:var(--display);font-weight:700;font-size:12pt;line-height:1.1;color:var(--sun)}
+.order{margin-top:auto;display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center;padding:0.13in;border:1.5px solid var(--navy);border-radius:4px}
+.order h3{grid-column:1 / -1;margin:0;font-family:var(--display);font-weight:600;font-size:14pt;letter-spacing:.16em;text-transform:uppercase;line-height:1.15}
+.order .qr{width:0.95in;height:0.95in;display:grid;place-items:center;border:1.5px dashed var(--sea);color:var(--sea);font-size:7pt;text-align:center;line-height:1.3;padding:6px}
+.order .qr img{width:100%;height:100%;display:block}
+.order .qr .soon{font-family:var(--display);font-weight:700;font-size:13pt;line-height:1.1;color:var(--sun)}
+.order ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:8.4pt;line-height:1.35;color:var(--navy-soft);counter-reset:step}
+.order li{display:grid;grid-template-columns:16px 1fr;gap:6px;counter-increment:step}
+.order li::before{content:counter(step);display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--sun);color:#fff;font-size:7.5pt;font-weight:700}
+.order .scan{grid-column:1 / -1;font-family:var(--display);font-weight:700;font-size:15pt;letter-spacing:.22em;text-transform:uppercase;text-align:center;color:var(--paper);background:var(--navy);padding:6px 0 5px}
+.side .sec{gap:4px}
+.note{margin:0 0 4px;font-style:italic;font-size:8.4pt;color:var(--sea)}
+.wines{margin-top:auto;display:flex;flex-direction:column;gap:0.09in;padding:0.13in 0.16in 0.15in;border:1.5px solid var(--navy);border-radius:4px}
+.wines .sec h2{font-size:13pt;letter-spacing:.14em}
+.wines .name,.wines .price{font-size:11.5pt}
+.wines .desc{font-size:8.2pt}
+.wines .item + .item{margin-top:4px}
+.desc.inl{display:inline;font-family:var(--body);font-weight:400;font-size:8.2pt;letter-spacing:0;margin-left:3px}
+.mid{padding:0.02in 0.04in 0}
+.mid .sec h2{font-size:13pt;letter-spacing:.15em}
+.mid .name,.mid .price{font-size:11.5pt}
+.mid .desc{font-size:8.2pt}
+.mid .item + .item{margin-top:4px}
+.sec h2 .shared{margin-left:auto;font-family:var(--display);font-weight:700;letter-spacing:0;font-variant-numeric:lining-nums tabular-nums}
+footer span{white-space:nowrap}
+footer span:last-child{align-self:flex-end}
+footer .legend{font-weight:700;color:var(--sea);letter-spacing:.05em}
+footer{margin-top:0.08in;padding-top:9px;border-top:1.5px solid var(--navy);display:flex;justify-content:space-between;gap:20px;font-size:7.6pt;color:var(--navy-soft);letter-spacing:.03em}
+
+@page{size:8.5in 14in;margin:0}
+@media print{body,html{background:none;padding:0}.sheets{display:block}.sheet-wrap{max-width:none;width:8.5in;height:auto!important;overflow:visible;break-after:page}.sheet-wrap:last-child{break-after:auto}.page{transform:none!important;box-shadow:none}}
+</style></head>
+<body>
+<div class="sheets" id="sheets"></div>
+<script>
+/* Filled in from the sheet. Rows: [section, name, description, price].
+   Each page: title, serving window, FOOD rows (left 2/3), BAR rows (right panel), and the bottom-right block. */
+const PAGES = /*PAGES*/[
+ {meal:"Breakfast", when:"8:00–11:00am", corner:"order",
+  food:[
+   ["Breakfast","Jerry's Stuffed Croissant French Toast","ricotta, berries, maple syrup, whipped mascarpone; choice of pork breakfast sausage or applewood smoked bacon","18"],
+   ["Breakfast","Two Eggs Any Style","breakfast potatoes, toast, creamery butter; choice of pork breakfast sausage or applewood smoked bacon","16"],
+   ["Breakfast","Classic Eggs Benedict","poached eggs, shaved ham, English muffin, breakfast potatoes, hollandaise sauce","19"],
+   ["Breakfast","The Grove Morning Nachos","2 over easy eggs, black beans, corn tortilla chips, four cheese sauce, jalapeños, guacamole","21"],
+   ["Breakfast","Egg White Frittata","broccoli, Tuscan kale, goat cheese, toast, arugula-pepitas pesto","17"],
+   ["Breakfast","Oak Smoked Salmon & Avocado Toast","cream cheese, avocado, capers, 7-grain bread, arbequina olive oil","20"],
+   ["Breakfast","Fruit & Berries","Greek yogurt, honey, toasted almonds","16"],
+   ["Breakfast","Gail's Steel Cut Oatmeal","brown sugar, dried blueberry, cinnamon dust, cream","8"],
+   ["Breakfast","New Dish","TODO: add description","18"],
+   ["Breakfast","New Dish","TODO: add description","18"],
+   ["Breakfast","New Dish","TODO: add description","18"],
+   ["Breakfast","New Dish","TODO: add description","18"],
+   ["Breakfast","New Dish","TODO: add description","18"]],
+  bar:[
+   ["The 19th Hole","","full but limited bar available",""],
+   ["The 19th Hole","Signature Bloody Mary","TODO: add recipe description","14"],
+   ["The 19th Hole","Mimosa","sparkling wine, fresh orange juice","12"],
+   ["The 19th Hole","Irish Coffee","TODO: add description","13"],
+   ["Coffee & Tea","Acme Road Dog Coffee","fresh brewed","5"],
+   ["Coffee & Tea","Acme Motor City Espresso","double shot","4"],
+   ["Coffee & Tea","Latte","Acme Motor City espresso","7"],
+   ["Coffee & Tea","Cappuccino","Acme Motor City espresso","6"],
+   ["Coffee & Tea","Numi Teas","assorted, brewed","4"],
+   ["Juice","Orange Juice","","8"],
+   ["Juice","Cranberry or Apple","","5"],
+   ["Soft Drinks","Pepsi or Pepsi Zero","","5"],
+   ["Soft Drinks","Sparkling Water","","5"]],
+  mid:[
+   ["Sides","Fresh Fruit","","7"],
+   ["Sides","Greek Yogurt","","5"],
+   ["Sides","Granola","","5"],
+   ["Sides","Toast","Sourdough, Wheat, English Muffin","4"]], midInline:true},
+ {meal:"Lunch", when:"11:30am–2:00pm", corner:"lower", vina:true,
+  lower:[
+   ["Coffee & Tea","Acme Road Dog Coffee","fresh brewed","5"],
+   ["Coffee & Tea","Acme Motor City Espresso","double shot","3.50"],
+   ["Coffee & Tea","Latte","Acme Motor City espresso","7"],
+   ["Coffee & Tea","Cappuccino","Acme Motor City espresso","6"],
+   ["Coffee & Tea","Numi Teas","assorted, brewed","4"],
+   ["Cold Drinks","Cold Brewed Ginseng Sport Tea","","7"],
+   ["Cold Drinks","Pepsi or Pepsi Zero","","5"],
+   ["Cold Drinks","Sparkling Water","","5"]],
+  food:[
+   ["Starters & Salads","Gail's Chopped Salad","pulled chicken, cucumber, red onion, pea shoots, cherry tomato, crispy lumpia skins, ginger-sesame dressing","20"],
+   ["Starters & Salads","Chopped Caesar Salad","Swank Farms romaine, chef's garlic crumbs, grana padano, Caesar dressing","16"],
+   ["Starters & Salads","The Classic Wedge","iceberg lettuce, cherry tomato, crispy baker's bacon, buttermilk blue cheese dressing","16"],
+   ["Starters & Salads","Tomato and Lager Soup","cream, arbequina olive oil drizzle","13"],
+   ["Starters & Salads","The Grove Nachos","sautéed shrimp, black beans, corn tortilla chips, four cheese sauce, jalapeños, guacamole, cilantro","22"],
+   ["Starters & Salads","New Dish","TODO: add description","16"],
+   ["Starters & Salads","New Dish","TODO: add description","16"],
+   ["Sandwiches & Plates","The Point Pinos Burger","ground chuck mash patty, smoked cheddar, grilled onion, crunchy lettuce, shoestring fries, milk bun, horseradish aioli","23"],
+   ["Sandwiches & Plates","Ham & Double Cheese Panini","sourdough bread, shaved Framani rosemary ham, havarti, provolone, shoestring fries","21"],
+   ["Sandwiches & Plates","New Dish","TODO: add description","22"],
+   ["Sandwiches & Plates","New Dish","TODO: add description","22"],
+   ["Sandwiches & Plates","New Dish","TODO: add description","22"]],
+  mid:[
+   ["Desserts","New Dessert","TODO: short description","10"],
+   ["Desserts","New Dessert","TODO: short description","10"],
+   ["Desserts","New Dessert","TODO: short description","10"],
+   ["Desserts","New Dessert","TODO: short description","10"],
+   ["Desserts","New Dessert","TODO: short description","10"]],
+  bar:[
+   ["The 19th Hole","","full but limited bar available",""],
+   ["The 19th Hole","Signature Bloody Mary","TODO: add recipe description","14"],
+   ["The 19th Hole","Mimosa","sparkling wine, fresh orange juice","12"],
+   ["The 19th Hole","Irish Coffee","TODO: add description","13"],
+   ["Wines by the Glass","Sparkling","TODO: producer, region","12"],
+   ["Wines by the Glass","White","TODO: producer, varietal","13"],
+   ["Wines by the Glass","White","TODO: producer, varietal","13"],
+   ["Wines by the Glass","Rosé","TODO: producer, region","13"],
+   ["Wines by the Glass","Red","TODO: producer, varietal","15"],
+   ["Wines by the Glass","Red","TODO: producer, varietal","15"],
+   ["On Tap","Draft","TODO: brewery, style","9"],
+   ["On Tap","Draft","TODO: brewery, style","9"],
+   ["On Tap","Draft","TODO: brewery, style","9"],
+   ["Cans","Michelob Ultra, Budweiser, Bud Light","","7"]]}
+];
+const ORDER_QR = /*ORDER_QR*/"";
+const VINA_QR = /*VINA_QR*/"";
+const SETTINGS = /*SETTINGS*/{"tagline":"Coastal Fare, Right off the Fairway", "disclaimer":"Consuming raw or undercooked meats, poultry, seafood, shellfish or eggs may increase your risk of foodborne illness, especially if you have certain medical conditions. Menu items may contain or come into contact with wheat, eggs, milk, nuts, soy, fish and shellfish.", "grab":"Grab-n-Go 7:00am–2:30pm daily", "footL":"please let your server know about any allergies", "footR":"79 Asilomar Blvd, Pacific Grove · (831) 215-6222 · thegrovepointpinos.com"};   // image path for the course-ordering QR; empty shows a placeholder box
+
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function group(rows){ const out=[]; for(const r of rows){ let g=out.find(x=>x.name===r[0]); if(!g) out.push(g={name:r[0],rows:[]}); g.rows.push(r);} return out; }
+function sharedPrice(g){ const ps=[...new Set(g.rows.filter(r=>r[1]).map(r=>String(r[3]??"")))]; return g.rows.length>1 && ps.length===1 && ps[0] && ps[0]!=="TODO" ? ps[0] : ""; }
+function render(rows, when, inline){
+  return group(rows).map((g, gi) => { const sp = sharedPrice(g); return  `<section class="sec"><h2>${esc(g.name)}${when && gi === 0 ? `<span class="when">${esc(when)}</span>` : ""}${sp ? `<span class="shared">${esc(sp)}</span>` : ""}</h2><div class="rule"></div><div class="list">` +
+    g.rows.map(([, n, d, p, vg, v, gf]) => { if (sp) p = "";
+      const t = [vg ? "vg" : (v ? "v" : ""), gf ? "gf" : ""].filter(Boolean).map(x => `<span class="diet">${x}</span>`).join("");
+      if (!n) return `<p class="note">${esc(d)}</p>`;
+      const dc = `desc${/^TODO/.test(d) ? " todo" : ""}`;
+      /* drinks columns: description runs on after the name to save height */
+      if (inline) return `<div class="item"><span class="name">${esc(n)}${t}${d ? ` <span class="${dc} inl">${esc(d)}</span>` : ""}</span><span class="price${p==="TODO" ? " todo" : ""}">${esc(p)}</span></div>`;
+      return `<div class="item"><span class="name">${esc(n)}${t}</span><span class="price${p==="TODO" ? " todo" : ""}">${esc(p)}</span>` + (d ? `<span class="${dc}">${esc(d)}</span>` : "") + `</div>`;
+    }).join("") + `</div></section>`; }).join("");
+}
+const vinaBlock = () => `<div class="vina">
+      <div class="vina-text"><div class="meet"><span class="meet-sm">Meet</span> Vina<sup class="tm">™</sup></div><div class="tag">The Virtual Sommelier by CellarEye<sup>®</sup></div><div class="what">Wine, cocktails &amp; pairings</div></div>
+      <div class="vina-bar" aria-hidden="true"></div>
+      <div class="vina-qr">${VINA_QR ? `<img src="${esc(VINA_QR)}" alt="QR code to open Vina, the virtual sommelier">` : `<span class="soon">Coming Soon!</span>`}</div>
+    </div>`;
+const corner = {
+  order: () => `<div class="order">
+      <h3>Order from the course</h3>
+      <div class="qr">${ORDER_QR ? `<img src="${esc(ORDER_QR)}" alt="QR code for course ordering">` : `<span class="soon">Coming Soon!</span>`}</div>
+      <ol><li>Scan now</li><li>Order by the 9th tee box</li><li>Pick up on the turn</li></ol>
+      <div class="scan">Scan now</div>
+    </div>`,
+  lower: p => `<div class="wines">${render(p.lower, "", true)}</div>`,
+  visit: () => `<div class="visit">
+      <h3>Visit</h3>
+      <dl><dt>Where</dt><dd>79 Asilomar Blvd<br>Pacific Grove, CA 93950</dd><dt>Call</dt><dd>(831) 215-6222</dd><dt>Groups</dt><dd>Reservations required for parties over 6</dd></dl>
+      <p>At the Point Pinos Golf Course clubhouse. Now serving beer and wine, full bar coming soon.</p>
+    </div>`
+};
+function legend(p){ const all=["food","bar","mid","lower"].flatMap(k=>p[k]||[]); const has=i=>all.some(r=>r[i]);
+  const parts=[has(4)&&"vg vegan",has(5)&&"v vegetarian",has(6)&&"gf gluten free"].filter(Boolean); return parts.length ? `<br><b class="legend">${parts.join(" · ")}</b>` : ""; }
+document.getElementById("sheets").innerHTML = PAGES.map(p => `
+<div class="sheet-wrap"><main class="page">
+  <header>
+    <img src="assets/grove-logo.png" alt="The Grove at Point Pinos">
+    <div class="hours"><span>${esc(p.meal)}</span><span>${esc(p.when)}</span><small>${esc(SETTINGS.grab)}</small>${SETTINGS.tagline ? `<em class="tagline">${esc(SETTINGS.tagline)}</em>` : ""}</div>
+  </header>
+  <div class="cols">
+    <div class="food">${render(p.food)}${p.vina ? vinaBlock() : ""}</div>
+    <aside class="side"><div class="bar">${render(p.bar, "", true)}</div>${p.mid ? `<div class="mid">${render(p.mid, "", p.midInline)}</div>` : ""}${corner[p.corner](p)}</aside>
+  </div>
+  ${SETTINGS.disclaimer ? `<p class="disclaimer">${esc(SETTINGS.disclaimer)}</p>` : ""}
+  <footer><span>${esc(SETTINGS.footL)}${legend(p)}</span><span>${esc(SETTINGS.footR)}</span></footer>
+</main></div>`).join("");
+
+/* spread a short food list down the column, but never more than 30px between dishes */
+function spread(){
+  for (const l of document.querySelectorAll(".food .list")){
+    l.style.setProperty("--item-gap","14px");
+    const items=l.children.length; if (items<2) continue;
+    const kids=[...l.children], used=kids.reduce((s,k)=>s+k.getBoundingClientRect().height,0)/(parseFloat(getComputedStyle(l.closest(".page")).transform.split(",")[0]?.replace("matrix(",""))||1);
+    const free=l.clientHeight - 2 - used - 14*(items-1);
+    if (free>0) l.style.setProperty("--item-gap", Math.min(30, 14 + free/(items-1)) + "px");
+  }
+}
+function fit(){ spread(); for (const w of document.querySelectorAll(".sheet-wrap")){ const p=w.querySelector(".page"), k=Math.min(1, w.clientWidth/p.offsetWidth);
+  p.style.transform = k<1 ? `scale(${k})` : ""; w.style.height=(p.offsetHeight*k)+"px"; } }
+addEventListener("resize",fit); fit(); if(document.fonts) document.fonts.ready.then(fit);
+</script>
+</body></html>
